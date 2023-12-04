@@ -8,18 +8,60 @@ class Carte:
     def __init__(self, motif, valeur):
         self.motif = motif
         self.valeur = valeur
-        
+       
+
+
+
     def __lt__(self, other):
         return self.valeur < other.valeur
     
+
+
+
     def __gt__(self, other):
         return other.__it__(self)
     
+
+
+
     def __eq__(self, other):
         return self.valeur == other.valeur
     
+
+
+
     def __ge__(self, other):
         return self.valeur >= other.valeur
     
+
+
+
     def __le__(self, other):
         return self.valeur <= other.valeur
+
+
+
+
+    def __str__(self):
+        if self.motif == "J":
+            return chr(0x1f0df)
+
+        if self.motif == "P":
+            if self.valeur = 14:
+                return chr(0x1f0a1)
+            return chr(0x1f0a0 + self.valeur)
+        
+        if self.motif == "C":
+            if self.valeur = 14:
+                return chr(0x1f0b1)
+            return chr(0x1f0b0 + self.valeur)
+        
+        if self.motif == "K":
+            if self.valeur = 14:
+                return chr(0x1f0b1)
+            return chr(0x1f0c0 + self.valeur)
+        
+        if self.motif == "T":
+            if self.valeur = 14:
+                return chr(0x1f0b1)
+            return chr(0x1f0d0 + self.valeur)
