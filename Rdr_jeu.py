@@ -26,3 +26,12 @@ class RoiDuRing:
         self.defausse = []
 
         self.taille = taille
+
+
+
+
+
+    def remplir_pioche(self):
+        shuffle(self.defausse)
+        self.pioche.extend(self.defausse)
+        self.defausse = []
