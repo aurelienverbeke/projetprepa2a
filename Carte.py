@@ -11,7 +11,7 @@ class Carte:
         """
         self.motif = motif
         self.valeur = valeur
-       
+
 
 
 
@@ -43,21 +43,21 @@ class Carte:
             return chr(0x1f0df)
 
         if self.motif == "P":
-            if self.valeur = 14:
+            if self.valeur == 14:
                 return chr(0x1f0a1)
             return chr(0x1f0a0 + self.valeur)
         
         if self.motif == "C":
-            if self.valeur = 14:
+            if self.valeur == 14:
                 return chr(0x1f0b1)
             return chr(0x1f0b0 + self.valeur)
         
         if self.motif == "K":
-            if self.valeur = 14:
+            if self.valeur == 14:
                 return chr(0x1f0b1)
             return chr(0x1f0c0 + self.valeur)
         
         if self.motif == "T":
-            if self.valeur = 14:
+            if self.valeur == 14:
                 return chr(0x1f0b1)
             return chr(0x1f0d0 + self.valeur)
