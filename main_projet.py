@@ -7,10 +7,11 @@ from RdR_ia1 import Ia
 nbeJoueur = int(input("Donnez le nombre de joueurs : "))
 niveaux = []
 for i in range(nbeJoueur):
-    niveaux.append(int(input("Niveau du joueur {i+1} (0,1,2 ou 4) : ")))
+    niveaux.append(int(input(f"Niveau du joueur {i+1} (0,1,2 ou 4) : ")))
 taillePlateau = int(input("Donnez la taille du plateau : "))
 plateauJeu = RoiDuRing(taillePlateau, nbeJoueur)
 fin = False
+# ias = [Ia1, Ia2, Ia3, Ia4]
 ias = [Ia(niveaux[i]) for i in range(nbeJoueur)]
 joueurCourant = 0
 while not fin:
@@ -44,7 +45,7 @@ while not fin:
             cartesDefausse = ias[joueurCourant].defausse(plateauJeu, joueurCourant)
             plateauJeu.joueurs[joueurCourant].retirer_cartes(cartesDefausse)
             cartesPioche = ias[joueurCourant].pioche(plateauJeu, joueurCourant)
-            plateauJeu.joueurs[joueurCourant].ajouter_cartes(cartesDefausse)
+            plateauJeu.joueurs[joueurCourant].ajouter_cartes(cartesPioche)
     fin = plateauJeu.est_fini()
     joueurCourant = (joueurCourant+1)%nbeJoueur
     
