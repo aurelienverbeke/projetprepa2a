@@ -5,6 +5,7 @@ from random import shuffle
 DECK = []
 for motif in ["C", "K", "T", "P"]:
     DECK += [Carte(motif, k) for k in range(4, 15)]
+    DECK += [Carte("J", 0)]
 
 
 SYMBOLES_JOUEURS = ["O", "X", "@", "#"]
@@ -25,4 +26,3 @@ class RoiDuRing:
         self.defausse = []
 
         self.taille = taille
-
