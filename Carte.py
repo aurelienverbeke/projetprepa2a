@@ -1,4 +1,9 @@
 class Carte:
+    """
+    Attributs :
+        - motif (str) : couleur de la carte, peut valoir K pour carreau, C pour coeur, T pour trefle, P pour pic, J pour joker
+        - valeur (int) : valeur de la carte, peut valoir un entier de 7 a 14, et 0 pour joker
+    """
 
     def __init__(self, motif, valeur):
         self.motif = motif
