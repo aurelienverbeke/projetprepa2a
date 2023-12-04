@@ -12,7 +12,7 @@ class Joueur:
     self.position = position
     self.main = main
 
-  def ajouter_carte(self, carte):
+  def ajouter_cartes(self, carte):
     """
     Ajoute une carte à la main du joueur si jamais c'est possible
 
@@ -28,7 +28,7 @@ class Joueur:
     else:
       return -1
 
-  def retirer_carte(self, carte):
+  def retirer_cartes(self, carte):
     """
     Retire une carte à la main du joueur si jamais elle est dedans
 
