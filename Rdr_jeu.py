@@ -83,3 +83,52 @@ class RoiDuRing:
         shuffle(self.defausse)
         self.pioche.extend(self.defausse)
         self.defausse = []
+
+    def afficher(self, joueurCourant, actionJoue):
+    """
+    Affiche le plateau de jeu selon l affichage donné en énoncé :
+        
+        ␣␣␣␣A␣B␣C␣D␣E␣␣
+        ␣␣-------------
+        1␣|␣X␣.␣.␣.␣.␣|
+        2␣|␣.␣.␣.␣.␣.␣|
+        3␣|␣.␣.␣.␣.␣.␣|
+        4␣|␣.␣.␣.␣.␣.␣|
+        5␣|␣.␣.␣.␣.␣O␣|
+        ␣␣-------------
+        
+    et les mains des joueurs selon la forme :
+        
+        pion du joueur :
+            Endurance : endurance du joueur
+            Main : carte 1 , carte 2, ...
+    """
+    
+    def affiche_action(carte, type)
+    
+    result = self.joueurs[joueurCourant].pion
+    
+    result += "    A B C D E  \n  -------------\n" # première ligne
+    dico = {}
+    for joueur in self.joueurs:
+        dico[joueur.position] = joueur.pion
+    for i in range(5):
+        ligne = f"{i + 1} | "
+        for j in range(5):
+            if (i, j) in dico:
+                ligne += dico[(i, j)]
+            else:
+                ligne += '.'
+            ligne += ' '
+        ligne += '|\n'
+    result += '  -------------\n\n'
+    
+    for joueur in self.joueurs:
+        result += joueur.pion + ' : \n'
+        result += "Endurance : " + str(joueur.endurance) + '\n'
+        result += "Main : "
+        for carte in joueur.main:
+            result += carte.__str__() + ', '
+        result += '\n'
+    return result
+
