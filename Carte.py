@@ -6,6 +6,9 @@ class Carte:
     """
 
     def __init__(self, motif, valeur):
+        """
+        Parametres: voir attributs de la classe
+        """
         self.motif = motif
         self.valeur = valeur
        
@@ -15,34 +18,27 @@ class Carte:
     def __lt__(self, other):
         return self.valeur < other.valeur
     
-
-
-
     def __gt__(self, other):
         return other.__it__(self)
     
-
-
-
     def __eq__(self, other):
         return self.valeur == other.valeur
-    
-
-
 
     def __ge__(self, other):
         return self.valeur >= other.valeur
     
-
-
-
     def __le__(self, other):
         return self.valeur <= other.valeur
 
 
 
 
+
     def __str__(self):
+        """
+        Retourne le caractere unicode de la carte, pour pouvoir l'afficher
+        """
+
         if self.motif == "J":
             return chr(0x1f0df)
 
