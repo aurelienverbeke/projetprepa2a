@@ -29,7 +29,21 @@ class RoiDuRing:
 
 
 
+    def joueur_de_case(self,position):
+      """
+      Renvoie le joueur située à la position donnée
 
+      Paramètres :
+        - position (tuple(int,int)) : Position ligne, colonne désirée
+
+      Retourn :
+        - (int ou Joueur) : -1 si aucun joueur à cette position, sinon le Joueur trouvé
+      """
+      for joueur in self.joueurs:
+        if joueur.position == position:
+          return joueur
+        else:
+          return -1
 
     def remplir_pioche(self):
         shuffle(self.defausse)
