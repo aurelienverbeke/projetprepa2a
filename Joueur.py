@@ -1,5 +1,5 @@
 class Joueur:
-  def __init__(self, pion, position, endurance=10, main=[]):
+  def __init__(self, pion, position, endurance=10, main=None):
     """
     Paramètres :
       - pion (str) : Caractère utilisé pour représenter le joueur
@@ -7,6 +7,8 @@ class Joueur:
       - endurance (int) : Points de vie du joueur, 10 par défaut
       - main (list(Cartes)) : Liste des cartes du joueur. len(main) <= 5. Vaut [] par défaut
      """
+    if main is None:
+      main = []
     self.endurance = endurance
     self.pion = pion
     self.position = position
