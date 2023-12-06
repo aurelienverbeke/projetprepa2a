@@ -193,6 +193,9 @@ class RoiDuRing:
         self.joueurs[joueurCourant].position = caseCible
         self.joueurs[joueurCourant].retirer_cartes(carteJoue)
 
+    def ajouter_defausse(self, cartesADefausser):
+        self.defausse.extend(cartesADefausser)
+
     def joueur_de_case(self,position):
       """
       Renvoie le joueur située à la position donnée
