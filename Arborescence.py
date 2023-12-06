@@ -21,4 +21,12 @@ class Arborescence:
         return nbVivants <= 1
 
     def evaluation(self):
+        """
+        Attribue un score pour chaque joueur
+        On part de 0 et on ajoute ou enleve un certain nombre de points en fonction d'une situation analysee comme bonne ou mauvaise
+
+        Retour:
+            - (list): pour chaque joueur, son score
+                exemple: [<score joueur0>, <score joueur1>, <score joueur2>]
+        """
         pass
