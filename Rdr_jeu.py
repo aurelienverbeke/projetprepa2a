@@ -262,3 +262,6 @@ class RoiDuRing:
         result += '\n'
     return result
 
+    def retirer_pioche(self, nbCartes):
+        for i in range(nbCartes):
+            self.pioche.pop(0)
