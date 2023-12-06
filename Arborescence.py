@@ -14,7 +14,11 @@ class Arborescence:
         pass
 
     def est_fini(self):
-        pass
+        nbVivants = 0
+        for idJoueur in range(len(self.positionInitiale) - 2):
+            if self.positionInitiale[idJoueur]["endurance"] > 0:
+                nbVivants += 1
+        return nbVivants <= 1
 
     def evaluation(self):
         pass
