@@ -284,6 +284,8 @@ class RoiDuRing:
                     result += f"\nCible : Joueur {i}"
         if coupContre != None:
             result += f"\nContre : {coupContre.__str__()}"
+        return result
+    
     def retirer_pioche(self, nbCartes):
         for i in range(nbCartes):
             self.pioche.pop()
