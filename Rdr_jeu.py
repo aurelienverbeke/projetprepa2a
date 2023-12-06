@@ -267,4 +267,4 @@ class RoiDuRing:
 
     def retirer_pioche(self, nbCartes):
         for i in range(nbCartes):
-            self.pioche.pop(0)
+            self.pioche.pop()
