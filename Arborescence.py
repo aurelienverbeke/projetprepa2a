@@ -22,7 +22,3 @@ class Arborescence:
 
     def evaluation(self):
         pass
-
-    def ajouter_sous_arbre(self, arbre):
-        pass
-
