@@ -19,11 +19,16 @@ class Ia:
     pass      
       
 
-  def defausse(self):
-    pass
+  def defausse(self, plateau, joueur, nbe):
+    for carte in plateau.joueurs[joueur]
 
-  def pioche(self):
-    pass
+  def pioche(self, plateau, joueur):
+    nbCartes = 0
+    for i in range(5 - len(plateau.joueurs[joueur].main)):
+        if i <= 2:
+            plateau.joueurs[joueur].ajouter_cartes(plateau.pioche[i])
+            nbCartes += 1
+    plateau.retirer_pioche(nbCartes)
 
   def contre(self):
     pass
