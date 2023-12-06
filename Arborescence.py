@@ -4,6 +4,9 @@ SCORE_CARTE_DEPLACEMENT = 1
 SCORE_COEFFICIENT_CARTE_ATTAQUE = 1
 SCORE_POSITION_CENTRALE = 3
 SCORE_POSITION_COIN = -1
+SCORE_CENTRE_COURONNE = -2
+
+POSITIONS_COURONNE = [(ligne, colonne) for ligne in [-1, 0, 1] for colonne in [-1, 0, 1] if (ligne, colonne) != (0, 0)]
 
 
 class Arborescence:
@@ -19,6 +22,17 @@ class Arborescence:
         self.valeur = 0
         self.nombreCoupParNoeud = nombreCoupParNoeud
         self.taillePlateau = taillePlateau
+        self.extremite = self.taillePlateau / 2
+
+    def voisins(self, ligne, colonne):
+        voisins = []
+
+        else:
+            for y in range(ligne-1, ligne+2):
+                for x in range(colonne-1, colonne+2):
+                    if -self.extremite <= x <= self.extremite and -self.extremite <= y < self.extremite and (x != colonne or y != ligne):
+                        voisins.append(self.__grid[y][x])
+        return voisins
 
     def generer_fils(self):
         mainJoueurCourant = self.etat[self.joueurCourant]["main"]
@@ -65,17 +79,15 @@ class Arborescence:
         # on evalue le score pour chaque joueur
         for idJoueur in len(scores):
             joueur = self.etat[idJoueur]
-
-            x = joueur["position"][1]
-            y = joueur["position"][0]
-            extremite = self.taillePlateau / 2
+            colonne = joueur["position"][1]
+            ligne = joueur["position"][0]
 
             # le joueur est en position centrale
-            if (x, y) == (0, 0):
+            if (ligne, colonne) == (0, 0):
                 scores[idJoueur] += SCORE_POSITION_CENTRE
 
             # le joueur est dans un coin
-            if x == -extremite or x == extremite or y == -extremite or y == extremite:
+            if x == -self.extremite or x == self.extremite or y == -self.extremite or y == self.extremite:
                 scores[idJoueur] += SCORE_POSITION_COIN
 
             # on prend en compte l'endurance du joueur
@@ -91,5 +103,15 @@ class Arborescence:
                 # le joueur a des cartes de deplacement
                 if carte.motif == "P" or carte.motif == "T":
                     scores[idJoueur] += SCORE_CARTE_DEPLACEMENT
+
+            # quelqu'un est sur le centre, on est sur la couronne, et ce n'est pas a nous de jouer
+            surCentre = False
+            for idJoueur2 in len(scores):
+                if idJoueur2 != idJoueur1 and self.etat[idJoueur2]["position"] == (0, 0):
+                    surCentre = True
+                    break
+            if surCentre and joueur["position"] in POSITIONS_COURONNE and self.joueurCourant != idJoueur:
+                score[idJoueur] += SCORE_CENTRE_COURONNE
+
 
         return scores
