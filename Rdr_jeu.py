@@ -217,54 +217,73 @@ class RoiDuRing:
         self.pioche.extend(self.defausse)
         self.defausse = []
 
-    def afficher(self, joueurCourant, actionJoue):
-    """
-    Affiche le plateau de jeu selon l affichage donné en énoncé :
+    def afficher(self, joueurCourant, actionJoue, coupContre = None):
+        """
+        Affiche les informations du coup courant :
+            Pion du joueur
+            Affichage de l action
         
-        ␣␣␣␣A␣B␣C␣D␣E␣␣
-        ␣␣-------------
-        1␣|␣X␣.␣.␣.␣.␣|
-        2␣|␣.␣.␣.␣.␣.␣|
-        3␣|␣.␣.␣.␣.␣.␣|
-        4␣|␣.␣.␣.␣.␣.␣|
-        5␣|␣.␣.␣.␣.␣O␣|
-        ␣␣-------------
+        et le plateau de jeu selon l affichage donné en énoncé :
+            
+            ␣␣␣␣A␣B␣C␣D␣E␣␣
+            ␣␣-------------
+            1␣|␣X␣.␣.␣.␣.␣|
+            2␣|␣.␣.␣.␣.␣.␣|
+            3␣|␣.␣.␣.␣.␣.␣|
+            4␣|␣.␣.␣.␣.␣.␣|
+            5␣|␣.␣.␣.␣.␣O␣|
+            ␣␣-------------
         
-    et les mains des joueurs selon la forme :
+        et les mains des joueurs selon la forme :
         
-        pion du joueur :
-            Endurance : endurance du joueur
-            Main : carte 1 , carte 2, ...
-    """
+            pion du joueur :
+                Endurance : endurance du joueur
+                Main : carte 1 , carte 2, ...
+        """
     
-    def affiche_action(carte, type)
-    
-    result = self.joueurs[joueurCourant].pion
-    
-    result += "    A B C D E  \n  -------------\n" # première ligne
-    dico = {}
-    for joueur in self.joueurs:
-        dico[joueur.position] = joueur.pion
-    for i in range(5):
-        ligne = f"{i + 1} | "
-        for j in range(5):
-            if (i, j) in dico:
-                ligne += dico[(i, j)]
-            else:
-                ligne += '.'
-            ligne += ' '
-        ligne += '|\n'
-    result += '  -------------\n\n'
-    
-    for joueur in self.joueurs:
-        result += joueur.pion + ' : \n'
-        result += "Endurance : " + str(joueur.endurance) + '\n'
-        result += "Main : "
-        for carte in joueur.main:
-            result += carte.__str__() + ', '
-        result += '\n'
-    return result
+        result = self.joueurs[joueurCourant].pion
+        result += self.affiche_action(actionJoue, coupContre)
+        result += "\n    "
+        lettres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        longueurGrille = self.taille
+        for i in range(longueurGrille):
+            result += lettres[i] + ' '
+        result += " \n  -------------\n" # première ligne
+        dico = {}
+        for joueur in self.joueurs:
+            x = joueur.position[0] + 2
+            y = joueur.position[0] + 2
+            dico[(x, y)] = joueur.pion
+        for i in range(longueurGrille):
+            ligne = f"{i + 1} | "
+            for j in range(longueurGrille):
+                if (i, j) in dico:
+                    ligne += dico[(i, j)]
+                else:
+                    ligne += '.'
+                ligne += ' '
+            ligne += '|\n'
+        result += '  -------------\n\n'
+        
+        for joueur in self.joueurs:
+            result += joueur.pion + ' : \n'
+            result += "Endurance : " + str(joueur.endurance) + '\n'
+            result += "Main : "
+            for carte in joueur.main:
+                result += carte.__str__() + ', '
+            result += '\n'
+        return result
 
+    def affiche_action(self, actionJoue, coupContre = None): # Affoche de l'action du joueur
+        result = "\n"
+        for carte in actionJoue[1]:
+            result += carte._str__() + ' '
+        if actionJoue[0] == 2 or actionJoue[0] == 3:
+            for i in range(len(self.joueurs)):
+                if self.joueurs[i].position == actionJoue[2]:
+                    result += f"\nCible : Joueur {i}"
+        if coupContre != None:
+            result += f"\nContre : {coupContre.__str__()}"
     def retirer_pioche(self, nbCartes):
         for i in range(nbCartes):
             self.pioche.pop()
