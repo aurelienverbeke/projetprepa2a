@@ -240,39 +240,39 @@ class RoiDuRing:
                 Endurance : endurance du joueur
                 Main : carte 1 , carte 2, ...
         """
-    
-        result = self.joueurs[joueurCourant].pion
-        result += self.affiche_action(actionJoue, coupContre)
-        result += "\n    "
-        lettres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        longueurGrille = self.taille
-        for i in range(longueurGrille):
-            result += lettres[i] + ' '
-        result += " \n  -------------\n" # première ligne
-        dico = {}
-        for joueur in self.joueurs:
-            x = joueur.position[0] + 2
-            y = joueur.position[0] + 2
-            dico[(x, y)] = joueur.pion
-        for i in range(longueurGrille):
-            ligne = f"{i + 1} | "
-            for j in range(longueurGrille):
-                if (i, j) in dico:
-                    ligne += dico[(i, j)]
-                else:
-                    ligne += '.'
-                ligne += ' '
-            ligne += '|\n'
-        result += '  -------------\n\n'
-        
-        for joueur in self.joueurs:
-            result += joueur.pion + ' : \n'
-            result += "Endurance : " + str(joueur.endurance) + '\n'
-            result += "Main : "
-            for carte in joueur.main:
-                result += carte.__str__() + ', '
-            result += '\n'
-        return result
+        if actionJoue[0] in [0, 1, 2, 3, 4]:
+            result = self.joueurs[joueurCourant].pion
+            result += self.affiche_action(actionJoue, coupContre)
+            result += "\n    "
+            lettres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            longueurGrille = self.taille
+            for i in range(longueurGrille):
+                result += lettres[i] + ' '
+            result += " \n  -------------\n" # première ligne
+            dico = {}
+            for joueur in self.joueurs:
+                x = joueur.position[0] + 2
+                y = joueur.position[0] + 2
+                dico[(x, y)] = joueur.pion
+            for i in range(longueurGrille):
+                ligne = f"{i + 1} | "
+                for j in range(longueurGrille):
+                    if (i, j) in dico:
+                        ligne += dico[(i, j)]
+                    else:
+                        ligne += '.'
+                    ligne += ' '
+                ligne += '|\n'
+            result += '  -------------\n\n'
+            
+            for joueur in self.joueurs:
+                result += joueur.pion + ' : \n'
+                result += "Endurance : " + str(joueur.endurance) + '\n'
+                result += "Main : "
+                for carte in joueur.main:
+                    result += carte.__str__() + ', '
+                result += '\n'
+            return result
 
     def affiche_action(self, actionJoue, coupContre = None): # Affoche de l'action du joueur
         result = "\n"
