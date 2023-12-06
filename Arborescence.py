@@ -58,4 +58,6 @@ class Arborescence:
                     score[idJoueur] += carte.valeur
 
 
+            
+
         return scores
