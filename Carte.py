@@ -1,7 +1,7 @@
 class Carte:
     """
     Attributs :
-        - motif (str) : couleur de la carte, peut valoir K pour carreau, C pour coeur, T pour trefle, P pour pic, J pour joker
+        - motif (str) : couleur de la carte, peut valoir K pour carreau, C pour coeur, T pour trefle, P pour pique, J pour joker
         - valeur (int) : valeur de la carte, peut valoir un entier de 7 a 14, et 0 pour joker
     """
 
