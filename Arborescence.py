@@ -1,7 +1,11 @@
 class Arborescence:
-    def __init__(self, positionInitiale="", dernierCoup="", joueurCourant=0):
+    def __init__(self, positionInitiale="", joueurCourant=0):
+        """
+        Paramètres:
+            - positionInitiale (dict) : de la forme {"pioche": list(cartes), "defausse": list(cartes),
+              idJoueur : {"main" : list(cartes), "endurance" : int}}
+        """
         self.etat = positionInitiale
-        self.dernierCoup = dernierCoup
         self.joueurCourant = joueurCourant
         self.sousArbres = []
         self.valeur = 0
