@@ -27,11 +27,11 @@ class Arborescence:
     def voisins(self, ligne, colonne):
         voisins = []
 
-        else:
-            for y in range(ligne-1, ligne+2):
-                for x in range(colonne-1, colonne+2):
-                    if -self.extremite <= x <= self.extremite and -self.extremite <= y < self.extremite and (x != colonne or y != ligne):
-                        voisins.append(self.__grid[y][x])
+        for y in range(ligne-1, ligne+2):
+            for x in range(colonne-1, colonne+2):
+                if -self.extremite <= x <= self.extremite and -self.extremite <= y < self.extremite and (x != colonne or y != ligne):
+                    voisins.append(self.__grid[y][x])
+        
         return voisins
 
     def generer_fils(self):
