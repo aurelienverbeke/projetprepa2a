@@ -61,6 +61,9 @@ class Arborescence:
 
         return voisins
 
+    def copie_etat(self):
+        pass
+
     def generer_fils(self):
         mainJoueurCourant = self.etat[self.joueurCourant]["main"]
         positionJoueurCourant = self.etat[self.joueurCourant]["position"]
@@ -91,7 +94,6 @@ class Arborescence:
                                              self.nombreCoupParNoeud,
                                              positionJoueurCourant,
                                              [x[1] for x in positionsAdversaires])
-        print(casesAccessibles)
         for case in casesAccessibles:
             for joueur, positionJoueur in positionsAdversaires:
 
@@ -99,11 +101,16 @@ class Arborescence:
                 if VecteurJoueurCourantJoueur[0] > 1 or VecteurJoueurCourantJoueur[1] > 1:
                     continue
 
-                # En diagonale
-                if VecteurJoueurCourantJoueur[0] + VecteurJoueurCourantJoueur[1] == 2:
-                    pass
+                if VecteurJoueurCourantJoueur[0] + VecteurJoueurCourantJoueur[1] == 1:
+                    if valeurCarteAttaqueLateral:
+                        print("poussé", case, joueur)
+                    for carte in valeurCarteAttaqueLateral:
+                        print("touché", case, joueur, carte)
                 else:
-                    print(case, joueur, "r")
+                    if valeurCarteAttaqueDiagonal:
+                        print("poussé", case, joueur)
+                    for carte in valeurCarteAttaqueDiagonal:
+                        print("touché", case, joueur, carte)
 
     def est_fini(self):
         nbVivants = 0
@@ -168,7 +175,7 @@ if __name__ == "__main__":
     from Carte import Carte
 
     etat = {"pioche": [], "defausse": [],
-            0: {"main": [Carte("T", 3), Carte("T", 4)], "endurance": 10, "position": (0, 0)},
+            0: {"main": [Carte("T", 3), Carte("T", 4), Carte("C", 8), Carte("C", 10)], "endurance": 10, "position": (0, 0)},
             1: {"main": [Carte("T", 3)], "endurance": 10, "position": (2, 0)}}
     A = Arborescence(3, 5, etat)
     A.generer_fils()
