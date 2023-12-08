@@ -5,6 +5,7 @@ SCORE_COEFFICIENT_CARTE_ATTAQUE = 1
 SCORE_POSITION_CENTRE = 3
 SCORE_POSITION_COIN = -1
 SCORE_CENTRE_COURONNE = -2
+SCORE_ATTAQUE_ADVERSAIRE = -2
 
 POSITIONS_COURONNE = [(ligne, colonne) for ligne in [-1, 0, 1] for colonne in [-1, 0, 1] if (ligne, colonne) != (0, 0)]
 
@@ -94,9 +95,10 @@ class Arborescence:
 
         for y in range(ligne - 1, ligne + 2):
             for x in range(colonne - 1, colonne + 2):
-                if -self.extremite <= x <= self.extremite and -self.extremite <= y < self.extremite and (
-                        x != colonne or y != ligne):
-                    voisins.append(self.__grid[y][x])
+                if -self.extremite <= x <= self.extremite and -self.extremite <= y < self.extremite and (x != colonne or y != ligne):
+                    for idJoueur in range(len(self.etat) - 2):
+                        if self.etat[idJoueur]["position"] == (ligne, colonne):
+                            voisins.append(idJoueur)
 
         return voisins
 
@@ -445,11 +447,18 @@ class Arborescence:
             # quelqu'un est sur le centre, on est sur la couronne, et ce n'est pas a nous de jouer
             surCentre = False
             for idJoueur2 in range(len(scores)):
-                if idJoueur2 != idJoueur1 and self.etat[idJoueur2]["position"] == (0, 0):
+                if idJoueur2 != idJoueur and self.etat[idJoueur2]["position"] == (0, 0):
                     surCentre = True
                     break
             if surCentre and joueur["position"] in POSITIONS_COURONNE and self.joueurCourant != idJoueur:
                 scores[idJoueur] += SCORE_CENTRE_COURONNE
+
+            # ce n'est pas a nous de jouer, quelqu'un est a cote de nous et peut nous taper
+            for idJoueur2 in range(len(scores)):
+                if idJoueur2 != idJoueur:
+                    for carte in self.etat[idJoueur2]["main"]:
+                        if carte.motif == "C" or carte.motif == "K":
+                            score[idJoueur] += SCORE_ATTAQUE_ADVERSAIRE
 
         return scores
 

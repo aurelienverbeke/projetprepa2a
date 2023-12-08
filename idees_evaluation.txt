@@ -1,7 +1,3 @@
-Si voisin, et qu'il peut attaquer, enlever points, à part si on est le joueur courant et qu'on a des cartes pour s'en ecarter
-Nombre de cartes
-Si quelqu'un au milieu, ne pas etre sur la couronne à part si on est le joueur courant
-Nombre de cartes de deplacement
 Si on est a cote de quelqu'un et qu'on peut le taper, on ajoute des points (inversement propotionnel aux points qu'il lui reste)
 Si on est a cote de quelqu'un qui peut taper et qui a beaucoup de vie, que c'est pas a nous de jouer, on enleve est points
 Joker et on est a cote de quelqu'un et c'est a nous de jouer
