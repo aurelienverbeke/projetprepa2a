@@ -163,7 +163,6 @@ class Arborescence:
         return (self.joueurCourant + 1) % 2  # Temporaire pour les tests
 
     def generer_fils(self):
-        # TODO le joker
         mainJoueurCourant = self.etat[self.joueurCourant]["main"]
         positionJoueurCourant = self.etat[self.joueurCourant]["position"]
 
@@ -451,7 +450,7 @@ class Arborescence:
         return nbVivants <= 1
 
     def evaluation_test(self):
-        return 1/self.etat[1]["endurance"], 1/self.etat[0]["endurance"]
+        return self.etat[0]["endurance"]/self.etat[1]["endurance"], self.etat[1]["endurance"]/self.etat[0]["endurance"]
 
     def evaluation(self):
         """
