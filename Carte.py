@@ -19,7 +19,7 @@ class Carte:
         return self.valeur < other.valeur
     
     def __gt__(self, other):
-        return other.__it__(self)
+        return other.__lt__(self)
     
     def __eq__(self, other):
         return self.valeur == other.valeur
