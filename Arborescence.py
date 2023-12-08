@@ -425,14 +425,14 @@ class Arborescence:
                 scores[idJoueur] += SCORE_POSITION_CENTRE
 
             # le joueur est dans un coin
-            # if x == -self.extremite or x == self.extremite or y == -self.extremite or y == self.extremite:
-            #    scores[idJoueur] += SCORE_POSITION_COIN
+            if ligne == -self.extremite or ligne == self.extremite or colonne == -self.extremite or colonne == self.extremite:
+                scores[idJoueur] += SCORE_POSITION_COIN
 
             # on prend en compte l'endurance du joueur
             scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE * joueur["endurance"]
 
             # nombre de cartes
-            # scores[idJoueur] += SCORE_COEFFICIENT_NB_CARTES * len(joueur[main])
+            scores[idJoueur] += SCORE_COEFFICIENT_NB_CARTES * len(joueur["main"])
 
             for carte in joueur["main"]:
                 # le joueur a des cartes d'attaque
@@ -444,10 +444,10 @@ class Arborescence:
 
             # quelqu'un est sur le centre, on est sur la couronne, et ce n'est pas a nous de jouer
             surCentre = False
-            # for idJoueur2 in len(scores):
-            #    if idJoueur2 != idJoueur1 and self.etat[idJoueur2]["position"] == (0, 0):
-            #        surCentre = True
-            #        break
+            for idJoueur2 in range(len(scores)):
+                if idJoueur2 != idJoueur1 and self.etat[idJoueur2]["position"] == (0, 0):
+                    surCentre = True
+                    break
             if surCentre and joueur["position"] in POSITIONS_COURONNE and self.joueurCourant != idJoueur:
                 scores[idJoueur] += SCORE_CENTRE_COURONNE
 
