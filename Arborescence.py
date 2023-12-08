@@ -457,6 +457,10 @@ class Arborescence:
             colonne = joueur["position"][1]
             ligne = joueur["position"][0]
 
+            
+
+            # --- ON REGARDE LES PARAMETRES DU JOUEUR COURANT ---
+            
             # le joueur est en position centrale
             if (ligne, colonne) == (0, 0):
                 scores[idJoueur] += SCORE_POSITION_CENTRE
@@ -467,29 +471,11 @@ class Arborescence:
 
             # on prend en compte l'endurance du joueur
             scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE * joueur["endurance"]
-
-            # on prend en compte l'endurance des autres joueurs
-            for idJoueur2 in range(len(scores)):
-                if idJoueur2 != idJoueur:
-                    score[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES * self.etat[idJoueur2]["endurance"]
             
-
-            # pour chaque voisin qu'on peut taper, on prend en compte son endurance
-            for idJoueur2 in voisins(ligne, colonne):
-                # le voisin est sur un cote
-                if self.etat[idJoueur2]["position"][0] == ligne or self.etat[idJoueur2]["position"][1] == colonne:
-                    for carte in joueur["main"]:
-                        if carte.motif == "C":
-                            scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * self.etat[idJoueur2]["endurance"]
-                # le voisin est en diagonale
-                else:
-                    for carte in joueur["main"]:
-                        if carte.motif == "K":
-                            scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * self.etat[idJoueur2]["endurance"]
-
             # nombre de cartes
             scores[idJoueur] += SCORE_COEFFICIENT_NB_CARTES * len(joueur["main"])
-
+            
+            # on pondere avec la valeur des cartes d'attaque et le nombre de cartes de déplacement
             for carte in joueur["main"]:
                 # le joueur a des cartes d'attaque
                 if carte.motif == "K" or carte.motif == "C":
@@ -498,18 +484,39 @@ class Arborescence:
                 if carte.motif == "P" or carte.motif == "T":
                     scores[idJoueur] += SCORE_CARTE_DEPLACEMENT
 
-            # quelqu'un est sur le centre, on est sur la couronne, et ce n'est pas a nous de jouer
-            surCentre = False
-            for idJoueur2 in range(len(scores)):
-                if idJoueur2 != idJoueur and self.etat[idJoueur2]["position"] == (0, 0):
+            
+
+            # --- ON REGARDE LES PARAMETRES DE SES ADVERSAIRES ---
+
+            # pour chaque adversaire
+            for idJoueur2 in set(range(len(scores))) - set(idJoueur):
+                
+                # on prend en compte l'endurance des autres joueurs
+                score[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES * self.etat[idJoueur2]["endurance"]
+
+                # si c'est un voisin qu'on peut taper, on prend en compte son endurance
+                if idJoueur2 in voisins(ligne, colonne) and self.joueurCourant == idJoueur:
+                    # le voisin est sur un cote
+                    if self.etat[idJoueur2]["position"][0] == ligne or self.etat[idJoueur2]["position"][1] == colonne:
+                        for carte in joueur["main"]:
+                            if carte.motif == "C":
+                                scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * self.etat[idJoueur2]["endurance"]
+                    # le voisin est en diagonale
+                    else:
+                        for carte in joueur["main"]:
+                            if carte.motif == "K":
+                                scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * self.etat[idJoueur2]["endurance"]
+
+                # quelqu'un est sur le centre, on est sur la couronne, et ce n'est pas a nous de jouer
+                surCentre = False
+                if self.etat[idJoueur2]["position"] == (0, 0):
                     surCentre = True
                     break
-            if surCentre and joueur["position"] in POSITIONS_COURONNE and self.joueurCourant != idJoueur:
-                scores[idJoueur] += SCORE_CENTRE_COURONNE
+                if surCentre and joueur["position"] in POSITIONS_COURONNE and self.joueurCourant != idJoueur:
+                    scores[idJoueur] += SCORE_CENTRE_COURONNE
 
-            # ce n'est pas a nous de jouer, quelqu'un est a cote de nous et peut nous taper
-            for idJoueur2 in range(len(scores)):
-                if idJoueur2 != idJoueur:
+                # ce n'est pas a nous de jouer, quelqu'un est a cote de nous et peut nous taper
+                if self.joueurCourant != idJoueur:
                     for carte in self.etat[idJoueur2]["main"]:
                         if carte.motif == "C" or carte.motif == "K":
                             scores[idJoueur] += SCORE_ATTAQUE_ADVERSAIRE
