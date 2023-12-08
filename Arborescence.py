@@ -6,6 +6,8 @@ SCORE_POSITION_CENTRE = 3
 SCORE_POSITION_COIN = -1
 SCORE_CENTRE_COURONNE = -2
 SCORE_ATTAQUE_ADVERSAIRE = -2
+SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = -2
+SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = -2
 
 POSITIONS_COURONNE = [(ligne, colonne) for ligne in [-1, 0, 1] for colonne in [-1, 0, 1] if (ligne, colonne) != (0, 0)]
 
@@ -433,6 +435,25 @@ class Arborescence:
             # on prend en compte l'endurance du joueur
             scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE * joueur["endurance"]
 
+            # on prend en compte l'endurance des autres joueurs
+            for idJoueur2 in range(len(scores)):
+                if idJoueur2 != idJoueur:
+                    score[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES * self.etat[idJoueur2]["endurance"]
+            
+
+            # pour chaque voisin qu'on peut taper, on prend en compte son endurance
+            for idJoueur2 in voisins(ligne, colonne):
+                # le voisin est sur un cote
+                if self.etat[idJoueur2]["position"][0] == ligne or self.etat[idJoueur2]["position"][1] == colonne:
+                    for carte in joueur["main"]:
+                        if carte.motif == "C":
+                            scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * self.etat[idJoueur2]["endurance"]
+                # le voisin est en diagonale
+                else:
+                    for carte in joueur["main"]:
+                        if carte.motif == "K":
+                            scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * self.etat[idJoueur2]["endurance"]
+
             # nombre de cartes
             scores[idJoueur] += SCORE_COEFFICIENT_NB_CARTES * len(joueur["main"])
 
@@ -458,7 +479,7 @@ class Arborescence:
                 if idJoueur2 != idJoueur:
                     for carte in self.etat[idJoueur2]["main"]:
                         if carte.motif == "C" or carte.motif == "K":
-                            score[idJoueur] += SCORE_ATTAQUE_ADVERSAIRE
+                            scores[idJoueur] += SCORE_ATTAQUE_ADVERSAIRE
 
         return scores
 
