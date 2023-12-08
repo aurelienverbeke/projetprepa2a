@@ -26,8 +26,9 @@ def cases_accessibles(deplacementLateralRestant, deplacementDiagonalRestant, ray
     casesAccessibles = set()
     casesAccessibles.add(position)
 
-    if position not in cartesUtilisePourAllerACase.keys():
-        cartesUtilisePourAllerACase[position] = deplacementsEffectues
+    if position in cartesUtilisePourAllerACase.keys() and len(cartesUtilisePourAllerACase[position]) <= len(deplacementsEffectues):
+        return set()
+    cartesUtilisePourAllerACase[position] = deplacementsEffectues
 
     if deplacementLateralRestant > 0:
         for i, j in ((-1, 0), (1, 0), (0, -1), (0, 1)):
@@ -147,45 +148,20 @@ class Arborescence:
         for motif in motifs:
             self.retirer_carte(main, motif)
 
+    def retirer_cartes_depuis_liste(self, main, cartes):
+        for motif, valeur in cartes:
+            if valeur == 0:
+                self.retirer_carte(main, motif)
+            else:
+                self.retirer_carte(main, motif, valeur)
+
     def joueur_tour_suivant(self):
         return (self.joueurCourant + 1) % 2  # Temporaire pour les tests
 
     def generer_fils(self):
-        # TODO règle du coup bas et le joker
+        # TODO le joker
         mainJoueurCourant = self.etat[self.joueurCourant]["main"]
         positionJoueurCourant = self.etat[self.joueurCourant]["position"]
-
-        if self.estAttaque:
-            nouvelEtat = self.copie_etat()
-            if self.dernierCoup["position"] == (0, 0):
-                nouvelEtat[self.joueurCourant]["endurance"] -= 2
-            else:
-                nouvelEtat[self.joueurCourant]["endurance"] -= 1
-
-            coupJoue = {"cartes": [], "joueur": self.joueurCourant, "position": positionJoueurCourant}
-
-            fils = Arborescence(self.nombreDeplacementParNoeud, self.taillePlateau, nouvelEtat, coupJoue,
-                                self.dernierCoup["joueur"], self.vaRecevoirTomates)
-
-            self.sousArbres.append(fils)
-
-            cartesPouvantContrer = [carte for carte in mainJoueurCourant
-                                    if carte.motif == self.dernierCoup["cartes"][-1][0]
-                                    and carte.valeur >= self.dernierCoup["cartes"][-1][2]]
-            if cartesPouvantContrer:
-                carteContre = min(cartesPouvantContrer)
-                nouvelEtat = self.copie_etat()
-                self.retirer_carte(nouvelEtat[self.joueurCourant]["main"], carteContre.motif, carteContre.valeur)
-
-                coupJoue = {"cartes": [(carteContre, "contre")], "joueur": self.joueurCourant,
-                            "position": positionJoueurCourant}
-
-                fils = Arborescence(self.nombreDeplacementParNoeud, self.taillePlateau, nouvelEtat, coupJoue,
-                                    self.dernierCoup["joueur"], self.vaRecevoirTomates)
-
-                self.sousArbres.append(fils)
-
-            return
 
         positionsAdversaires = [(idJoueur, self.etat[idJoueur]["position"]) for idJoueur in self.etat.keys()
                                 if idJoueur not in ("pioche", "defausse") and idJoueur != self.joueurCourant]
@@ -208,6 +184,67 @@ class Arborescence:
             else:
                 jokerPossible += 1
 
+        if self.estAttaque:
+            if self.dernierCoup["cartes"][-1][0] == "coup bas":
+                possibiliteDefausse = [[]]
+
+                possibiliteDefausse = [x + [("T", 0)] * i for x in possibiliteDefausse for i in
+                                       range(deplacementLateralPossible + 1)]
+                possibiliteDefausse = [x + [("P", 0)] * i for x in possibiliteDefausse for i in
+                                       range(deplacementDiagonalPossible + 1)]
+
+                CarteAttaqueLateral = [("K", v) for v in list(sorted(valeurCarteAttaqueLateral))]
+                possibiliteDefausse = [x + CarteAttaqueLateral[:i] for x in possibiliteDefausse for i in
+                                       range(len(CarteAttaqueLateral) + 1)]
+                CarteAttaqueDiagonal = [("C", v) for v in list(sorted(valeurCarteAttaqueDiagonal))]
+                possibiliteDefausse = [x + CarteAttaqueDiagonal[:i] for x in possibiliteDefausse for i in
+                                       range(len(CarteAttaqueDiagonal) + 1)]
+
+                possibiliteDefausse = [x for x in possibiliteDefausse if len(x) == 2]
+
+                for cartesDefausses in possibiliteDefausse:
+                    nouvelEtat = self.copie_etat()
+                    self.retirer_cartes_depuis_liste(nouvelEtat[self.joueurCourant]["main"], cartesDefausses)
+
+                    coupJoue = {"cartes": cartesDefausses + [("reception coup bas", 0)], "joueur": self.joueurCourant,
+                                "position": positionJoueurCourant}
+                    fils = Arborescence(self.nombreDeplacementParNoeud, self.taillePlateau, nouvelEtat,
+                                        coupJoue,
+                                        self.dernierCoup["joueur"], vaRecevoirTomates=False, estAttaque=True)
+                    self.sousArbres.append(fils)
+
+            else:
+                nouvelEtat = self.copie_etat()
+                if self.dernierCoup["position"] == (0, 0):
+                    nouvelEtat[self.joueurCourant]["endurance"] -= 2
+                else:
+                    nouvelEtat[self.joueurCourant]["endurance"] -= 1
+
+                coupJoue = {"cartes": [], "joueur": self.joueurCourant, "position": positionJoueurCourant}
+
+                fils = Arborescence(self.nombreDeplacementParNoeud, self.taillePlateau, nouvelEtat, coupJoue,
+                                    self.dernierCoup["joueur"], self.vaRecevoirTomates)
+
+                self.sousArbres.append(fils)
+
+                cartesPouvantContrer = [carte for carte in mainJoueurCourant
+                                        if carte.motif == self.dernierCoup["cartes"][-1][0]
+                                        and carte.valeur >= self.dernierCoup["cartes"][-1][2]]
+                if cartesPouvantContrer:
+                    carteContre = min(cartesPouvantContrer)
+                    nouvelEtat = self.copie_etat()
+                    self.retirer_carte(nouvelEtat[self.joueurCourant]["main"], carteContre.motif, carteContre.valeur)
+
+                    coupJoue = {"cartes": [(carteContre, "contre")], "joueur": self.joueurCourant,
+                                "position": positionJoueurCourant}
+
+                    fils = Arborescence(self.nombreDeplacementParNoeud, self.taillePlateau, nouvelEtat, coupJoue,
+                                        self.dernierCoup["joueur"], self.vaRecevoirTomates)
+
+                    self.sousArbres.append(fils)
+
+            return
+
         cartesUtilisePourAllerACase = dict()
         # On détermine les cases accessibles
         casesAccessibles = cases_accessibles(deplacementLateralPossible, deplacementDiagonalPossible, self.extremite,
@@ -215,23 +252,65 @@ class Arborescence:
                                              positionJoueurCourant,
                                              [x[1] for x in positionsAdversaires], cartesUtilisePourAllerACase)
 
+        print(cartesUtilisePourAllerACase)
+        print(len(cartesUtilisePourAllerACase))
+
         for case in casesAccessibles:
 
             if not cartesUtilisePourAllerACase[case]:
-                # TODO Piocher et defausser des cartes
-                for nombreCartesPioche in range(0, min(3, 6 - len(mainJoueurCourant))):
-                    nouvelEtat = self.copie_etat()
-                    joueurSuivant = self.joueur_tour_suivant()
+                # Beaucoup de possibilites, si trop lent reduire ici
+                possibiliteDefausse = [[]]
 
-                    if self.vaRecevoirTomates:
-                        nouvelEtat[self.joueurCourant]["endurance"] -= 1
+                possibiliteDefausse = [x + [("T", 0)] * i for x in possibiliteDefausse for i in range(deplacementLateralPossible + 1)]
+                possibiliteDefausse = [x + [("P", 0)] * i for x in possibiliteDefausse for i in range(deplacementDiagonalPossible + 1)]
 
-                    coupJoue = {"cartes": [("fin", nombreCartesPioche)], "joueur": self.joueurCourant,
-                                "position": positionJoueurCourant}
 
-                    fils = Arborescence(self.nombreDeplacementParNoeud, self.taillePlateau, nouvelEtat, coupJoue,
-                                        joueurSuivant, vaRecevoirTomates=True)
-                    self.sousArbres.append(fils)
+                CarteAttaqueLateral = [("K", v) for v in list(sorted(valeurCarteAttaqueLateral))]
+                possibiliteDefausse = [x + CarteAttaqueLateral[:i] for x in possibiliteDefausse for i in
+                                       range(len(CarteAttaqueLateral) + 1)]
+                CarteAttaqueDiagonal = [("C", v) for v in list(sorted(valeurCarteAttaqueDiagonal))]
+                possibiliteDefausse = [x + CarteAttaqueDiagonal[:i] for x in possibiliteDefausse for i in
+                                       range(len(CarteAttaqueDiagonal) + 1)]
+
+                possibiliteDefausse = [x for x in possibiliteDefausse if len(x) < 4]
+
+
+                for cartesDefausses in possibiliteDefausse:
+                    if len(cartesDefausses) < 3:
+                        nouvelEtat = self.copie_etat()
+                        joueurSuivant = self.joueur_tour_suivant()
+
+                        if self.vaRecevoirTomates:
+                            nouvelEtat[self.joueurCourant]["endurance"] -= 1
+
+                        self.retirer_cartes_depuis_liste(nouvelEtat[self.joueurCourant]["main"], cartesDefausses)
+                        # On lui fait toujours remplir sa main
+                        nombreCartesAPiocher = min(2, 5 - len(nouvelEtat[self.joueurCourant]["main"]))
+                        if nombreCartesAPiocher > 0:
+                            nouvelEtat[self.joueurCourant]["main"].extend(nouvelEtat["pioche"][-nombreCartesAPiocher:])
+                            nouvelEtat["pioche"] = nouvelEtat["pioche"][:-nombreCartesAPiocher]
+
+                        coupJoue = {"cartes": cartesDefausses + [("fin", 0)], "joueur": self.joueurCourant,
+                                    "position": positionJoueurCourant}
+
+                        fils = Arborescence(self.nombreDeplacementParNoeud, self.taillePlateau, nouvelEtat, coupJoue,
+                                            joueurSuivant, vaRecevoirTomates=True)
+                        self.sousArbres.append(fils)
+                    else:
+                        for joueur in self.etat.keys():
+                            if joueur in ("pioche", "defausse", self.joueurCourant):
+                                continue
+
+                            nouvelEtat = self.copie_etat()
+                            self.retirer_cartes_depuis_liste(nouvelEtat[self.joueurCourant]["main"], cartesDefausses)
+
+                            coupJoue = {"cartes": cartesDefausses + [("coup bas", 0)], "joueur": self.joueurCourant,
+                                        "position": positionJoueurCourant}
+                            fils = Arborescence(self.nombreDeplacementParNoeud, self.taillePlateau, nouvelEtat,
+                                                coupJoue,
+                                                joueur, vaRecevoirTomates=False, estAttaque=True)
+                            self.sousArbres.append(fils)
+
             else:
                 nouvelEtat = self.copie_etat()
                 self.retirer_cartes_par_motif(nouvelEtat[self.joueurCourant]["main"],
@@ -265,7 +344,7 @@ class Arborescence:
                         nouvelEtat[self.joueurCourant]["position"] = case
                         nouvelEtat[joueur]["position"] = positionJoueurSiPousse
 
-                        coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("K", "pousser")],
+                        coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("pousser", "K", joueur)],
                                     "joueur": self.joueurCourant,
                                     "position": positionJoueurCourant}
 
@@ -280,7 +359,7 @@ class Arborescence:
                         self.retirer_carte(nouvelEtat[self.joueurCourant]["main"], "K", valeurCarte)
                         nouvelEtat[self.joueurCourant]["position"] = case
 
-                        coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("K", "endurance", valeurCarte)],
+                        coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("endurance", "K", joueur, valeurCarte)],
                                     "joueur": self.joueurCourant, "position": positionJoueurCourant}
 
                         fils = Arborescence(self.nombreDeplacementParNoeud, self.taillePlateau, nouvelEtat, coupJoue,
@@ -296,7 +375,7 @@ class Arborescence:
                         nouvelEtat[self.joueurCourant]["position"] = case
                         nouvelEtat[joueur]["position"] = positionJoueurSiPousse
 
-                        coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("C", "pousser")],
+                        coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("pousser", "C", joueur)],
                                     "joueur": self.joueurCourant, "position": positionJoueurCourant}
 
                         fils = Arborescence(self.nombreDeplacementParNoeud, self.taillePlateau, nouvelEtat, coupJoue,
@@ -310,7 +389,7 @@ class Arborescence:
                         self.retirer_carte(nouvelEtat[self.joueurCourant]["main"], "C", valeurCarte)
                         nouvelEtat[self.joueurCourant]["position"] = case
 
-                        coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("C", "endurance", valeurCarte)],
+                        coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("endurance", "C", joueur, valeurCarte)],
                                     "joueur": self.joueurCourant, "position": positionJoueurCourant}
 
                         fils = Arborescence(self.nombreDeplacementParNoeud, self.taillePlateau, nouvelEtat, coupJoue,
@@ -378,13 +457,17 @@ class Arborescence:
 if __name__ == "__main__":
     from Carte import Carte
 
-    etat = {"pioche": [], "defausse": [],
-            0: {"main": [Carte("T", 3), Carte("T", 4), Carte("C", 10), Carte("K", 11)], "endurance": 10,
+    etat = {"pioche": [Carte("T", 6), Carte("T", 7), Carte("T", 8)], "defausse": [],
+            0: {"main": [Carte("T", 3), Carte("T", 4), Carte("C", 10), Carte("K", 11), Carte("P", 4)], "endurance": 10,
                 "position": (0, 0)},
-            1: {"main": [Carte("K", 15), Carte("K", 9)], "endurance": 10, "position": (0, 1)}}
+            1: {"main": [Carte("K", 15), Carte("K", 9), Carte("C", 1)], "endurance": 10, "position": (0, 1)},
+            2: {"main": [Carte("K", 5), Carte("T", 18), Carte("C", 2)], "endurance": 10, "position": (0, 2)}}
     A = Arborescence(2, 5, etat)
     A.generer_fils()
-    i = 1
+    for fils in A.sousArbres:
+        print(fils.dernierCoup)
+    """
+    i = 28
     print(len(A.sousArbres))
     print(A.sousArbres[i].etat[0]["position"])
     print(A.sousArbres[i].etat[1]["position"])
@@ -393,3 +476,18 @@ if __name__ == "__main__":
     print(A.sousArbres[i].joueurCourant)
     print([(c.motif, c.valeur) for c in A.sousArbres[i].etat[0]["main"]])
     print(A.sousArbres[i].dernierCoup)
+    print([(c.motif, c.valeur) for c in A.sousArbres[i].etat["pioche"]])
+    print("")
+    A.sousArbres[i].generer_fils()
+    j = 1
+    print(len(A.sousArbres[i].sousArbres))
+    print(A.sousArbres[i].sousArbres[j].etat[0]["position"])
+    print(A.sousArbres[i].sousArbres[j].etat[1]["position"])
+    print(A.sousArbres[i].sousArbres[j].etat[0]["endurance"])
+    print(A.sousArbres[i].sousArbres[j].estAttaque)
+    print(A.sousArbres[i].sousArbres[j].joueurCourant)
+    print([(c.motif, c.valeur) for c in A.sousArbres[i].sousArbres[j].etat[0]["main"]])
+    print([(c.motif, c.valeur) for c in A.sousArbres[i].sousArbres[j].etat[1]["main"]])
+    print(A.sousArbres[i].sousArbres[j].dernierCoup)
+    print([(c.motif, c.valeur) for c in A.sousArbres[i].sousArbres[j].etat["pioche"]])
+    """
