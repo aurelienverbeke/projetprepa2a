@@ -272,7 +272,7 @@ class RoiDuRing:
                 for carte in joueur.main:
                     result += carte.__str__() + ', '
                 result += '\n'
-            return result
+            print(result)
 
     def affiche_action(self, actionJoue, coupContre = None): # Affoche de l'action du joueur
         result = "\n"
