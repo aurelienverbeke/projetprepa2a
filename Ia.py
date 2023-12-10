@@ -107,30 +107,35 @@ class Ia:
   def peut_jouer(self): # voir si on le met dans joueur
     pass      
       
-"""
-  def defausse(self, plateau, joueur, nbe):
+def defausse(self, plateau, joueur, nbe = 0):
     priorite = {}
-    for carte in plateau.joueurs[joueur].main:
+    cartesDefaussees = []
+    for carte in plateau.joueurs[joueur].main:  #Récupération des cartes par valeur
         if carte.valeur in priorite:
             priorite[carte.valeur].append(carte)
         else:
             priorite[carte.valeur] = [carte]
-    lst_valeurs = list(priorite.keys())
+    lstValeurs = list(priorite.keys()) #Récupération des valeurs des cartes
+    lstValeurs.sort()
     if nbe != 0:
         for i in range(nbe):
-            
-def 
             if priorite[min(lst_valeurs)] != []:
-                plateau.joueurs[joueur].retirer_cartes([priorite[min(lst_valeurs)].pop(0)])
+                carte = [priorite[min(lst_valeurs)].pop(0)]
+                cartesDefaussees.append(carte[0])
             else:
-                priorite.remove(min(lst_valeurs))"""
+                priorite.remove(min(lst_valeurs))
+                carte = [priorite[min(lst_valeurs)].pop(0)]
+                cartesDefaussees.append(carte[0])
+    else:
+        defausse(self, plateau, joueur, 0)
+    return cartesDefaussees
 
   def pioche(self, plateau, joueur):
     nbCartes = 0
     for i in range(5 - len(plateau.joueurs[joueur].main)):
-        if i <= 2:
-            plateau.joueurs[joueur].ajouter_cartes(plateau.pioche[len(plateau.pioche) - i])
-            nbCartes += 1
+      if i <= 2:
+        plateau.joueurs[joueur].ajouter_cartes(plateau.pioche[len(plateau.pioche) - i])
+        nbCartes += 1
     plateau.retirer_pioche(nbCartes)
     
   def contre(self):
