@@ -4,8 +4,23 @@ from random import choice
 class Ia:
   def __init__(self, niveau):
     self.niveau = niveau
+    
+    if niveau == 0:
+        self.calcul_coup = self.calcul_coup_base
+        self.defausse = self.defausse_base
+        self.pioche = self.pioche_base
+        self.contre = self.contre_base
+    else:
+        self.calcul_coup = self.calcul_coup_minimax
+        self.defausse = self.defausse_minimax
+        self.pioche = self.pioche_minimax
+        self.contre = self.contre_minimax
 
-  def calcul_coup(self, plateau, id_joueur,nb_carte_jouees):
+  
+
+
+
+  def calcul_coup_base(self, plateau, id_joueur,nb_carte_jouees):
     joueur = plateau.joueurs[id_joueur]
     if self.niveau == 0:
       if nb_carte_jouees == 0 and not self.peut_jouer():
@@ -59,8 +74,16 @@ class Ia:
   def fin_de_tour(self, plateau, joueur, carte):
     pass # tkt 
 
+  
+
+
+
   def carte_possible(self, plateau, joueur, carte):
     return self.cible_carte(plateau, joueur, carte) != []
+
+  
+
+
 
   def cible_carte(self, plateau, joueur, carte):
     joueurs = list(plateau.joueurs).remove(joueur)
@@ -104,10 +127,18 @@ class Ia:
           cibles.remove(autre_joueur.position)
     return cibles
           
+  
+
+
+
   def peut_jouer(self): # voir si on le met dans joueur
     pass      
       
-  def defausse(self, plateau, joueur, nbe = 0):
+  
+
+
+
+  def defausse_base(self, plateau, joueur, nbe = 0):
     priorite = {}
     cartesDefaussees = []
     for carte in plateau.joueurs[joueur].main:  #Récupération des cartes par valeur
@@ -130,7 +161,11 @@ class Ia:
         self.defausse(plateau, joueur, 0)
     return cartesDefaussees
 
-  def pioche(self, plateau, joueur):
+  
+
+
+
+  def pioche_base(self, plateau, joueur):
     nbCartes = 0
     for i in range(5 - len(plateau.joueurs[joueur].main)):
       if i <= 2:
@@ -138,5 +173,36 @@ class Ia:
         nbCartes += 1
     plateau.retirer_pioche(nbCartes)
 
-  def contre(self):
+  
+
+
+
+  def contre_base(self, plateauJeu, cartes, joueurCible, joueurCourant):
+    pass
+
+
+
+
+  def calcul_coup_minimax(self, plateau, id_joueur, nb_cartes_jouees):
+    pass
+
+
+
+
+
+  def defausse_minimax(self, plateau, joueur, nbe = 0):
+    pass
+
+
+
+
+
+  def pioche_minimax(self, plateau, joueur):
+    pass
+
+
+
+
+
+  def contre_minimax(self, plateauJeu, cartes, joueurCible, joueurCourant):
     pass
