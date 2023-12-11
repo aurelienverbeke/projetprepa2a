@@ -4,14 +4,17 @@ SCORE_COEFFICIENT_ENDURANCE = 1
 SCORE_COEFFICIENT_NB_CARTES = 1
 SCORE_CARTE_DEPLACEMENT = 1
 SCORE_COEFFICIENT_CARTE_ATTAQUE = 1
-SCORE_POSITION_CENTRE = 3
+SCORE_POSITION_CENTRE = 1
 SCORE_POSITION_COIN = -1
-SCORE_CENTRE_COURONNE = -2
-SCORE_ATTAQUE_ADVERSAIRE = -2
-SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = -2
-SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = -2
+SCORE_POSITION_EXTERIEUR = -1
+SCORE_CENTRE_COURONNE = -1
+SCORE_ATTAQUE_ADVERSAIRE = -1
+SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = -1
+SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = -1
+SCORE_ADVERSAIRE_VOISIN = -1
 
 POSITIONS_COURONNE = [(ligne, colonne) for ligne in [-1, 0, 1] for colonne in [-1, 0, 1] if (ligne, colonne) != (0, 0)]
+POSITIONS_COINS = []
 
 
 def cases_accessibles(deplacementLateralRestant, deplacementDiagonalRestant, rayonGrille, coupsRestants, position,
@@ -110,6 +113,11 @@ class Arborescence:
         self.estAttaque = estAttaque
         self.dernierCoup = dernierCoup
         self.vaRecevoirTomates = vaRecevoirTomates
+
+        POSITIONS_COINS = [(-self.extremite, -self.extremite),\
+                            (self.extremite, self.extremite),\
+                            (-self.extremite, self.extremite),\
+                            (self.extremite, -self.extremite)]
 
     def voisins(self, ligne, colonne):
         voisins = []
@@ -570,7 +578,7 @@ class Arborescence:
             - (list): pour chaque joueur, son score
                 exemple: [<score joueur0>, <score joueur1>, <score joueur2>]
         """
-        scores = {idJoueur: 0 for idJoueur in self.etat["listeJoueurs"]]
+        scores = {idJoueur: 0 for idJoueur in self.etat["listeJoueurs"]}
 
         # on evalue le score pour chaque joueur
         for idJoueur in self.etat["listeJoueurs"]:
@@ -587,8 +595,11 @@ class Arborescence:
                 scores[idJoueur] += SCORE_POSITION_CENTRE
 
             # le joueur est dans un coin
-            if ligne == -self.extremite or ligne == self.extremite or colonne == -self.extremite or colonne == self.extremite:
+            if (ligne, colonne) in POSITIONS_COINS::
                 scores[idJoueur] += SCORE_POSITION_COIN
+
+            elif ligne == -self.extremite or ligne == self.extremite or colonne == -self.extremite or colonne == self.extremite:
+                scores[idJoueur] += SCORE_POSITION_EXTERIEUR
 
             # on prend en compte l'endurance du joueur
             scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE * joueur["endurance"]
@@ -596,7 +607,7 @@ class Arborescence:
             # nombre de cartes
             scores[idJoueur] += SCORE_COEFFICIENT_NB_CARTES * len(joueur["main"])
 
-            # on pondere avec la valeur des cartes d'attaque et le nombre de cartes de déplacement
+            # on pondere avec la valeur des cartes d'attaque et le nombre de cartes de deplacement
             for carte in joueur["main"]:
                 # le joueur a des cartes d'attaque
                 if carte.motif == "K" or carte.motif == "C":
@@ -638,10 +649,17 @@ class Arborescence:
                     scores[idJoueur] += SCORE_CENTRE_COURONNE
 
                 # ce n'est pas a nous de jouer, quelqu'un est a cote de nous et peut nous taper
-                if self.joueurCourant != idJoueur:
-                    for carte in joueur2["main"]:
-                        if carte.motif == "C" or carte.motif == "K":
-                            scores[idJoueur] += SCORE_ATTAQUE_ADVERSAIRE
+                if idJoueur2 in voisin(ligne, colonne) and self.joueurCourant != idJoueur:
+                    # le voisin est sur un cote
+                    if joueur2["position"][0] == ligne or joueur2["position"][1] == colonne:
+                        for carte in joueur2["main"]:
+                            if carte.motif == "C":
+                                scores[idJoueur] += SCORE_ADVERSAIRE_VOISIN
+                    # le voisin est en diagonale
+                    else:
+                        for carte in joueur2["main"]:
+                            if carte.motif == "K":
+                                scores[idJoueur] += SCORE_ADVERSAIRE_VOISIN
 
         return scores
 
