@@ -380,7 +380,7 @@ class Arborescence:
         deplacementLateralPossible, deplacementDiagonalPossible, valeurCarteAttaqueLateral, valeurCarteAttaqueDiagonal, jokerPossible = self.coups_possibles_depuis_main(mainJoueurCourant)
 
         if self.estAttaque:
-            if self.dernierCoup["cartes"][-1][0] == "coup bas":
+            if self.dernierCoup["cartes"][0][0] == "coup bas":
                 # On calcule les combinaisons possibles de cartes a defausser
                 possibiliteDefausse = self.possibilite_defausse(deplacementLateralPossible,
                                                                 deplacementDiagonalPossible,
@@ -390,7 +390,7 @@ class Arborescence:
 
                 for cartesDefausses in possibiliteDefausse:
                     # Pour chaque combinaison, on crée un fils
-                    coupJoue = {"cartes": cartesDefausses + [("reception coup bas", 0)], "joueur": self.joueurCourant,
+                    coupJoue = {"cartes": [("reception coup bas", 0)] + cartesDefausses, "joueur": self.joueurCourant,
                                 "position": positionJoueurCourant}
                     yield self.creer_sous_arbre(coupJoue=coupJoue,
                                                 cartesARetirer=[(self.joueurCourant, cartesDefausses)],
@@ -398,7 +398,7 @@ class Arborescence:
                                                 vaRecevoirTomates=False)
 
             else:
-                coupJoue = {"cartes": [], "joueur": self.joueurCourant, "position": positionJoueurCourant}
+                coupJoue = {"cartes": [("contre", None)], "joueur": self.joueurCourant, "position": positionJoueurCourant}
 
                 # On regarde si le joueur adverse est au centre (place du Champion)
                 if self.dernierCoup["position"] == (0, 0):
@@ -417,7 +417,7 @@ class Arborescence:
                 if cartesPouvantContrer:
                     # On prendra toujours la carte la plus faible qui peut contrer
                     carteContre = min(cartesPouvantContrer)
-                    coupJoue = {"cartes": [(carteContre, "contre")], "joueur": self.joueurCourant,
+                    coupJoue = {"cartes": [("contre", carteContre)], "joueur": self.joueurCourant,
                                 "position": positionJoueurCourant}
 
                     yield self.creer_sous_arbre(coupJoue=coupJoue,
@@ -522,7 +522,7 @@ class Arborescence:
                     # Si on defausse 3 cartes, autant faire un coup bas
                     if len(cartesDefausses) < 3:
 
-                        coupJoue = {"cartes": cartesDefausses + [("fin", 0)], "joueur": self.joueurCourant,
+                        coupJoue = {"cartes": [("fin", 0)] + cartesDefausses, "joueur": self.joueurCourant,
                                     "position": positionJoueurCourant}
 
                         endurancePerdue = 0
@@ -539,7 +539,7 @@ class Arborescence:
                     else:
                         for joueur in self.etat["listeJoueurs"]:
 
-                            coupJoue = {"cartes": cartesDefausses + [("coup bas", 0)], "joueur": self.joueurCourant,
+                            coupJoue = {"cartes": [("coup bas", joueur)] + cartesDefausses, "joueur": self.joueurCourant,
                                         "position": positionJoueurCourant}
 
                             yield self.creer_sous_arbre(coupJoue=coupJoue,

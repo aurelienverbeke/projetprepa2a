@@ -1,9 +1,12 @@
 from math import sqrt
 from random import choice
+from Minimax import choisir_coup
+from Arborescence import Arborescence
 
 class Ia:
   def __init__(self, niveau):
     self.niveau = niveau
+    self.coupAJouer = []
     
     if niveau == 0:
         self.calcul_coup = self.calcul_coup_base
@@ -181,16 +184,107 @@ class Ia:
     pass
 
 
+  def recherche_carte(self, main, motif, valeur=None):
+    carteCherchee = None
+    valeurCarteARetirer = float("inf")
+    for carte in main:
+      if motif == carte.motif and (valeur == carte.valeur or (valeur is None and valeurCarteARetirer > carte.valeur)):
+        carteCherchee = carte
+        valeurCarteARetirer = carte.valeur
+
+    return carteCherchee
+
+  def recherche_carte_liste(self, main, cartes):
+    cartesRechechees = []
+    for motif, valeur in cartes:
+      if valeur == 0 or type(valeur) == tuple:
+        cartesRechechees.append(self.recherche_carte(main, motif))
+      else:
+        cartesRechechees.append(self.recherche_carte(main, motif, valeur))
+
+    return cartesRechechees
+
+  def convertir_sortie_minimax_vers_sortie_ia(self, plateau, idJoueur, action):
+    mainJoueurCourant = plateau.joueurs[idJoueur].main
+    positionJoueurCourant = plateau.joueurs[idJoueur].position
+    typeActionJoue = action[0]
+
+    if typeActionJoue in ("T", "P"):
+      deltaPosition = action[1]
+      carteJoue = self.recherche_carte(mainJoueurCourant, typeActionJoue)
+      caseCible = (positionJoueurCourant[0] + deltaPosition[0], positionJoueurCourant[1] + deltaPosition[1])
+      coupJoue = (4, [carteJoue], caseCible)
+
+    elif typeActionJoue == "pousser":
+      motifCarteJoue = action[1]
+      idJoueurCible = action[2]
+      carteJoue = self.recherche_carte(mainJoueurCourant, motifCarteJoue)
+      caseCible = plateau.joueurs[idJoueurCible].position
+      coupJoue = (2, [carteJoue], caseCible)
+
+    elif typeActionJoue == "endurance":
+      motifCarteJoue = action[1]
+      valeurCarteJoue = action[3]
+      idJoueurCible = action[2]
+      carteJoue = self.recherche_carte(mainJoueurCourant, motifCarteJoue, valeurCarteJoue)
+      caseCible = plateau.joueurs[idJoueurCible].position
+      coupJoue = (3, [carteJoue], caseCible)
+
+    elif typeActionJoue == "contre":
+      coupJoue = action[1]
+
+    elif typeActionJoue == "J":
+      idJoueurCible = action[1]
+      mainJoueurCible = plateau.joueurs[idJoueurCible].main
+      positionJoueurCible = plateau.joueurs[idJoueurCible].position
+      motifCarteVolee = action[2]
+      valeurCarteVolee = action[3]
+      carteVolee = self.recherche_carte(mainJoueurCible, motifCarteVolee, valeurCarteVolee)
+      coupJoue = (1, [carteVolee], positionJoueurCible)
+
+    elif typeActionJoue == "coup bas":
+      idJoueurCible = action[1]
+      positionJoueurCible = plateau.joueurs[idJoueurCible].position
+      cartesADefausser = self.recherche_carte_liste(mainJoueurCourant, self.coupAJouer[1:])
+      self.coupAJouer = []
+      coupJoue = (0, cartesADefausser, positionJoueurCible)
+
+    elif typeActionJoue == "reponse coup bas":
+      cartesADefausser = self.recherche_carte_liste(mainJoueurCourant, self.coupAJouer[1:])
+      self.coupAJouer = []
+      coupJoue = cartesADefausser
+
+    elif typeActionJoue == "fin":
+      coupJoue = (5, [], (0, 0))
+
+    return coupJoue
 
 
-  def calcul_coup_minimax(self, plateau, id_joueur, nb_cartes_jouees):
+
+  def calcul_coup_minimax(self, plateau, idJoueur, nbCartesJouees):
+    if not self.coupAJouer:
+      etat = {"pioche": plateau.pioche, "listeJoueurs": list(range(len(plateau.joueurs)))}
+      etatJoueurs = {x: {"main": plateau.joueurs[x].main, "endurance": plateau.joueurs[x].endurance,
+                         "position": plateau.joueurs[x].position}
+                     for x in range(len(plateau.joueurs))}
+      etat.update(etatJoueurs)
+      arbre = Arborescence(5, plateau.taille, etat, joueurCourant=idJoueur, vaRecevoirTomates=(nbCartesJouees == 0))
+      self.coupAJouer = choisir_coup(arbre, idJoueur, self.niveau)
+
+    coupJoue = self.convertir_sortie_minimax_vers_sortie_ia(plateau, idJoueur, self.coupAJouer[0])
+    return coupJoue
+
+
+
+  def defausse_minimax_coup_bas(self, plateau, joueur):
     pass
 
 
+  def defausse_minimax_fin_tour(self, plateau, joueur):
+    pass
 
 
-
-  def defausse_minimax(self, plateau, joueur, nbe = 0):
+  def defausse_minimax(self, plateau, joueur, nombreCartesDefausse=None):
     pass
 
 
@@ -206,3 +300,15 @@ class Ia:
 
   def contre_minimax(self, plateauJeu, cartes, joueurCible, joueurCourant):
     pass
+
+
+
+if __name__ == "__main__":
+  from RdR_jeu import RoiDuRing
+
+  plateau = RoiDuRing()
+  ia = Ia(3)
+  coupJoue = ia.calcul_coup_minimax(plateau, 0, 0)
+  print(coupJoue)
+  print([(c.motif, c.valeur) for c in coupJoue[1]])
+  print([(c.motif, c.valeur) for c in plateau.joueurs[0].main])
