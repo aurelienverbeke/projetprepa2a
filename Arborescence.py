@@ -100,7 +100,7 @@ class Arborescence:
                  vaRecevoirTomates=True, estAttaque=False):
         """
         Paramètres:
-            - etat (dict) : de la forme {"pioche": list(cartes), "defausse": list(cartes),
+            - etat (dict) : de la forme {"pioche": list(cartes), "defausse": list(cartes), "listeJoueurs" : list(idJoueur),
               idJoueur : {"main" : list(cartes), "endurance" : int, "position" : tuple(int)}}
         """
         self.etat = etat
@@ -138,9 +138,8 @@ class Arborescence:
         nouvelEtat = dict()
         nouvelEtat["pioche"] = self.etat["pioche"].copy()
         nouvelEtat["defausse"] = self.etat["defausse"].copy()
-        for idJoueur in self.etat.keys():
-            if idJoueur in ("pioche", "defausse"):
-                continue
+        nouvelEtat["listeJoueurs"] = self.etat["listeJoueurs"].copy()
+        for idJoueur in self.etat["listeJoueurs"]:
 
             nouvelEtat[idJoueur] = dict()
             nouvelEtat[idJoueur]["main"] = self.etat[idJoueur]["main"].copy()
@@ -217,7 +216,9 @@ class Arborescence:
             main.append(Carte(motif, valeur))
 
     def joueur_tour_suivant(self):
-        return (self.joueurCourant + 1) % 2  # Temporaire pour les tests
+        listeJoueurs = self.etat["listeJoueurs"]
+        indexProchainJoueur = (listeJoueurs.index(self.joueurCourant) + 1) % len(listeJoueurs)
+        return listeJoueurs[indexProchainJoueur]
 
     def coups_possibles_depuis_main(self, main):
         """
@@ -347,6 +348,8 @@ class Arborescence:
 
         for joueur, endurancePerdue in kwargs.get("endurancePerdue", []):
             nouvelEtat[joueur]["endurance"] -= endurancePerdue
+            if nouvelEtat[joueur]["endurance"] <= 0:
+                nouvelEtat["listeJoueurs"].remove(joueur)
 
         for joueur, cartesAAjouter in kwargs.get("cartesAAjouter", []):
             self.ajouter_cartes_depuis_liste(nouvelEtat[joueur]["main"], cartesAAjouter)
@@ -372,8 +375,8 @@ class Arborescence:
         mainJoueurCourant = self.etat[self.joueurCourant]["main"]
         positionJoueurCourant = self.etat[self.joueurCourant]["position"]
 
-        positionsAdversaires = [(idJoueur, self.etat[idJoueur]["position"]) for idJoueur in self.etat.keys()
-                                if idJoueur not in ("pioche", "defausse") and idJoueur != self.joueurCourant]
+        positionsAdversaires = [(idJoueur, self.etat[idJoueur]["position"]) for idJoueur in self.etat["listeJoueurs"]
+                                if idJoueur != self.joueurCourant]
 
         deplacementLateralPossible, deplacementDiagonalPossible, valeurCarteAttaqueLateral, valeurCarteAttaqueDiagonal, jokerPossible = self.coups_possibles_depuis_main(mainJoueurCourant)
 
@@ -535,10 +538,7 @@ class Arborescence:
                                                     piocher=True)
 
                     else:
-                        for joueur in self.etat.keys():
-
-                            if joueur in ("pioche", "defausse", self.joueurCourant):
-                                continue
+                        for joueur in self.etat["listeJoueurs"]:
 
                             coupJoue = {"cartes": cartesDefausses + [("coup bas", 0)], "joueur": self.joueurCourant,
                                         "position": positionJoueurCourant}
@@ -561,13 +561,13 @@ class Arborescence:
 
     def est_fini(self):
         nbVivants = 0
-        for idJoueur in range(len(self.etat) - 2):
+        for idJoueur in self.etat["listeJoueurs"]:
             if self.etat[idJoueur]["endurance"] > 0:
                 nbVivants += 1
         return nbVivants <= 1
 
     def evaluation_test(self):
-        return self.etat[0]["endurance"]/self.etat[1]["endurance"], self.etat[1]["endurance"]/self.etat[0]["endurance"]
+        return self.etat[0]["endurance"]/max(self.etat[1]["endurance"], 1), self.etat[1]["endurance"]/max(self.etat[0]["endurance"], 1)
 
     def evaluation(self):
         """
