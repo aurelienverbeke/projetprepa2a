@@ -358,7 +358,7 @@ class Arborescence:
             nouvelEtat[joueur]["position"] = nouvelleCase
 
         if kwargs.get("piocher", False):
-            nombreCartesAPiocher = min(2, 5 - len(nouvelEtat[self.joueurCourant]["main"]))
+            nombreCartesAPiocher = min(2, 5 - len(nouvelEtat[self.joueurCourant]["main"]), len(nouvelEtat["piocher"]))
             if nombreCartesAPiocher > 0:
                 nouvelEtat[self.joueurCourant]["main"].extend(nouvelEtat["pioche"][-nombreCartesAPiocher:])
                 nouvelEtat["pioche"] = nouvelEtat["pioche"][:-nombreCartesAPiocher]
@@ -595,7 +595,7 @@ class Arborescence:
                 scores[idJoueur] += SCORE_POSITION_CENTRE
 
             # le joueur est dans un coin
-            if (ligne, colonne) in POSITIONS_COINS::
+            if (ligne, colonne) in POSITIONS_COINS:
                 scores[idJoueur] += SCORE_POSITION_COIN
 
             elif ligne == -self.extremite or ligne == self.extremite or colonne == -self.extremite or colonne == self.extremite:
@@ -625,10 +625,10 @@ class Arborescence:
                 joueur2 = self.etat[idJoueur2]
 
                 # on prend en compte l'endurance des autres joueurs
-                score[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES * joueur2["endurance"]
+                scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES * joueur2["endurance"]
 
                 # si c'est un voisin qu'on peut taper, on prend en compte son endurance
-                if idJoueur2 in voisins(ligne, colonne) and self.joueurCourant == idJoueur:
+                if idJoueur2 in self.voisins(ligne, colonne) and self.joueurCourant == idJoueur:
                     # le voisin est sur un cote
                     if joueur2["position"][0] == ligne or joueur2["position"][1] == colonne:
                         for carte in joueur["main"]:
@@ -649,7 +649,7 @@ class Arborescence:
                     scores[idJoueur] += SCORE_CENTRE_COURONNE
 
                 # ce n'est pas a nous de jouer, quelqu'un est a cote de nous et peut nous taper
-                if idJoueur2 in voisin(ligne, colonne) and self.joueurCourant != idJoueur:
+                if idJoueur2 in self.voisins(ligne, colonne) and self.joueurCourant != idJoueur:
                     # le voisin est sur un cote
                     if joueur2["position"][0] == ligne or joueur2["position"][1] == colonne:
                         for carte in joueur2["main"]:
