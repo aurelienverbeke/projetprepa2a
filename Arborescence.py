@@ -559,7 +559,7 @@ class Arborescence:
         return nbVivants <= 1
 
     def evaluation_test(self):
-        return self.etat[0]["endurance"]/self.etat[1]["endurance"], self.etat[1]["endurance"]/self.etat[0]["endurance"]
+        return self.etat[0]["endurance"]/max(self.etat[1]["endurance"], 1), self.etat[1]["endurance"]/max(self.etat[0]["endurance"], 1)
 
     def evaluation(self):
         """
