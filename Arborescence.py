@@ -116,7 +116,7 @@ class Arborescence:
 
         for y in range(ligne - 1, ligne + 2):
             for x in range(colonne - 1, colonne + 2):
-                if -self.extremite <= x <= self.extremite and -self.extremite <= y < self.extremite and (x != colonne or y != ligne):
+                if self.est_dans_grille((ligne, colonne)) and (x != colonne or y != ligne):
                     for idJoueur in range(len(self.etat) - 2):
                         if self.etat[idJoueur]["position"] == (ligne, colonne):
                             voisins.append(idJoueur)
@@ -570,10 +570,10 @@ class Arborescence:
             - (list): pour chaque joueur, son score
                 exemple: [<score joueur0>, <score joueur1>, <score joueur2>]
         """
-        scores = [0 for _ in range(len(self.etat) - 2)]
+        scores = {idJoueur: 0 for idJoueur in self.etat["listeJoueurs"]]
 
         # on evalue le score pour chaque joueur
-        for idJoueur in scores:
+        for idJoueur in self.etat["listeJoueurs"]:
             joueur = self.etat[idJoueur]
             colonne = joueur["position"][1]
             ligne = joueur["position"][0]
@@ -610,27 +610,28 @@ class Arborescence:
             # --- ON REGARDE LES PARAMETRES DE SES ADVERSAIRES ---
 
             # pour chaque adversaire
-            for idJoueur2 in set(range(len(scores))) - set(idJoueur):
+            for idJoueur2 in set(self.etat["listeJoueurs"]) - set(idJoueur):
+                joueur2 = self.etat[idJoueur2]
 
                 # on prend en compte l'endurance des autres joueurs
-                score[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES * self.etat[idJoueur2]["endurance"]
+                score[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES * joueur2["endurance"]
 
                 # si c'est un voisin qu'on peut taper, on prend en compte son endurance
                 if idJoueur2 in voisins(ligne, colonne) and self.joueurCourant == idJoueur:
                     # le voisin est sur un cote
-                    if self.etat[idJoueur2]["position"][0] == ligne or self.etat[idJoueur2]["position"][1] == colonne:
+                    if joueur2["position"][0] == ligne or joueur2["position"][1] == colonne:
                         for carte in joueur["main"]:
                             if carte.motif == "C":
-                                scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * self.etat[idJoueur2]["endurance"]
+                                scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * joueur2["endurance"]
                     # le voisin est en diagonale
                     else:
                         for carte in joueur["main"]:
                             if carte.motif == "K":
-                                scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * self.etat[idJoueur2]["endurance"]
+                                scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * joueur2["endurance"]
 
                 # quelqu'un est sur le centre, on est sur la couronne, et ce n'est pas a nous de jouer
                 surCentre = False
-                if self.etat[idJoueur2]["position"] == (0, 0):
+                if joueur2["position"] == (0, 0):
                     surCentre = True
                     break
                 if surCentre and joueur["position"] in POSITIONS_COURONNE and self.joueurCourant != idJoueur:
@@ -638,7 +639,7 @@ class Arborescence:
 
                 # ce n'est pas a nous de jouer, quelqu'un est a cote de nous et peut nous taper
                 if self.joueurCourant != idJoueur:
-                    for carte in self.etat[idJoueur2]["main"]:
+                    for carte in joueur2["main"]:
                         if carte.motif == "C" or carte.motif == "K":
                             scores[idJoueur] += SCORE_ATTAQUE_ADVERSAIRE
 
