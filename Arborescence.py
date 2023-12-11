@@ -125,7 +125,7 @@ class Arborescence:
         for y in range(ligne - 1, ligne + 2):
             for x in range(colonne - 1, colonne + 2):
                 if self.est_dans_grille((ligne, colonne)) and (x != colonne or y != ligne):
-                    for idJoueur in range(len(self.etat) - 2):
+                    for idJoueur in self.etat["listeJoueurs"]:
                         if self.etat[idJoueur]["position"] == (ligne, colonne):
                             voisins.append(idJoueur)
 
@@ -358,7 +358,7 @@ class Arborescence:
             nouvelEtat[joueur]["position"] = nouvelleCase
 
         if kwargs.get("piocher", False):
-            nombreCartesAPiocher = min(2, 5 - len(nouvelEtat[self.joueurCourant]["main"]), len(nouvelEtat["piocher"]))
+            nombreCartesAPiocher = min(2, 5 - len(nouvelEtat[self.joueurCourant]["main"]), len(nouvelEtat["pioche"]))
             if nombreCartesAPiocher > 0:
                 nouvelEtat[self.joueurCourant]["main"].extend(nouvelEtat["pioche"][-nombreCartesAPiocher:])
                 nouvelEtat["pioche"] = nouvelEtat["pioche"][:-nombreCartesAPiocher]
@@ -621,7 +621,7 @@ class Arborescence:
             # --- ON REGARDE LES PARAMETRES DE SES ADVERSAIRES ---
 
             # pour chaque adversaire
-            for idJoueur2 in set(self.etat["listeJoueurs"]) - set(idJoueur):
+            for idJoueur2 in set(self.etat["listeJoueurs"]) - {idJoueur}:
                 joueur2 = self.etat[idJoueur2]
 
                 # on prend en compte l'endurance des autres joueurs
