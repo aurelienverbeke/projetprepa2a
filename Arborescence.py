@@ -371,6 +371,7 @@ class Arborescence:
 
         if self.estAttaque:
             if self.dernierCoup["cartes"][-1][0] == "coup bas":
+                # On calcule les combinaisons possibles de cartes a defausser
                 possibiliteDefausse = self.possibilite_defausse(deplacementLateralPossible,
                                                                 deplacementDiagonalPossible,
                                                                 valeurCarteAttaqueLateral,
@@ -378,6 +379,7 @@ class Arborescence:
                                                                 estCoupBas=True)
 
                 for cartesDefausses in possibiliteDefausse:
+                    # Pour chaque combinaison, on crée un fils
                     coupJoue = {"cartes": cartesDefausses + [("reception coup bas", 0)], "joueur": self.joueurCourant,
                                 "position": positionJoueurCourant}
                     yield self.creer_sous_arbre(coupJoue=coupJoue,
@@ -388,6 +390,7 @@ class Arborescence:
             else:
                 coupJoue = {"cartes": [], "joueur": self.joueurCourant, "position": positionJoueurCourant}
 
+                # On regarde si le joueur adverse est au centre (place du Champion)
                 if self.dernierCoup["position"] == (0, 0):
                     endurancePerdue = 2
                 else:
@@ -402,6 +405,7 @@ class Arborescence:
                                         if carte.motif == self.dernierCoup["cartes"][-1][0]
                                         and carte.valeur >= self.dernierCoup["cartes"][-1][2]]
                 if cartesPouvantContrer:
+                    # On prendra toujours la carte la plus faible qui peut contrer
                     carteContre = min(cartesPouvantContrer)
                     coupJoue = {"cartes": [(carteContre, "contre")], "joueur": self.joueurCourant,
                                 "position": positionJoueurCourant}
@@ -448,6 +452,7 @@ class Arborescence:
                 positionJoueurSiPousse = (positionJoueur[0] + vecteurJoueurCourantJoueur[0],
                                           positionJoueur[1] + vecteurJoueurCourantJoueur[1])
 
+                # On regarde si le joueur est à l'horizontale/verticale, si ce n'est pas le cas il est en diagonale
                 if abs(vecteurJoueurCourantJoueur[0]) + abs(vecteurJoueurCourantJoueur[1]) == 1:
                     if valeurCarteAttaqueLateral and self.est_dans_grille(positionJoueurSiPousse):
                         coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("pousser", "K", joueur)],
@@ -495,13 +500,16 @@ class Arborescence:
                                                     deplacements=[(self.joueurCourant, case)],
                                                     estAttaque=True)
 
+            # Si on a joué aucune cartes
             if not cartesUtilisePourAllerACase[case]:
+                # On genere toutes les combinaisons de cartes a defausser possible (de longeur inferieure a 3)
                 possibiliteDefausse = self.possibilite_defausse(deplacementLateralPossible,
                                                                 deplacementDiagonalPossible,
                                                                 valeurCarteAttaqueLateral,
                                                                 valeurCarteAttaqueDiagonal)
 
                 for cartesDefausses in possibiliteDefausse:
+                    # Si on defausse 3 cartes, autant faire un coup bas
                     if len(cartesDefausses) < 3:
 
                         coupJoue = {"cartes": cartesDefausses + [("fin", 0)], "joueur": self.joueurCourant,
@@ -534,7 +542,6 @@ class Arborescence:
                                                         estAttaque=True)
 
             else:
-
                 coupJoue = {"cartes": cartesUtilisePourAllerACase[case], "joueur": self.joueurCourant,
                             "position": positionJoueurCourant}
 
