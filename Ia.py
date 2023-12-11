@@ -69,23 +69,23 @@ class Ia:
       for autre_joueur in joueurs:
         if autre_joueur.position[0] in [joueur.position[0]-1,
                                         joueur.position[0],
-                                        joueur.position[0] + 1] and
+                                        joueur.position[0] + 1] and\
           autre_joueur.position[1] in [joueur.position[1]-1,
                                         joueur.position[1],
                                         joueur.position[1] + 1]:
           cibles.append(autre_joueur.position)
     elif carte.motif == "K":
       for autre_joueur in joueurs:
-        if autre_joueur.position == (joueur.position[0],joueur.position[1]+1) or
-          autre_joueur.position == (joueur.position[0],joueur.position[1]-1) or
-          autre_joueur.position == (joueur.position[0]+1,joueur.position[1]) or
+        if autre_joueur.position == (joueur.position[0],joueur.position[1]+1) or\
+          autre_joueur.position == (joueur.position[0],joueur.position[1]-1) or\
+          autre_joueur.position == (joueur.position[0]+1,joueur.position[1]) or\
           autre_joueur.position == (joueur.position[0]-1,joueur.position[1]):
           cibles.append(autre_joueur.position)
     elif carte.motif == "C":
       for autre_joueur in joueurs:
-        if autre_joueur.position == (joueur.position[0]+1,joueur.position[1]+1) or
-          autre_joueur.position == (joueur.position[0]+1,joueur.position[1]-1) or
-          autre_joueur.position == (joueur.position[0]-1,joueur.position[1]+1) or
+        if autre_joueur.position == (joueur.position[0]+1,joueur.position[1]+1) or\
+          autre_joueur.position == (joueur.position[0]+1,joueur.position[1]-1) or\
+          autre_joueur.position == (joueur.position[0]-1,joueur.position[1]+1) or\
           autre_joueur.position == (joueur.position[0]-1,joueur.position[1]-1):
           cibles.append(autre_joueur.position)
     elif carte.motif == "T":
@@ -107,7 +107,7 @@ class Ia:
   def peut_jouer(self): # voir si on le met dans joueur
     pass      
       
-def defausse(self, plateau, joueur, nbe = 0):
+  def defausse(self, plateau, joueur, nbe = 0):
     priorite = {}
     cartesDefaussees = []
     for carte in plateau.joueurs[joueur].main:  #Récupération des cartes par valeur
@@ -119,15 +119,15 @@ def defausse(self, plateau, joueur, nbe = 0):
     lstValeurs.sort()
     if nbe != 0:
         for i in range(nbe):
-            if priorite[min(lst_valeurs)] != []:
-                carte = [priorite[min(lst_valeurs)].pop(0)]
+            if priorite[min(lstValeurs)] != []:
+                carte = [priorite[min(lstValeurs)].pop(0)]
                 cartesDefaussees.append(carte[0])
             else:
-                priorite.remove(min(lst_valeurs))
-                carte = [priorite[min(lst_valeurs)].pop(0)]
+                priorite.remove(min(lstValeurs))
+                carte = [priorite[min(lstValeurs)].pop(0)]
                 cartesDefaussees.append(carte[0])
     else:
-        defausse(self, plateau, joueur, 0)
+        self.defausse(plateau, joueur, 0)
     return cartesDefaussees
 
   def pioche(self, plateau, joueur):
@@ -137,6 +137,6 @@ def defausse(self, plateau, joueur, nbe = 0):
         plateau.joueurs[joueur].ajouter_cartes(plateau.pioche[len(plateau.pioche) - i])
         nbCartes += 1
     plateau.retirer_pioche(nbCartes)
-    
+
   def contre(self):
     pass
