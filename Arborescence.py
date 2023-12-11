@@ -100,7 +100,7 @@ class Arborescence:
                  vaRecevoirTomates=True, estAttaque=False):
         """
         Paramètres:
-            - etat (dict) : de la forme {"pioche": list(cartes), "defausse": list(cartes), "listeJoueurs" : list(idJoueur),
+            - etat (dict) : de la forme {"pioche": list(cartes), "listeJoueurs" : list(idJoueur),
               idJoueur : {"main" : list(cartes), "endurance" : int, "position" : tuple(int)}}
         """
         self.etat = etat
@@ -137,7 +137,6 @@ class Arborescence:
         """
         nouvelEtat = dict()
         nouvelEtat["pioche"] = self.etat["pioche"].copy()
-        nouvelEtat["defausse"] = self.etat["defausse"].copy()
         nouvelEtat["listeJoueurs"] = self.etat["listeJoueurs"].copy()
         for idJoueur in self.etat["listeJoueurs"]:
 
