@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from RdR_jeu import RoiDuRing, Carte, Joueur
-from RdR_ia1 import Ia
+from Ia import Ia
 
 nbeJoueur = int(input("Donnez le nombre de joueurs : "))
 niveaux = []
 for i in range(nbeJoueur):
-    niveaux.append(int(input("Niveau du joueur {i+1} (0,1,2 ou 4) : ")))
+    niveaux.append(int(input(f"Niveau du joueur {i+1} (0,1,2 ou 4) : ")))
 taillePlateau = int(input("Donnez la taille du plateau : "))
 plateauJeu = RoiDuRing(taillePlateau, nbeJoueur)
 fin = False
