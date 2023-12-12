@@ -255,7 +255,7 @@ class Arborescence:
         return deplacementLateralPossible, deplacementDiagonalPossible, valeurCarteAttaqueLateral, valeurCarteAttaqueDiagonal, jokerPossible
 
 
-    def possibilite_defausse(self, deplacementLateralPossible, deplacementDiagonalPossible, valeurCarteAttaqueLateral, valeurCarteAttaqueDiagonal, estCoupBas=False):
+    def possibilite_defausse(self, deplacementLateralPossible, deplacementDiagonalPossible, valeurCarteAttaqueLateral, valeurCarteAttaqueDiagonal, jokerPossible, estCoupBas=False):
         """
         Renvoie toutes les defausses possibles
 
@@ -282,6 +282,9 @@ class Arborescence:
         CarteAttaqueDiagonal = [("C", v) for v in list(sorted(valeurCarteAttaqueDiagonal))]
         possibiliteDefausse = [x + CarteAttaqueDiagonal[:i] for x in possibiliteDefausse for i in
                                range(len(CarteAttaqueDiagonal) + 1)]
+
+        possibiliteDefausse = [x + [("J", 15)] * i for x in possibiliteDefausse for i in
+                               range(jokerPossible + 1)]
 
         if estCoupBas:
             possibiliteDefausse = [x for x in possibiliteDefausse if len(x) == 2]
@@ -392,6 +395,7 @@ class Arborescence:
                                                                 deplacementDiagonalPossible,
                                                                 valeurCarteAttaqueLateral,
                                                                 valeurCarteAttaqueDiagonal,
+                                                                jokerPossible,
                                                                 estCoupBas=True)
 
                 for cartesDefausses in possibiliteDefausse:
@@ -522,7 +526,8 @@ class Arborescence:
                 possibiliteDefausse = self.possibilite_defausse(deplacementLateralPossible,
                                                                 deplacementDiagonalPossible,
                                                                 valeurCarteAttaqueLateral,
-                                                                valeurCarteAttaqueDiagonal)
+                                                                valeurCarteAttaqueDiagonal,
+                                                                jokerPossible)
 
                 for cartesDefausses in possibiliteDefausse:
                     # Si on defausse 3 cartes, autant faire un coup bas
