@@ -1,5 +1,7 @@
 from math import sqrt
 from random import choice
+
+from Carte import Carte
 from Minimax import choisir_coup
 from Arborescence import Arborescence
 
@@ -213,6 +215,7 @@ class Ia:
       deltaPosition = action[1]
       carteJoue = self.recherche_carte(mainJoueurCourant, typeActionJoue)
       caseCible = (positionJoueurCourant[0] + deltaPosition[0], positionJoueurCourant[1] + deltaPosition[1])
+      del self.coupAJouer[0]
       coupJoue = (4, [carteJoue], caseCible)
 
     elif typeActionJoue == "pousser":
@@ -220,6 +223,7 @@ class Ia:
       idJoueurCible = action[2]
       carteJoue = self.recherche_carte(mainJoueurCourant, motifCarteJoue)
       caseCible = plateau.joueurs[idJoueurCible].position
+      del self.coupAJouer[0]
       coupJoue = (2, [carteJoue], caseCible)
 
     elif typeActionJoue == "endurance":
@@ -228,6 +232,8 @@ class Ia:
       idJoueurCible = action[2]
       carteJoue = self.recherche_carte(mainJoueurCourant, motifCarteJoue, valeurCarteJoue)
       caseCible = plateau.joueurs[idJoueurCible].position
+      print(self.coupAJouer)
+      del self.coupAJouer[0]
       coupJoue = (3, [carteJoue], caseCible)
 
     elif typeActionJoue == "contre":
@@ -237,10 +243,8 @@ class Ia:
       idJoueurCible = action[1]
       mainJoueurCible = plateau.joueurs[idJoueurCible].main
       positionJoueurCible = plateau.joueurs[idJoueurCible].position
-      motifCarteVolee = action[2]
-      valeurCarteVolee = action[3]
-      carteVolee = self.recherche_carte(mainJoueurCible, motifCarteVolee, valeurCarteVolee)
-      coupJoue = (1, [carteVolee], positionJoueurCible)
+      del self.coupAJouer[0]
+      coupJoue = (1, [Carte("J", 15)], positionJoueurCible)
 
     elif typeActionJoue == "coup bas":
       idJoueurCible = action[1]
@@ -249,13 +253,18 @@ class Ia:
       self.coupAJouer = []
       coupJoue = (0, cartesADefausser, positionJoueurCible)
 
-    elif typeActionJoue == "reponse coup bas":
+    elif typeActionJoue == "reception coup bas":
       cartesADefausser = self.recherche_carte_liste(mainJoueurCourant, self.coupAJouer[1:])
       self.coupAJouer = []
       coupJoue = cartesADefausser
 
     elif typeActionJoue == "fin":
       coupJoue = (5, [], (0, 0))
+
+    elif typeActionJoue == "defausse fin":
+      cartesADefausser = self.recherche_carte_liste(mainJoueurCourant, self.coupAJouer[1:])
+      self.coupAJouer = []
+      coupJoue = cartesADefausser
 
     return coupJoue
 
@@ -276,23 +285,43 @@ class Ia:
 
 
 
-  def defausse_minimax_coup_bas(self, plateau, joueur):
-    pass
+  def defausse_minimax_coup_bas(self, plateau, joueurCible, joueurCourant):
+    etat = {"pioche": plateau.pioche, "listeJoueurs": list(range(len(plateau.joueurs)))}
+    etatJoueurs = {x: {"main": plateau.joueurs[x].main, "endurance": plateau.joueurs[x].endurance,
+                       "position": plateau.joueurs[x].position}
+                   for x in range(len(plateau.joueurs))}
+    etat.update(etatJoueurs)
+
+    positionJoueurCourant = plateau.joueurs[joueurCourant].position
+
+    dernierCoup = {"cartes": [("coup bas", joueurCible)], "joueur": joueurCourant, "position": positionJoueurCourant}
+
+    arbre = Arborescence(5, plateau.taille, etat, dernierCoup, joueurCible, vaRecevoirTomates=False, estAttaque=True)
+    self.coupAJouer = choisir_coup(arbre, joueurCible, self.niveau)
+
+  def defausse_minimax_fin_tour(self, plateau, joueurCible):
+    self.coupAJouer[0] = ("defausse fin", 0)
 
 
-  def defausse_minimax_fin_tour(self, plateau, joueur):
-    pass
+  def defausse_minimax(self, plateau, joueurCible, nombreCartesDefausse=None, joueurCourant=None):
+    if joueurCourant is None:
+      self.defausse_minimax_fin_tour(plateau, joueurCible)
+    else:
+      self.defausse_minimax_coup_bas(plateau, joueurCible, joueurCourant)
+
+    return self.calcul_coup(plateau, joueurCible, 1)
 
 
-  def defausse_minimax(self, plateau, joueur, nombreCartesDefausse=None):
-    pass
 
 
 
 
 
   def pioche_minimax(self, plateau, joueur):
-    pass
+    nombreCartePioche = min(2, 5-len(plateau.joueurs[joueur].main), len(plateau.pioche))
+    if nombreCartePioche > 0:
+      return plateau.pioche[-nombreCartePioche:]
+    return []
 
 
 
