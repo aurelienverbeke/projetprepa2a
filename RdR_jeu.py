@@ -257,7 +257,8 @@ class RoiDuRing:
             longueurGrille = self.taille
             for i in range(longueurGrille):
                 result += lettres[i] + ' '
-            result += " \n  " + '--'*self.taille+"\n" # première ligne
+            ligneTires = '--'*self.taille
+            result += " \n  " + ligneTires +"\n" # première ligne
             dico = {}
             for joueur in self.joueurs:
                 x = joueur.position[0] + self.rayonGrille
@@ -273,7 +274,7 @@ class RoiDuRing:
                     ligne += ' '
                 ligne += '|\n'
                 result += ligne
-            result += '  -------------\n\n'
+            result += '  ' + ligneTires + '\n\n'
             
             for joueur in self.joueurs:
                 result += joueur.pion + ' : \n'
