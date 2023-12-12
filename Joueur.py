@@ -25,26 +25,24 @@ class Joueur:
       - None si l'action est effectuée avec succès
       -  -1 sinon
     """
-    if len(self.main) <5:
+    if len(self.main) < 5:
       self.main.extend(carte)
     else:
       return -1
 
-  def retirer_cartes(self, carte):
+  def retirer_cartes(self, cartes):
     """
-    Retire une carte à la main du joueur si jamais elle est dedans
+    Retire des cartes à la main du joueur si jamais elle sont dedans
 
     Paramètre:
-      - carte (Cartes) : carte à enlever
+      - cartes (list[Carte]) : cartes à enlever
 
     Retourne:
-      - None si l'action est effectuée avec succès
-      -  -1 sinon
+      - None
     """
-    if carte in self.main:
-      self.main.remove(carte)
-    else:
-      return -1
+    for carte in cartes:
+      if carte in self.main:
+        self.main.remove(carte)
 
   def retirer_vie(self, n):
     """
