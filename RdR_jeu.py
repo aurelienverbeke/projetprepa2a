@@ -219,9 +219,7 @@ class RoiDuRing:
       """
       for joueur in self.joueurs:
         if joueur.position == position:
-          return joueur
-        else:
-          return -1
+          return self.joueurs.index(joueur)
 
     def remplir_pioche(self):
         shuffle(self.defausse)
