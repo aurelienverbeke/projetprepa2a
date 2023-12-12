@@ -6,9 +6,9 @@ SCORE_CARTE_DEPLACEMENT = 0
 SCORE_CARTE_JOKER = 0
 SCORE_COEFFICIENT_CARTE_ATTAQUE = 0
 SCORE_POSITION_CENTRE = 10
-SCORE_POSITION_COIN = 0
-SCORE_POSITION_EXTERIEUR = 0
-SCORE_CENTRE_COURONNE = 0
+SCORE_POSITION_COIN = -10
+SCORE_POSITION_EXTERIEUR = -10
+SCORE_CENTRE_COURONNE = 10
 SCORE_ATTAQUE_ADVERSAIRE = 0
 SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = -100
 SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = 0
@@ -545,7 +545,7 @@ class Arborescence:
                     else:
                         for joueur in self.etat["listeJoueurs"]:
 
-                            if joueur == self.joueurCourant and len(self.etat[joueur]["main"]) < 2:
+                            if joueur == self.joueurCourant or len(self.etat[joueur]["main"]) < 2:
                                 continue
 
                             coupJoue = {"cartes": [("coup bas", joueur)] + cartesDefausses, "joueur": self.joueurCourant,
