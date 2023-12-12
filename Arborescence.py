@@ -3,6 +3,7 @@ from Carte import Carte
 SCORE_COEFFICIENT_ENDURANCE = 0
 SCORE_COEFFICIENT_NB_CARTES = 0
 SCORE_CARTE_DEPLACEMENT = 0
+SCORE_CARTE_JOKER = 0
 SCORE_COEFFICIENT_CARTE_ATTAQUE = 0
 SCORE_POSITION_CENTRE = 100
 SCORE_POSITION_COIN = 0
@@ -591,6 +592,9 @@ class Arborescence:
             joueur = self.etat[idJoueur]
             colonne = joueur["position"][1]
             ligne = joueur["position"][0]
+            endurance = joueur["endurance"]
+            main = joueur["main"]
+            possedeJoker = False
 
 
 
@@ -608,19 +612,24 @@ class Arborescence:
                 scores[idJoueur] += SCORE_POSITION_EXTERIEUR
 
             # on prend en compte l'endurance du joueur
-            scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE * joueur["endurance"]
+            scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE * endurance
 
             # nombre de cartes
-            scores[idJoueur] += SCORE_COEFFICIENT_NB_CARTES * len(joueur["main"])
+            scores[idJoueur] += SCORE_COEFFICIENT_NB_CARTES * len(main)
 
             # on pondere avec la valeur des cartes d'attaque et le nombre de cartes de deplacement
-            for carte in joueur["main"]:
+            for carte in main:
                 # le joueur a des cartes d'attaque
                 if carte.motif == "K" or carte.motif == "C":
                     scores[idJoueur] += SCORE_COEFFICIENT_CARTE_ATTAQUE * carte.valeur
                 # le joueur a des cartes de deplacement
                 if carte.motif == "P" or carte.motif == "T":
                     scores[idJoueur] += SCORE_CARTE_DEPLACEMENT
+                # le joueur a un joker
+                if carte.motif == "J":
+                    scores[idJoueur] += SCORE_CARTE_JOKER
+                    possedeJoker = True
+
 
 
 
@@ -629,22 +638,48 @@ class Arborescence:
             # pour chaque adversaire
             for idJoueur2 in set(self.etat["listeJoueurs"]) - {idJoueur}:
                 joueur2 = self.etat[idJoueur2]
+                colonne2 = joueur["position"][1]
+                ligne2 = joueur["position"][0]
+                endurance2 = joueur["endurance"]
+                main2 = joueur["main"]
 
                 # on prend en compte l'endurance des autres joueurs
-                scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES * joueur2["endurance"]
+                scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES * endurance2
 
-                # si c'est un voisin qu'on peut taper, on prend en compte son endurance
-                if idJoueur2 in self.voisins(ligne, colonne) and self.joueurCourant == idJoueur:
-                    # le voisin est sur un cote
-                    if joueur2["position"][0] == ligne or joueur2["position"][1] == colonne:
-                        for carte in joueur["main"]:
-                            if carte.motif == "C":
-                                scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * joueur2["endurance"]
-                    # le voisin est en diagonale
+                # le joueur2 est un voisin
+                if idJoueur2 in self.voisins(ligne, colonne):
+                    # c'est a nous de jouer
+                    if self.joueurCourant == idJoueur:
+                        # si on peut le taper, on prend en compte son endurance
+                        # le voisin est sur un cote
+                        if ligne2 == ligne or colonne2 == colonne:
+                            for carte in main:
+                                if carte.motif == "C":
+                                    scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * endurance2
+                        # le voisin est en diagonale
+                        else:
+                            for carte in joueur["main"]:
+                                if carte.motif == "K":
+                                    scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * endurance2
+
+                        # on peut possiblement utiliser un joker sur lui
+                        if possedeJoker:
+                            pass
+
+                    # ce n'est pas a nous de jouer
                     else:
-                        for carte in joueur["main"]:
-                            if carte.motif == "K":
-                                scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * joueur2["endurance"]
+                        # le voisin peut nous taper
+                        # le voisin est sur un cote
+                        if joueur2["position"][0] == ligne or joueur2["position"][1] == colonne:
+                            for carte in joueur2["main"]:
+                                if carte.motif == "C":
+                                    scores[idJoueur] += SCORE_ADVERSAIRE_VOISIN
+                        # le voisin est en diagonale
+                        else:
+                            for carte in joueur2["main"]:
+                                if carte.motif == "K":
+                                    scores[idJoueur] += SCORE_ADVERSAIRE_VOISIN
+
 
                 # quelqu'un est sur le centre, on est sur la couronne, et ce n'est pas a nous de jouer
                 surCentre = False
@@ -653,19 +688,6 @@ class Arborescence:
                     break
                 if surCentre and joueur["position"] in POSITIONS_COURONNE and self.joueurCourant != idJoueur:
                     scores[idJoueur] += SCORE_CENTRE_COURONNE
-
-                # ce n'est pas a nous de jouer, quelqu'un est a cote de nous et peut nous taper
-                if idJoueur2 in self.voisins(ligne, colonne) and self.joueurCourant != idJoueur:
-                    # le voisin est sur un cote
-                    if joueur2["position"][0] == ligne or joueur2["position"][1] == colonne:
-                        for carte in joueur2["main"]:
-                            if carte.motif == "C":
-                                scores[idJoueur] += SCORE_ADVERSAIRE_VOISIN
-                    # le voisin est en diagonale
-                    else:
-                        for carte in joueur2["main"]:
-                            if carte.motif == "K":
-                                scores[idJoueur] += SCORE_ADVERSAIRE_VOISIN
 
         return scores
 
