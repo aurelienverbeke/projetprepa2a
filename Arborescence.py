@@ -13,6 +13,7 @@ SCORE_ATTAQUE_ADVERSAIRE = 0
 SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = 0
 SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = 0
 SCORE_ADVERSAIRE_VOISIN = 0
+SCORE_JOKER_CARTES_ADVERSAIRE = 0
 
 POSITIONS_COURONNE = [(ligne, colonne) for ligne in [-1, 0, 1] for colonne in [-1, 0, 1] if (ligne, colonne) != (0, 0)]
 POSITIONS_COINS = []
@@ -617,7 +618,7 @@ class Arborescence:
             # nombre de cartes
             scores[idJoueur] += SCORE_COEFFICIENT_NB_CARTES * len(main)
 
-            # on pondere avec la valeur des cartes d'attaque et le nombre de cartes de deplacement
+            # on pondere avec la valeur des cartes d'attaque, le nombre de cartes de deplacement et le nombre de jokers
             for carte in main:
                 # le joueur a des cartes d'attaque
                 if carte.motif == "K" or carte.motif == "C":
@@ -650,15 +651,16 @@ class Arborescence:
                 if idJoueur2 in self.voisins(ligne, colonne):
                     # c'est a nous de jouer
                     if self.joueurCourant == idJoueur:
-                        # si on peut le taper, on prend en compte son endurance
                         for carte in main:
+                            # si on peut le taper, on prend en compte son endurance
                             if ((ligne2 == ligne or colonne2 == colonne) and carte.motif = "K")\
                                     or ((ligne2 != ligne and colonne2 != colonne) and carte.motif = "C"):
                                 scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * endurance2
-
-                        # on peut possiblement utiliser un joker sur lui
-                        if possedeJoker:
-                            pass
+                        
+                        for carte in main2:
+                            # on peut utiliser un joker sur lui
+                            if possedeJoker:
+                                scores[idJoueur] += SCORE_JOKER_CARTES_ADVERSAIRE
 
                     # ce n'est pas a nous de jouer
                     else:
