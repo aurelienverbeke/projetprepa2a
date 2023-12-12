@@ -261,7 +261,7 @@ class RoiDuRing:
             dico = {}
             for joueur in self.joueurs:
                 x = joueur.position[0] + 2
-                y = joueur.position[0] + 2
+                y = joueur.position[1] + 2
                 dico[(x, y)] = joueur.pion
             for i in range(longueurGrille):
                 ligne = f"{i + 1} | "
