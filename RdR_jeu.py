@@ -197,6 +197,7 @@ class RoiDuRing:
         self.defausse.extend(cartesADefausser)
 
     def est_fini(self):
+        # On regarde les joueurs morts
         joueursMorts = []
         for joueur in self.joueurs:
             if joueur.endurance <= 0:
@@ -204,6 +205,10 @@ class RoiDuRing:
 
         for joueur in joueursMorts:
             self.joueurs.remove(joueur)
+
+
+        if not self.pioche:
+            self.remplir_pioche()
 
         return len(self.joueurs) <= 1
 
