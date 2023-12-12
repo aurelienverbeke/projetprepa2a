@@ -53,7 +53,8 @@ def cases_accessibles(deplacementLateralRestant, deplacementDiagonalRestant, ray
     casesAccessibles = set()
     casesAccessibles.add(position)
 
-    if position in cartesUtilisePourAllerACase.keys() and len(cartesUtilisePourAllerACase[position]) <= len(deplacementsEffectues):
+    if position in cartesUtilisePourAllerACase.keys() and len(cartesUtilisePourAllerACase[position]) <= len(
+            deplacementsEffectues):
         return set()
     cartesUtilisePourAllerACase[position] = deplacementsEffectues
 
@@ -116,10 +117,10 @@ class Arborescence:
         self.dernierCoup = dernierCoup
         self.vaRecevoirTomates = vaRecevoirTomates
 
-        POSITIONS_COINS = [(-self.extremite, -self.extremite),\
-                            (self.extremite, self.extremite),\
-                            (-self.extremite, self.extremite),\
-                            (self.extremite, -self.extremite)]
+        POSITIONS_COINS = [(-self.extremite, -self.extremite), \
+                           (self.extremite, self.extremite), \
+                           (-self.extremite, self.extremite), \
+                           (self.extremite, -self.extremite)]
 
     def voisins(self, ligne, colonne):
         voisins = []
@@ -141,7 +142,6 @@ class Arborescence:
         nouvelEtat["pioche"] = self.etat["pioche"].copy()
         nouvelEtat["listeJoueurs"] = self.etat["listeJoueurs"].copy()
         for idJoueur in self.etat["listeJoueurs"]:
-
             nouvelEtat[idJoueur] = dict()
             nouvelEtat[idJoueur]["main"] = self.etat[idJoueur]["main"].copy()
             nouvelEtat[idJoueur]["endurance"] = self.etat[idJoueur]["endurance"]
@@ -254,8 +254,8 @@ class Arborescence:
                 jokerPossible += 1
         return deplacementLateralPossible, deplacementDiagonalPossible, valeurCarteAttaqueLateral, valeurCarteAttaqueDiagonal, jokerPossible
 
-
-    def possibilite_defausse(self, deplacementLateralPossible, deplacementDiagonalPossible, valeurCarteAttaqueLateral, valeurCarteAttaqueDiagonal, jokerPossible, estCoupBas=False):
+    def possibilite_defausse(self, deplacementLateralPossible, deplacementDiagonalPossible, valeurCarteAttaqueLateral,
+                             valeurCarteAttaqueDiagonal, jokerPossible, estCoupBas=False):
         """
         Renvoie toutes les defausses possibles
 
@@ -357,6 +357,10 @@ class Arborescence:
         for joueur, endurancePerdue in kwargs.get("endurancePerdue", []):
             nouvelEtat[joueur]["endurance"] -= endurancePerdue
             if nouvelEtat[joueur]["endurance"] <= 0:
+                if joueur == prochainJoueur:
+                    indexDansListeJoueurs = nouvelEtat["listeJoueurs"].index(joueur)
+                    prochainJoueur = nouvelEtat["listeJoueurs"][
+                        (indexDansListeJoueurs + 1) % len(nouvelEtat["listeJoueurs"])]
                 nouvelEtat["listeJoueurs"].remove(joueur)
 
         for joueur, cartesAAjouter in kwargs.get("cartesAAjouter", []):
@@ -371,10 +375,10 @@ class Arborescence:
                 nouvelEtat[self.joueurCourant]["main"].extend(nouvelEtat["pioche"][-nombreCartesAPiocher:])
                 nouvelEtat["pioche"] = nouvelEtat["pioche"][:-nombreCartesAPiocher]
 
-        fils = Arborescence(self.nombreDeplacementParNoeud, self.taillePlateau, nouvelEtat, coupJoue, prochainJoueur, vaRecevoirTomates, estAttaque)
+        fils = Arborescence(self.nombreDeplacementParNoeud, self.taillePlateau, nouvelEtat, coupJoue, prochainJoueur,
+                            vaRecevoirTomates, estAttaque)
         self.sousArbres.append(fils)
         return fils
-
 
     def generer_fils(self):
         """
@@ -386,7 +390,8 @@ class Arborescence:
         positionsAdversaires = [(idJoueur, self.etat[idJoueur]["position"]) for idJoueur in self.etat["listeJoueurs"]
                                 if idJoueur != self.joueurCourant]
 
-        deplacementLateralPossible, deplacementDiagonalPossible, valeurCarteAttaqueLateral, valeurCarteAttaqueDiagonal, jokerPossible = self.coups_possibles_depuis_main(mainJoueurCourant)
+        deplacementLateralPossible, deplacementDiagonalPossible, valeurCarteAttaqueLateral, valeurCarteAttaqueDiagonal, jokerPossible = self.coups_possibles_depuis_main(
+            mainJoueurCourant)
 
         if self.estAttaque:
             if self.dernierCoup["cartes"][0][0] == "coup bas":
@@ -408,7 +413,8 @@ class Arborescence:
                                                 vaRecevoirTomates=False)
 
             else:
-                coupJoue = {"cartes": [("contre", None)], "joueur": self.joueurCourant, "position": positionJoueurCourant}
+                coupJoue = {"cartes": [("contre", None)], "joueur": self.joueurCourant,
+                            "position": positionJoueurCourant}
 
                 # On regarde si le joueur adverse est au centre (place du Champion)
                 if self.dernierCoup["position"] == (0, 0):
@@ -457,17 +463,19 @@ class Arborescence:
                     cartesAVoler = self.cartes_a_voler(joueur)
 
                     for carte in cartesAVoler:
-                        coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("J", joueur, carte.motif, carte.valeur)],
-                                    "joueur": self.joueurCourant, "position": positionJoueurCourant}
+                        coupJoue = {
+                            "cartes": cartesUtilisePourAllerACase[case] + [("J", joueur, carte.motif, carte.valeur)],
+                            "joueur": self.joueurCourant, "position": positionJoueurCourant}
 
                         yield self.creer_sous_arbre(coupJoue=coupJoue,
                                                     vaRecevoirTomates=False,
                                                     prochainJoueur=self.joueurCourant,
                                                     cartesARetirer=[(joueur, [(carte.motif, carte.valeur)]),
-                                                                    (self.joueurCourant, cartesUtilisePourAllerACase[case] + [("J", 0)])],
-                                                    cartesAAjouter=[(self.joueurCourant, [(carte.motif, carte.valeur)])],
+                                                                    (self.joueurCourant,
+                                                                     cartesUtilisePourAllerACase[case] + [("J", 0)])],
+                                                    cartesAAjouter=[
+                                                        (self.joueurCourant, [(carte.motif, carte.valeur)])],
                                                     deplacements=[(self.joueurCourant, case)])
-
 
                 positionJoueurSiPousse = (positionJoueur[0] + vecteurJoueurCourantJoueur[0],
                                           positionJoueur[1] + vecteurJoueurCourantJoueur[1])
@@ -482,41 +490,49 @@ class Arborescence:
                         yield self.creer_sous_arbre(coupJoue=coupJoue,
                                                     vaRecevoirTomates=False,
                                                     prochainJoueur=self.joueurCourant,
-                                                    cartesARetirer=[(self.joueurCourant, [("K", 0)] + cartesUtilisePourAllerACase[case])],
-                                                    deplacements=[(self.joueurCourant, case), (joueur, positionJoueurSiPousse)])
+                                                    cartesARetirer=[(self.joueurCourant,
+                                                                     [("K", 0)] + cartesUtilisePourAllerACase[case])],
+                                                    deplacements=[(self.joueurCourant, case),
+                                                                  (joueur, positionJoueurSiPousse)])
 
                     for valeurCarte in valeurCarteAttaqueLateral:
-
-                        coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("endurance", "K", joueur, valeurCarte)],
-                                    "joueur": self.joueurCourant, "position": positionJoueurCourant}
+                        coupJoue = {
+                            "cartes": cartesUtilisePourAllerACase[case] + [("endurance", "K", joueur, valeurCarte)],
+                            "joueur": self.joueurCourant, "position": positionJoueurCourant}
 
                         yield self.creer_sous_arbre(coupJoue=coupJoue,
                                                     vaRecevoirTomates=False,
                                                     prochainJoueur=joueur,
-                                                    cartesARetirer=[(self.joueurCourant, [("K", valeurCarte)] + cartesUtilisePourAllerACase[case])],
+                                                    cartesARetirer=[(self.joueurCourant,
+                                                                     [("K", valeurCarte)] + cartesUtilisePourAllerACase[
+                                                                         case])],
                                                     deplacements=[(self.joueurCourant, case)],
                                                     estAttaque=True)
 
                 else:
                     if valeurCarteAttaqueDiagonal and self.est_dans_grille(positionJoueurSiPousse):
-
                         coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("pousser", "C", joueur)],
                                     "joueur": self.joueurCourant, "position": positionJoueurCourant}
 
                         yield self.creer_sous_arbre(coupJoue=coupJoue,
                                                     vaRecevoirTomates=False,
                                                     prochainJoueur=self.joueurCourant,
-                                                    cartesARetirer=[(self.joueurCourant, [("C", 0)] + cartesUtilisePourAllerACase[case])],
-                                                    deplacements=[(self.joueurCourant, case), (joueur, positionJoueurSiPousse)])
+                                                    cartesARetirer=[(self.joueurCourant,
+                                                                     [("C", 0)] + cartesUtilisePourAllerACase[case])],
+                                                    deplacements=[(self.joueurCourant, case),
+                                                                  (joueur, positionJoueurSiPousse)])
 
                     for valeurCarte in valeurCarteAttaqueDiagonal:
-                        coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("endurance", "C", joueur, valeurCarte)],
-                                    "joueur": self.joueurCourant, "position": positionJoueurCourant}
+                        coupJoue = {
+                            "cartes": cartesUtilisePourAllerACase[case] + [("endurance", "C", joueur, valeurCarte)],
+                            "joueur": self.joueurCourant, "position": positionJoueurCourant}
 
                         yield self.creer_sous_arbre(coupJoue=coupJoue,
                                                     vaRecevoirTomates=False,
                                                     prochainJoueur=joueur,
-                                                    cartesARetirer=[(self.joueurCourant, [("C", valeurCarte)] + cartesUtilisePourAllerACase[case])],
+                                                    cartesARetirer=[(self.joueurCourant,
+                                                                     [("C", valeurCarte)] + cartesUtilisePourAllerACase[
+                                                                         case])],
                                                     deplacements=[(self.joueurCourant, case)],
                                                     estAttaque=True)
 
@@ -553,7 +569,8 @@ class Arborescence:
                             if joueur == self.joueurCourant or len(self.etat[joueur]["main"]) < 2:
                                 continue
 
-                            coupJoue = {"cartes": [("coup bas", joueur)] + cartesDefausses, "joueur": self.joueurCourant,
+                            coupJoue = {"cartes": [("coup bas", joueur)] + cartesDefausses,
+                                        "joueur": self.joueurCourant,
                                         "position": positionJoueurCourant}
 
                             yield self.creer_sous_arbre(coupJoue=coupJoue,
@@ -572,10 +589,6 @@ class Arborescence:
                                             cartesARetirer=[(self.joueurCourant, cartesUtilisePourAllerACase[case])],
                                             deplacements=[(self.joueurCourant, case)])
 
-
-
-
-
     def est_fini(self):
         nbVivants = 0
         for idJoueur in self.etat["listeJoueurs"]:
@@ -583,16 +596,9 @@ class Arborescence:
                 nbVivants += 1
         return nbVivants <= 1
 
-
-
-
-
     def evaluation_test(self):
-        return {idJoueur: float("inf") if self.etat[idJoueur]["position"] == (0, 0) else 0 for idJoueur in self.etat["listeJoueurs"]}
-
-
-
-
+        return {idJoueur: float("inf") if self.etat[idJoueur]["position"] == (0, 0) else 0 for idJoueur in
+                self.etat["listeJoueurs"]}
 
     def evaluation(self):
         """
@@ -613,8 +619,6 @@ class Arborescence:
             endurance = joueur["endurance"]
             main = joueur["main"]
             possedeJoker = False
-
-
 
             # --- ON REGARDE LES PARAMETRES DU JOUEUR COURANT ---
 
@@ -648,10 +652,7 @@ class Arborescence:
                     scores[idJoueur] += SCORE_CARTE_JOKER
                     possedeJoker = True
 
-
-
-
-            # --- ON REGARDE LES PARAMETRES DE SES ADVERSAIRES ---
+            #  --- ON REGARDE LES PARAMETRES DE SES ADVERSAIRES ---
 
             # pour chaque adversaire
             for idJoueur2 in set(self.etat["listeJoueurs"]) - {idJoueur}:
@@ -670,10 +671,10 @@ class Arborescence:
                     if self.joueurCourant == idJoueur:
                         for carte in main:
                             # si on peut le taper, on prend en compte son endurance
-                            if ((ligne2 == ligne or colonne2 == colonne) and carte.motif == "K")\
+                            if ((ligne2 == ligne or colonne2 == colonne) and carte.motif == "K") \
                                     or ((ligne2 != ligne and colonne2 != colonne) and carte.motif == "C"):
                                 scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * endurance2
-                        
+
                         for carte in main2:
                             # on peut utiliser un joker sur lui
                             if possedeJoker:
@@ -683,10 +684,9 @@ class Arborescence:
                     else:
                         # le voisin peut nous taper
                         for carte in main2:
-                            if ((ligne2 == ligne or colonne2 == colonne) and carte.motif == "K")\
+                            if ((ligne2 == ligne or colonne2 == colonne) and carte.motif == "K") \
                                     or ((ligne2 != ligne and colonne2 != colonne) and carte.motif == "C"):
                                 scores[idJoueur] += SCORE_ADVERSAIRE_VOISIN
-
 
                 # quelqu'un est sur le centre, on est sur la couronne, et ce n'est pas a nous de jouer
                 surCentre = False
@@ -697,9 +697,6 @@ class Arborescence:
                     scores[idJoueur] += SCORE_CENTRE_COURONNE
 
         return scores
-
-
-
 
 
 if __name__ == "__main__":
@@ -720,7 +717,7 @@ if __name__ == "__main__":
             nombreNoeuds += len(fils_2.sousArbres)
             for fils_3 in fils_2.generer_fils():
                 nombreNoeuds += len(fils_3.sousArbres)
-    print(time()-t)
+    print(time() - t)
     print(nombreNoeuds)
     print(len(A.sousArbres))
     print("")
