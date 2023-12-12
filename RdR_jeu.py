@@ -286,7 +286,7 @@ class RoiDuRing:
     def affiche_action(self, actionJoue, coupContre = None): # Affoche de l'action du joueur
         result = "\n"
         for carte in actionJoue[1]:
-            result += carte._str__() + ' '
+            result += carte.__str__() + ' '
         if actionJoue[0] == 2 or actionJoue[0] == 3:
             for i in range(len(self.joueurs)):
                 if self.joueurs[i].position == actionJoue[2]:
