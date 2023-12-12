@@ -272,6 +272,7 @@ class RoiDuRing:
                         ligne += '.'
                     ligne += ' '
                 ligne += '|\n'
+                result += ligne
             result += '  -------------\n\n'
             
             for joueur in self.joueurs:
