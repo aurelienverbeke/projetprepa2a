@@ -4,7 +4,7 @@ from random import shuffle
 
 DECK = []
 for motif in ["C", "K", "T", "P"]:
-    DECK += [Carte(motif, k) for k in range(4, 15)]
+    DECK += [Carte(motif, k) for k in range(7, 15)]
 DECK += [Carte("J", 15), Carte("J", 15)]
 
 SYMBOLES_JOUEURS = ["O", "X", "@", "#"]
