@@ -14,19 +14,19 @@ class Joueur:
     self.position = position
     self.main = main
 
-  def ajouter_cartes(self, carte):
+  def ajouter_cartes(self, cartes):
     """
-    Ajoute une carte à la main du joueur si jamais c'est possible
+    Ajoute des cartes à la main du joueur si jamais c'est possible
 
     Paramètre:
-      - carte (Cartes) : carte à ajouter
+      - cartes (liste[Carte]) : cartes à ajouter
 
     Retourne:
       - None si l'action est effectuée avec succès
       -  -1 sinon
     """
-    if len(self.main) < 5:
-      self.main.extend(carte)
+    if len(self.main) + len(cartes) <= 5:
+      self.main.extend(cartes)
     else:
       return -1
 
