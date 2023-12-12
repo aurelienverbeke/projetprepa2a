@@ -126,7 +126,7 @@ class RoiDuRing:
         vecteurJoueurCourantJoueurCible = (positionJoueurCible[0] - positionJoueurCourant[0],
                                            positionJoueurCible[1] - positionJoueurCourant[1])
 
-        if vecteurJoueurCourantJoueurCible[0] > 1 or vecteurJoueurCourantJoueurCible[1] > 1:
+        if abs(vecteurJoueurCourantJoueurCible[0]) > 1 or abs(vecteurJoueurCourantJoueurCible[1]) > 1:
             raise ValueError("Tentative d'attaque poussee sur un joueur n'etant pas a cote")
 
         nouvellePositionJoueurCible = (positionJoueurCible[0] + vecteurJoueurCourantJoueurCible[0],
@@ -197,6 +197,7 @@ class RoiDuRing:
         self.defausse.extend(cartesADefausser)
 
     def est_fini(self):
+        # On regarde les joueurs morts
         joueursMorts = []
         for joueur in self.joueurs:
             if joueur.endurance <= 0:
@@ -204,6 +205,10 @@ class RoiDuRing:
 
         for joueur in joueursMorts:
             self.joueurs.remove(joueur)
+
+
+        if not self.pioche:
+            self.remplir_pioche()
 
         return len(self.joueurs) <= 1
 
