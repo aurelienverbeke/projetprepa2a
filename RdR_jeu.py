@@ -84,6 +84,7 @@ class RoiDuRing:
                 raise ValueError("Tentative de defausse de cartes qui ne sont pas dans la main")
 
         self.joueurs[joueurCourant].retirer_cartes(carteDefausse)
+        self.ajouter_defausse(carteDefausse)
 
     def jouer_joker(self, joueurCourant, joueurCible, caseCible, carteJoue):
         """
@@ -104,6 +105,7 @@ class RoiDuRing:
 
         carteVolee = self.joueurs[joueurCible].main[0]
         self.joueurs[joueurCourant].retirer_cartes(carteJoue)
+        self.ajouter_defausse(carteJoue)
         self.joueurs[joueurCible].retirer_cartes([carteVolee])
         self.joueurs[joueurCourant].ajouter_cartes([carteVolee])
 
@@ -138,6 +140,7 @@ class RoiDuRing:
         self.joueurs[joueurCible].position = nouvellePositionJoueurCible
 
         self.joueurs[joueurCourant].retirer_cartes(carteJoue)
+        self.ajouter_defausse(carteJoue)
 
     def jouer_attaque_endurance(self, joueurCourant, joueurCible, caseCible, carteJoue):
         """
@@ -171,6 +174,7 @@ class RoiDuRing:
 
         self.joueurs[joueurCible].retirer_vie(vieRetiree)
         self.joueurs[joueurCourant].retirer_cartes(carteJoue)
+        self.ajouter_defausse(carteJoue)
 
     def jouer_mouvement(self, joueurCourant, joueurCible, caseCible, carteJoue):
         """
@@ -192,6 +196,7 @@ class RoiDuRing:
 
         self.joueurs[joueurCourant].position = caseCible
         self.joueurs[joueurCourant].retirer_cartes(carteJoue)
+        self.ajouter_defausse(carteJoue)
 
     def ajouter_defausse(self, cartesADefausser):
         self.defausse.extend(cartesADefausser)

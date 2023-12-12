@@ -22,7 +22,7 @@ class Carte:
         return other.__lt__(self)
     
     def __eq__(self, other):
-        return self.valeur == other.valeur
+        return self.valeur == other.valeur and self.motif == other.motif
 
     def __ge__(self, other):
         return self.valeur >= other.valeur

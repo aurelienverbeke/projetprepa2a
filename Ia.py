@@ -232,7 +232,6 @@ class Ia:
       idJoueurCible = action[2]
       carteJoue = self.recherche_carte(mainJoueurCourant, motifCarteJoue, valeurCarteJoue)
       caseCible = plateau.joueurs[idJoueurCible].position
-      print(self.coupAJouer)
       del self.coupAJouer[0]
       coupJoue = (3, [carteJoue], caseCible)
 
@@ -242,7 +241,6 @@ class Ia:
 
     elif typeActionJoue == "J":
       idJoueurCible = action[1]
-      mainJoueurCible = plateau.joueurs[idJoueurCible].main
       positionJoueurCible = plateau.joueurs[idJoueurCible].position
       del self.coupAJouer[0]
       coupJoue = (1, [Carte("J", 15)], positionJoueurCible)
@@ -311,11 +309,6 @@ class Ia:
       self.defausse_minimax_coup_bas(plateau, joueurCible, joueurCourant)
 
     return self.calcul_coup(plateau, joueurCible, 1)
-
-
-
-
-
 
 
   def pioche_minimax(self, plateau, joueur):

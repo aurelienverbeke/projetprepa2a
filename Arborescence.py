@@ -10,7 +10,7 @@ SCORE_POSITION_COIN = -10
 SCORE_POSITION_EXTERIEUR = -10
 SCORE_CENTRE_COURONNE = 10
 SCORE_ATTAQUE_ADVERSAIRE = 0
-SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = -100
+SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = 0
 SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = 0
 SCORE_ADVERSAIRE_VOISIN = 0
 SCORE_JOKER_CARTES_ADVERSAIRE = 0
@@ -449,7 +449,7 @@ class Arborescence:
                 if abs(vecteurJoueurCourantJoueur[0]) > 1 or abs(vecteurJoueurCourantJoueur[1]) > 1:
                     continue
 
-                if jokerPossible > 0:
+                if jokerPossible > 0 and self.etat[joueur]["main"]:
                     cartesAVoler = self.cartes_a_voler(joueur)
 
                     for carte in cartesAVoler:
