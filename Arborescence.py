@@ -665,8 +665,8 @@ class Arborescence:
                     if self.joueurCourant == idJoueur:
                         for carte in main:
                             # si on peut le taper, on prend en compte son endurance
-                            if ((ligne2 == ligne or colonne2 == colonne) and carte.motif = "K")\
-                                    or ((ligne2 != ligne and colonne2 != colonne) and carte.motif = "C"):
+                            if ((ligne2 == ligne or colonne2 == colonne) and carte.motif == "K")\
+                                    or ((ligne2 != ligne and colonne2 != colonne) and carte.motif == "C"):
                                 scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * endurance2
                         
                         for carte in main2:
@@ -678,8 +678,8 @@ class Arborescence:
                     else:
                         # le voisin peut nous taper
                         for carte in main2:
-                            if ((ligne2 == ligne or colonne2 == colonne) and carte.motif = "K")\
-                                    or ((ligne2 != ligne and colonne2 != colonne) and carte.motif = "C"):
+                            if ((ligne2 == ligne or colonne2 == colonne) and carte.motif == "K")\
+                                    or ((ligne2 != ligne and colonne2 != colonne) and carte.motif == "C"):
                                 scores[idJoueur] += SCORE_ADVERSAIRE_VOISIN
 
 
