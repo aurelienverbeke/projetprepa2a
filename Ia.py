@@ -238,6 +238,7 @@ class Ia:
 
     elif typeActionJoue == "contre":
       coupJoue = action[1]
+      del self.coupAJouer[0]
 
     elif typeActionJoue == "J":
       idJoueurCible = action[1]
@@ -323,12 +324,22 @@ class Ia:
       return plateau.pioche[-nombreCartePioche:]
     return []
 
+  def contre_minimax(self, plateau, cartes, joueurCible, joueurCourant):
+    etat = {"pioche": plateau.pioche, "listeJoueurs": list(range(len(plateau.joueurs)))}
+    etatJoueurs = {x: {"main": plateau.joueurs[x].main, "endurance": plateau.joueurs[x].endurance,
+                       "position": plateau.joueurs[x].position}
+                   for x in range(len(plateau.joueurs))}
+    etat.update(etatJoueurs)
 
+    positionJoueurCourant = plateau.joueurs[joueurCourant].position
+    carteJoue = cartes[0]
+    dernierCoup = {"cartes": [("endurance", joueurCible, carteJoue.motif, carteJoue.valeur)], "joueur": joueurCourant,
+                   "position": positionJoueurCourant}
 
+    arbre = Arborescence(5, plateau.taille, etat, dernierCoup, joueurCible, vaRecevoirTomates=False, estAttaque=True)
+    self.coupAJouer = choisir_coup(arbre, joueurCible, self.niveau)
 
-
-  def contre_minimax(self, plateauJeu, cartes, joueurCible, joueurCourant):
-    pass
+    return self.calcul_coup(plateau, joueurCible, 1)
 
 
 
