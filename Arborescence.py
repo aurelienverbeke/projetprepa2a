@@ -567,6 +567,10 @@ class Arborescence:
                                             cartesARetirer=[(self.joueurCourant, cartesUtilisePourAllerACase[case])],
                                             deplacements=[(self.joueurCourant, case)])
 
+
+
+
+
     def est_fini(self):
         nbVivants = 0
         for idJoueur in self.etat["listeJoueurs"]:
@@ -574,8 +578,16 @@ class Arborescence:
                 nbVivants += 1
         return nbVivants <= 1
 
+
+
+
+
     def evaluation_test(self):
         return {idJoueur: float("inf") if self.etat[idJoueur]["position"] == (0, 0) else 0 for idJoueur in self.etat["listeJoueurs"]}
+
+
+
+
 
     def evaluation(self):
         """
@@ -680,6 +692,9 @@ class Arborescence:
                     scores[idJoueur] += SCORE_CENTRE_COURONNE
 
         return scores
+
+
+
 
 
 if __name__ == "__main__":
