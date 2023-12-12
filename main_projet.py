@@ -55,7 +55,7 @@ while not fin:
     fin = plateauJeu.est_fini()
     joueurCourant = (joueurCourant+1)%nbeJoueur
     nbeAction = 0
-    
-# Manque affichage du gagnant
-    
+
+# ===============Ajout de l'affichage du gaganant==================
+print(f"Le gagnant est {plateauJeu.joueurs[0].pion}")
 
