@@ -296,6 +296,10 @@ class Arborescence:
 
         Renvoie une liste de la forme [(motif, valeur)]
         """
+
+        mainJoueurAdverse = self.etat[joueur]["main"]
+        cartesAVoler = [mainJoueurAdverse[0]]
+        """
         mainJoueurAdverse = self.etat[joueur]["main"]
         cartesTrefle = [carte for carte in mainJoueurAdverse if carte.motif == "T"]
         cartesPique = [carte for carte in mainJoueurAdverse if carte.motif == "P"]
@@ -311,7 +315,7 @@ class Arborescence:
             cartesAVoler.append(max(cartesCarreau))
         if cartesCoeur:
             cartesAVoler.append(max(cartesCoeur))
-
+        """
         return cartesAVoler
 
     def creer_sous_arbre(self, **kwargs):
@@ -538,6 +542,9 @@ class Arborescence:
 
                     else:
                         for joueur in self.etat["listeJoueurs"]:
+
+                            if joueur == self.joueurCourant and len(self.etat[joueur]["main"]) < 2:
+                                continue
 
                             coupJoue = {"cartes": [("coup bas", joueur)] + cartesDefausses, "joueur": self.joueurCourant,
                                         "position": positionJoueurCourant}
