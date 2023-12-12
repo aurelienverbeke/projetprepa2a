@@ -1,17 +1,17 @@
 from Carte import Carte
 
-SCORE_COEFFICIENT_ENDURANCE = 1
-SCORE_COEFFICIENT_NB_CARTES = 1
-SCORE_CARTE_DEPLACEMENT = 1
-SCORE_COEFFICIENT_CARTE_ATTAQUE = 1
-SCORE_POSITION_CENTRE = 1
-SCORE_POSITION_COIN = -1
-SCORE_POSITION_EXTERIEUR = -1
-SCORE_CENTRE_COURONNE = -1
-SCORE_ATTAQUE_ADVERSAIRE = -1
-SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = -1
-SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = -1
-SCORE_ADVERSAIRE_VOISIN = -1
+SCORE_COEFFICIENT_ENDURANCE = 0
+SCORE_COEFFICIENT_NB_CARTES = 0
+SCORE_CARTE_DEPLACEMENT = 0
+SCORE_COEFFICIENT_CARTE_ATTAQUE = 0
+SCORE_POSITION_CENTRE = 100
+SCORE_POSITION_COIN = 0
+SCORE_POSITION_EXTERIEUR = 0
+SCORE_CENTRE_COURONNE = 0
+SCORE_ATTAQUE_ADVERSAIRE = 0
+SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = 0
+SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = 0
+SCORE_ADVERSAIRE_VOISIN = 0
 
 POSITIONS_COURONNE = [(ligne, colonne) for ligne in [-1, 0, 1] for colonne in [-1, 0, 1] if (ligne, colonne) != (0, 0)]
 POSITIONS_COINS = []
@@ -573,7 +573,7 @@ class Arborescence:
         return nbVivants <= 1
 
     def evaluation_test(self):
-        return self.etat[0]["endurance"]/max(self.etat[1]["endurance"], 1), self.etat[1]["endurance"]/max(self.etat[0]["endurance"], 1)
+        return {idJoueur: float("inf") if self.etat[idJoueur]["position"] == (0, 0) else 0 for idJoueur in self.etat["listeJoueurs"]}
 
     def evaluation(self):
         """

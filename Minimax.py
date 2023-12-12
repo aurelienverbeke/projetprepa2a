@@ -23,6 +23,9 @@ def choisir_coup(arbre, joueurCourant, pmax):
             continue
         if joueurCourant not in meilleurFils.valeur.keys() or fils.valeur[joueurCourant] > meilleurFils.valeur[joueurCourant]:
             meilleurFils = fils
+        if fils.valeur[joueurCourant] == meilleurFils.valeur[joueurCourant]\
+                and fils.evaluation()[joueurCourant] > meilleurFils.evaluation()[joueurCourant]:
+            meilleurFils = fils
     return meilleurFils.dernierCoup["cartes"]
 
 
