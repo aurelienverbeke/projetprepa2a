@@ -196,6 +196,17 @@ class RoiDuRing:
     def ajouter_defausse(self, cartesADefausser):
         self.defausse.extend(cartesADefausser)
 
+    def est_fini(self):
+        joueursMorts = []
+        for joueur in self.joueurs:
+            if joueur.endurance <= 0:
+                joueursMorts.append(joueur)
+
+        for joueur in joueursMorts:
+            self.joueurs.remove(joueur)
+
+        return len(self.joueurs) <= 1
+
     def joueur_de_case(self,position):
       """
       Renvoie le joueur située à la position donnée
