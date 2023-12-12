@@ -23,7 +23,8 @@ while not fin:
         if actionJoue[0] in [0,3]:
             joueurCible = plateauJeu.joueur_de_case(actionJoue[2])
             if actionJoue[0]==0:
-                cartesDefausse = ias[joueurCible].defausse(plateauJeu, joueurCible, 2)
+                # ================Ajout de l'argument joueurCourant dans afficher====================
+                cartesDefausse = ias[joueurCible].defausse(plateauJeu, joueurCible, 2, joueurCourant)
                 plateauJeu.joueurs[joueurCible].retirer_cartes(cartesDefausse)
                 plateauJeu.ajouter_defausse(cartesDefausse)
                 plateauJeu.jouer(joueurCourant, actionJoue)
@@ -39,7 +40,8 @@ while not fin:
                     plateauJeu.jouer(joueurCourant, actionJoue)
         else:
             plateauJeu.jouer(joueurCourant, actionJoue)
-        plateauJeu.afficher()
+        # ===============Ajout des arguments dans afficher============
+        plateauJeu.afficher(joueurCourant, actionJoue)
         stop = actionJoue[0]==5
         if stop:
             if nbeAction==0:
