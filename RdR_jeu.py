@@ -261,7 +261,7 @@ class RoiDuRing:
         """
         if actionJoue[0] in [0, 1, 2, 3, 4]:
             result = self.joueurs[joueurCourant].pion
-            result += self.affiche_action(actionJoue, coupContre)
+            result += self.affiche_action(actionJoue, coupContre, afficheAlternatif)
             result += "\n    "
             lettres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
             longueurGrille = self.taille
@@ -299,10 +299,13 @@ class RoiDuRing:
                 result += '\n'
             print(result)
 
-    def affiche_action(self, actionJoue, coupContre = None): # Affoche de l'action du joueur
+    def affiche_action(self, actionJoue, coupContre = None, afficheAlternatif=False): # Affoche de l'action du joueur
         result = "\n"
         for carte in actionJoue[1]:
-            result += carte.__str__() + ' '
+            if afficheAlternatif:
+                result += carte.motif + str(carte.valeur)
+            else:
+                result += carte.__str__() + ' '
         if actionJoue[0] == 2 or actionJoue[0] == 3:
             for i in range(len(self.joueurs)):
                 if self.joueurs[i].position == actionJoue[2]:
