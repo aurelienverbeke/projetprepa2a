@@ -137,6 +137,10 @@ class RoiDuRing:
         if not self.est_dans_grille(nouvellePositionJoueurCible):
             raise ValueError("Tentative d'attaque poussee vers une case hors de la grille")
 
+        for joueur in self.joueurs:
+            if joueur.position == nouvellePositionJoueurCible:
+                raise ValueError("Tentative d'attaque poussee alors qu'il y a un joueur derriere")
+
         self.joueurs[joueurCible].position = nouvellePositionJoueurCible
 
         self.joueurs[joueurCourant].retirer_cartes(carteJoue)
@@ -175,6 +179,7 @@ class RoiDuRing:
         self.joueurs[joueurCible].retirer_vie(vieRetiree)
         self.joueurs[joueurCourant].retirer_cartes(carteJoue)
         self.ajouter_defausse(carteJoue)
+        self.nettoyer_joueurs_morts()
 
     def jouer_mouvement(self, joueurCourant, joueurCible, caseCible, carteJoue):
         """
@@ -201,8 +206,7 @@ class RoiDuRing:
     def ajouter_defausse(self, cartesADefausser):
         self.defausse.extend(cartesADefausser)
 
-    def est_fini(self):
-        # On regarde les joueurs morts
+    def nettoyer_joueurs_morts(self):
         joueursMorts = []
         for joueur in self.joueurs:
             if joueur.endurance <= 0:
@@ -211,6 +215,9 @@ class RoiDuRing:
         for joueur in joueursMorts:
             self.joueurs.remove(joueur)
 
+    def est_fini(self):
+        # On regarde les joueurs morts
+        self.nettoyer_joueurs_morts()
 
         if not self.pioche:
             self.remplir_pioche()

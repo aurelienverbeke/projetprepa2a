@@ -40,8 +40,7 @@ while not fin:
                     plateauJeu.jouer(joueurCourant, actionJoue)
         else:
             plateauJeu.jouer(joueurCourant, actionJoue)
-        # ===============Ajout des arguments dans afficher============
-        plateauJeu.afficher(joueurCourant, actionJoue)
+        plateauJeu.afficher(joueurCourant, actionJoue, None, True)
         stop = actionJoue[0]==5
         if stop:
             if nbeAction==0:

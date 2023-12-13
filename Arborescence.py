@@ -480,9 +480,15 @@ class Arborescence:
                 positionJoueurSiPousse = (positionJoueur[0] + vecteurJoueurCourantJoueur[0],
                                           positionJoueur[1] + vecteurJoueurCourantJoueur[1])
 
+                joueurPresentSurCaseDerriere = False
+                for idJoueur in self.etat["listeJoueurs"]:
+                    if positionJoueurSiPousse == self.etat[idJoueur]["position"]:
+                        joueurPresentSurCaseDerriere = True
+                        break
+
                 # On regarde si le joueur est à l'horizontale/verticale, si ce n'est pas le cas il est en diagonale
                 if abs(vecteurJoueurCourantJoueur[0]) + abs(vecteurJoueurCourantJoueur[1]) == 1:
-                    if valeurCarteAttaqueLateral and self.est_dans_grille(positionJoueurSiPousse):
+                    if valeurCarteAttaqueLateral and self.est_dans_grille(positionJoueurSiPousse) and not joueurPresentSurCaseDerriere:
                         coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("pousser", "K", joueur)],
                                     "joueur": self.joueurCourant,
                                     "position": positionJoueurCourant}
@@ -510,7 +516,7 @@ class Arborescence:
                                                     estAttaque=True)
 
                 else:
-                    if valeurCarteAttaqueDiagonal and self.est_dans_grille(positionJoueurSiPousse):
+                    if valeurCarteAttaqueDiagonal and self.est_dans_grille(positionJoueurSiPousse) and not joueurPresentSurCaseDerriere:
                         coupJoue = {"cartes": cartesUtilisePourAllerACase[case] + [("pousser", "C", joueur)],
                                     "joueur": self.joueurCourant, "position": positionJoueurCourant}
 
@@ -594,7 +600,7 @@ class Arborescence:
         for idJoueur in self.etat["listeJoueurs"]:
             if self.etat[idJoueur]["endurance"] > 0:
                 nbVivants += 1
-        return nbVivants <= 1
+        return nbVivants <= 1 or self.joueurCourant not in self.etat["listeJoueurs"]
 
     def evaluation_test(self):
         return {idJoueur: float("inf") if self.etat[idJoueur]["position"] == (0, 0) else 0 for idJoueur in
