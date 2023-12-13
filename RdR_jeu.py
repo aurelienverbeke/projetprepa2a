@@ -236,7 +236,7 @@ class RoiDuRing:
         self.pioche.extend(self.defausse)
         self.defausse = []
 
-    def afficher(self, joueurCourant, actionJoue, coupContre = None):
+    def afficher(self, joueurCourant, actionJoue, coupContre = None, afficheAlternatif = False):
         """
         Affiche les informations du coup courant :
             Pion du joueur
@@ -291,7 +291,11 @@ class RoiDuRing:
                 result += "Endurance : " + str(joueur.endurance) + '\n'
                 result += "Main : "
                 for carte in joueur.main:
-                    result += carte.__str__() + ', '
+                    if AffichageAlternitf:
+                        affCarte = carte.motif + str(carte.valeur)
+                    else:
+                        affCarte = carte.__str__()
+                    result += affCarte + ', '
                 result += '\n'
             print(result)
 
