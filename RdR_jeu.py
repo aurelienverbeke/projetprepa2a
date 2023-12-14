@@ -66,7 +66,7 @@ class RoiDuRing:
             return
 
         # Appelle la fonction correspondant au type d'action donne
-        self.actions[typeAction](joueurCourant, joueurCible, caseCible, carteJoue)
+        return self.actions[typeAction](joueurCourant, joueurCible, caseCible, carteJoue)
 
     def jouer_coup_bas(self, joueurCourant, joueurCible, caseCible, carteDefausse):
         """
@@ -179,7 +179,9 @@ class RoiDuRing:
         self.joueurs[joueurCible].retirer_vie(vieRetiree)
         self.joueurs[joueurCourant].retirer_cartes(carteJoue)
         self.ajouter_defausse(carteJoue)
-        self.nettoyer_joueurs_morts()
+        joueursMorts = self.nettoyer_joueurs_morts()
+
+        return joueursMorts
 
     def jouer_mouvement(self, joueurCourant, joueurCible, caseCible, carteJoue):
         """
@@ -208,21 +210,25 @@ class RoiDuRing:
 
     def nettoyer_joueurs_morts(self):
         joueursMorts = []
+        indicesJoueursMorts = []
         for joueur in self.joueurs:
             if joueur.endurance <= 0:
                 joueursMorts.append(joueur)
+                indicesJoueursMorts.append(self.joueurs.index(joueur))
 
         for joueur in joueursMorts:
             self.joueurs.remove(joueur)
 
+        return indicesJoueursMorts
+
     def est_fini(self):
         # On regarde les joueurs morts
-        self.nettoyer_joueurs_morts()
+        joueursMorts = self.nettoyer_joueurs_morts()
 
         if not self.pioche:
             self.remplir_pioche()
 
-        return len(self.joueurs) <= 1
+        return len(self.joueurs) <= 1, joueursMorts
 
     def joueur_de_case(self,position):
       """

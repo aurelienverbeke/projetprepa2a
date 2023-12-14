@@ -37,7 +37,13 @@ while not fin:
                     plateauJeu.joueurs[joueurCourant].retirer_cartes(actionJoue[1])
                     plateauJeu.ajouter_defausse(actionJoue[1])
                 else:
-                    plateauJeu.jouer(joueurCourant, actionJoue)
+                    # ==============Gestion des joueurs morts (pour les parties a plus de 2 joueurs)=================
+                    joueursMort = plateauJeu.jouer(joueurCourant, actionJoue)
+                    for idJoueurMort in joueursMort:
+                        nbeJoueur -= 1
+                        if idJoueurMort < joueurCourant:
+                            joueurCourant -= 1
+                        del ias[idJoueurMort]
         else:
             plateauJeu.jouer(joueurCourant, actionJoue)
         plateauJeu.afficher(joueurCourant, actionJoue, None, True)
@@ -51,7 +57,13 @@ while not fin:
             cartesPioche = ias[joueurCourant].pioche(plateauJeu, joueurCourant)
             plateauJeu.joueurs[joueurCourant].ajouter_cartes(cartesPioche)
             plateauJeu.retirer_pioche(len(cartesPioche))
-    fin = plateauJeu.est_fini()
+    # ==============Gestion des joueurs morts (pour les parties a plus de 2 joueurs)=================
+    fin, joueursMort = plateauJeu.est_fini()
+    for idJoueurMort in joueursMort:
+        del ias[idJoueurMort]
+        nbeJoueur -= 1
+        if idJoueurMort < joueurCourant:
+            joueurCourant -= 1
     joueurCourant = (joueurCourant+1)%nbeJoueur
     nbeAction = 0
 
