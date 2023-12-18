@@ -31,54 +31,53 @@ class Ia:
 
     def calcul_coup_base(self, plateau, id_joueur, nb_carte_jouees):
         joueur = plateau.joueurs[id_joueur]
-        if self.niveau == 0:
-            if nb_carte_jouees == 0 and not self.peut_jouer():
-                for _ in range(min(2, len(joueur.main))): # défausse soit 2 carte, soit moins s'il en a moins
-                    carte_mini = joueur.main[0]
-                    for carte in joueur.main[1:]:
-                        if carte_mini > carte:
-                            carte_mini = carte
-                    joueur.main.remove(carte_mini)
-            elif nb_carte_jouees == 1 and not self.peut_jouer() and len(joueur.main) >0:
-                carte_a_jouer = min(joueur.main) # key=lambda x:x.valeur si jamais bug
-                joueur.main.remove(carte_a_jouer)
-            elif nb_carte_jouees <3:
-                nombre_carte_a_joueur = max(3,len(joueur.main))
-                cartes_joker = []
-                cartes_attaque = []
-                cartes_deplacement = []
-                for carte in joueur.main:
-                    if carte.motif == "J":
-                        cartes_joker.append(carte)
-                    elif carte.motif in ["K","C"]:
-                        cartes_attaque.append(carte)
-                    else:
-                        cartes_deplacement.append(carte)
-                if cartes_joker != [] and self.carte_possible(plateau, joueur, cartes_joker[0]):
-                    carte_jouee = cartes_joker[0] # permet d'en prendre 1
-                    cible= choice(self.cible_carte(plateau, joueur, carte))
-                elif cartes_attaque != []:
-                    cartes_jouables = []
-                    for carte in cartes_attaque:
-                        if self.carte_possible(plateau, joueur, carte):
-                            cartes_jouables.append(carte)
-                    carte_jouee = choice(cartes_jouables)
-                    cible = choice(self.carte_possible(plateau, joueur, carte_jouee))
-                    if cible == (0,0):
-                        pass # pousse
-                    else:
-                        pass # attaque
-                elif cartes_deplacement != [] and joueur.position == (0,0):
-                    # liste de tuple sous la forme (carte, cible, distance au centre)
-                    liste_cibles = []
-                    for carte in cartes_deplacement:
-                        cibles = self.cible_carte(plateau, joueur, carte)
-                        for cible in cibles:
-                            distance = sqrt(cible[0]**2 + cible[1]**2)
-                            liste_cibles.append((carte,cible,distance))
-                    carte_jouee, cible, _ = min(liste_cibles, key=lambda x:liste_cibles[x])
-            elif nb_carte_jouees >= 3:
-                pass # code 5
+        if nb_carte_jouees == 0 and not self.peut_jouer():
+            for _ in range(min(2, len(joueur.main))): # défausse soit 2 carte, soit moins s'il en a moins
+                carte_mini = joueur.main[0]
+                for carte in joueur.main[1:]:
+                    if carte_mini > carte:
+                        carte_mini = carte
+                joueur.main.remove(carte_mini)
+        elif nb_carte_jouees == 1 and not self.peut_jouer() and len(joueur.main) >0:
+            carte_a_jouer = min(joueur.main) # key=lambda x:x.valeur si jamais bug
+            joueur.main.remove(carte_a_jouer)
+        elif nb_carte_jouees <3:
+            nombre_carte_a_joueur = max(3,len(joueur.main))
+            cartes_joker = []
+            cartes_attaque = []
+            cartes_deplacement = []
+            for carte in joueur.main:
+                if carte.motif == "J":
+                    cartes_joker.append(carte)
+                elif carte.motif in ["K","C"]:
+                    cartes_attaque.append(carte)
+                else:
+                    cartes_deplacement.append(carte)
+            if cartes_joker != [] and self.carte_possible(plateau, joueur, cartes_joker[0]):
+                carte_jouee = cartes_joker[0] # permet d'en prendre 1
+                cible= choice(self.cible_carte(plateau, joueur, carte))
+            elif cartes_attaque != []:
+                cartes_jouables = []
+                for carte in cartes_attaque:
+                    if self.carte_possible(plateau, joueur, carte):
+                        cartes_jouables.append(carte)
+                carte_jouee = choice(cartes_jouables)
+                cible = choice(self.carte_possible(plateau, joueur, carte_jouee))
+                if cible == (0,0):
+                    pass # pousse
+                else:
+                    pass # attaque
+            elif cartes_deplacement != [] and joueur.position == (0,0):
+                # liste de tuple sous la forme (carte, cible, distance au centre)
+                liste_cibles = []
+                for carte in cartes_deplacement:
+                    cibles = self.cible_carte(plateau, joueur, carte)
+                    for cible in cibles:
+                        distance = sqrt(cible[0]**2 + cible[1]**2)
+                        liste_cibles.append((carte,cible,distance))
+                carte_jouee, cible, _ = min(liste_cibles, key=lambda x:liste_cibles[x])
+        elif nb_carte_jouees >= 3:
+            pass # code 5
 
     def fin_de_tour(self, plateau, joueur, carte):
         pass # tkt
