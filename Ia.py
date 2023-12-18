@@ -8,10 +8,11 @@ from Arborescence import Arborescence
 from evaluation1 import evaluation
 
 class Ia:
-    def __init__(self, niveau, evaluation_ia=evaluation):
+    def __init__(self, niveau, evaluation_ia=evaluation, index=0):
         self.niveau = niveau
         self.coupAJouer = []
         self.evaluation = evaluation_ia
+        self.index = index
     
         if niveau == 0:
             self.calcul_coup = self.calcul_coup_base
@@ -80,16 +81,16 @@ class Ia:
                 pass # code 5
 
     def fin_de_tour(self, plateau, joueur, carte):
-        pass # tkt 
+        pass # tkt
 
-    
+
 
 
 
     def carte_possible(self, plateau, joueur, carte):
         return self.cible_carte(plateau, joueur, carte) != []
 
-    
+
 
 
 
@@ -134,13 +135,13 @@ class Ia:
                 if autre_joueur.position in cibles:
                     cibles.remove(autre_joueur.position)
         return cibles
-                    
-    
+
+
 
 
 
     def peut_jouer(self): # voir si on le met dans joueur
-        pass            
+        pass
       
   
 
@@ -167,7 +168,7 @@ class Ia:
                     cartesDefaussees.append(carte[0])
         else:
             self.defausse(plateau, joueur, 0)
-        
+
         return cartesDefaussees
 
   
@@ -280,13 +281,13 @@ class Ia:
                                 "endurance": plateau.joueurs[x].endurance,\
                                 "position": plateau.joueurs[x].position}\
                             for x in range(len(plateau.joueurs))}
-        
+
         etat.update(etatJoueurs)
         arbre = Arborescence(self.evaluation, 5, plateau.taille, etat, joueurCourant=idJoueur, vaRecevoirTomates=(nbCartesJouees == 0))
         self.coupAJouer = choisir_coup(arbre, idJoueur, self.niveau)
 
         coupJoue = self.convertir_sortie_minimax_vers_sortie_ia(plateau, idJoueur, self.coupAJouer[0])
-        
+
         return coupJoue
 
 
