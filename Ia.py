@@ -282,9 +282,9 @@ class Ia:
                                 "position": plateau.joueurs[x].position}\
                             for x in range(len(plateau.joueurs))}
 
-        etat.update(etatJoueurs)
-        arbre = Arborescence(self.evaluation, 5, plateau.taille, etat, joueurCourant=idJoueur, vaRecevoirTomates=(nbCartesJouees == 0))
-        self.coupAJouer = choisir_coup(arbre, idJoueur, self.niveau)
+            etat.update(etatJoueurs)
+            arbre = Arborescence(self.evaluation, 5, plateau.taille, etat, joueurCourant=idJoueur, vaRecevoirTomates=(nbCartesJouees == 0))
+            self.coupAJouer = choisir_coup(arbre, idJoueur, self.niveau)
 
         coupJoue = self.convertir_sortie_minimax_vers_sortie_ia(plateau, idJoueur, self.coupAJouer[0])
 
