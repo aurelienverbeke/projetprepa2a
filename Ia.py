@@ -35,7 +35,7 @@ class Ia:
 
     def calcul_coup_base(self, plateau, idJoueur, nbCartesJouees):
         joueur = plateau.joueurs[idJoueur]
-        if self.nbCartesJoueesBase < nBCartesAJouerBase:
+        if self.nbCartesJoueesBase < self.nbCartesAJouerBase:
             cartesJoker = []
             cartesAttaque = []
             cartesDeplacement = []
@@ -52,7 +52,7 @@ class Ia:
                 return 1, [carteJouee], cible
             elif cartesAttaque != []:
                 cartesJouables = []
-                for carte in cartes_attaque:
+                for carte in cartesAttaque:
                     if self.carte_possible(plateau, joueur, carte):
                         cartesJouables.append(carte)
                 carteJouee = choice(cartesJouables)
@@ -64,7 +64,7 @@ class Ia:
             elif cartesDeplacement != [] and joueur.position != (0,0):
                 # liste de tuple sous la forme (carte, cible, distance au centre)
                 listeCibles = []
-                for carte in cartes_deplacement:
+                for carte in cartesDeplacement:
                     cibles = self.cible_carte(plateau, joueur, carte)
                     for cible in cibles:
                         distance = sqrt(cible[0]**2 + cible[1]**2)
@@ -88,7 +88,8 @@ class Ia:
 
 
     def cible_carte(self, plateau, joueur, carte):
-        joueurs = list(plateau.joueurs).remove(joueur)
+        joueurs = list(plateau.joueurs)
+        joueurs.remove(joueur)
         cibles = []
         if carte.motif == "J":
             for autre_joueur in joueurs:
@@ -116,14 +117,14 @@ class Ia:
         elif carte.motif == "T":
             for incr in [(0,1), (0,-1), (1,0), (-1,0)]:
                 if abs(joueur.position[0] + incr[0]) <= plateau.rayonGrille and abs(joueur.position[1] + incr[1]) <= plateau.rayonGrille:
-                    cibles.append(joueur.position[0] + incr[0], joueur.position[1] + incr[1])
+                    cibles.append((joueur.position[0] + incr[0], joueur.position[1] + incr[1]))
             for autre_joueur in joueurs:
                 if autre_joueur.position in cibles:
                     cibles.remove(autre_joueur.position)
         elif carte.motif == "P":
             for incr in [(1,1), (1,-1), (-1,1), (-1,-1)]:
                 if abs(joueur.position[0] + incr[0]) <= plateau.rayonGrille and abs(joueur.position[1] + incr[1]) <= plateau.rayonGrille:
-                    cibles.append(joueur.position[0] + incr[0], joueur.position[1] + incr[1])
+                    cibles.append((joueur.position[0] + incr[0], joueur.position[1] + incr[1]))
             for autre_joueur in joueurs:
                 if autre_joueur.position in cibles:
                     cibles.remove(autre_joueur.position)
