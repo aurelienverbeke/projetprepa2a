@@ -1,5 +1,5 @@
 from math import sqrt
-from random import choice
+from random import choice, randint
 
 from Carte import Carte
 from Minimax import choisir_coup
@@ -7,12 +7,16 @@ from Arborescence import Arborescence
 
 from evaluation1 import evaluation
 
+
+
 class Ia:
     def __init__(self, niveau, evaluation_ia=evaluation, index=0):
         self.niveau = niveau
         self.coupAJouer = []
         self.evaluation = evaluation_ia
         self.index = index
+        self.nbCartesJoueesBase = 0
+        self.nbCartesAJouerBase = randint(1, 3)
     
         if niveau == 0:
             self.calcul_coup = self.calcul_coup_base
@@ -29,58 +33,48 @@ class Ia:
 
 
 
-    def calcul_coup_base(self, plateau, id_joueur, nb_carte_jouees):
-        joueur = plateau.joueurs[id_joueur]
-        if nb_carte_jouees == 0 and not self.peut_jouer():
-            for _ in range(min(2, len(joueur.main))): # défausse soit 2 carte, soit moins s'il en a moins
-                carte_mini = joueur.main[0]
-                for carte in joueur.main[1:]:
-                    if carte_mini > carte:
-                        carte_mini = carte
-                joueur.main.remove(carte_mini)
-        elif nb_carte_jouees == 1 and not self.peut_jouer() and len(joueur.main) >0:
-            carte_a_jouer = min(joueur.main) # key=lambda x:x.valeur si jamais bug
-            joueur.main.remove(carte_a_jouer)
-        elif nb_carte_jouees <3:
-            nombre_carte_a_joueur = max(3,len(joueur.main))
-            cartes_joker = []
-            cartes_attaque = []
-            cartes_deplacement = []
+    def calcul_coup_base(self, plateau, idJoueur, nbCartesJouees):
+        joueur = plateau.joueurs[idJoueur]
+        if self.nbCartesJoueesBase < nBCartesAJouerBase:
+            cartesJoker = []
+            cartesAttaque = []
+            cartesDeplacement = []
             for carte in joueur.main:
                 if carte.motif == "J":
-                    cartes_joker.append(carte)
+                    cartesJoker.append(carte)
                 elif carte.motif in ["K","C"]:
-                    cartes_attaque.append(carte)
+                    cartesAttaque.append(carte)
                 else:
-                    cartes_deplacement.append(carte)
-            if cartes_joker != [] and self.carte_possible(plateau, joueur, cartes_joker[0]):
-                carte_jouee = cartes_joker[0] # permet d'en prendre 1
-                cible= choice(self.cible_carte(plateau, joueur, carte))
-            elif cartes_attaque != []:
-                cartes_jouables = []
+                    cartesDeplacement.append(carte)
+            if cartesJoker != [] and self.carte_possible(plateau, joueur, cartesJoker[0]):
+                carteJouee = cartesJoker[0] # permet d'en prendre 1
+                cible = choice(self.cible_carte(plateau, joueur, carte))
+                return 1, [carteJouee], cible
+            elif cartesAttaque != []:
+                cartesJouables = []
                 for carte in cartes_attaque:
                     if self.carte_possible(plateau, joueur, carte):
-                        cartes_jouables.append(carte)
-                carte_jouee = choice(cartes_jouables)
-                cible = choice(self.carte_possible(plateau, joueur, carte_jouee))
+                        cartesJouables.append(carte)
+                carteJouee = choice(cartesJouables)
+                cible = choice(self.carte_possible(plateau, joueur, carteJouee))
                 if cible == (0,0):
-                    pass # pousse
+                    return 2, [carteJouee], cible
                 else:
-                    pass # attaque
-            elif cartes_deplacement != [] and joueur.position == (0,0):
+                    return 3, [carteJouee], cible
+            elif cartesDeplacement != [] and joueur.position != (0,0):
                 # liste de tuple sous la forme (carte, cible, distance au centre)
-                liste_cibles = []
+                listeCibles = []
                 for carte in cartes_deplacement:
                     cibles = self.cible_carte(plateau, joueur, carte)
                     for cible in cibles:
                         distance = sqrt(cible[0]**2 + cible[1]**2)
-                        liste_cibles.append((carte,cible,distance))
-                carte_jouee, cible, _ = min(liste_cibles, key=lambda x:liste_cibles[x])
-        elif nb_carte_jouees >= 3:
-            pass # code 5
-
-    def fin_de_tour(self, plateau, joueur, carte):
-        pass # tkt
+                        listeCibles.append((carte, cible, distance))
+                carteJouee, cible, _ = min(listeCibles, key=lambda x:listeCibles[x])
+                return 4, [carteJouee], cible
+            else:
+                return 5, [], ()
+        else:
+            return 5, [], ()
 
 
 
@@ -139,13 +133,8 @@ class Ia:
 
 
 
-    def peut_jouer(self): # voir si on le met dans joueur
-        pass
-      
-  
-
-
-
+    """
+    Version recursive by Brice (abandonnee)
     def defausse_base(self, plateau, joueur, nbe = 0):
         priorite = {}
         cartesDefaussees = []
@@ -169,25 +158,52 @@ class Ia:
             self.defausse(plateau, joueur, 0)
 
         return cartesDefaussees
+    """
+
+    def defausse_base(self, plateau, joueur, nb=0):
+        cartesADefausser = []
+
+        if self.nbCartesJoueesBase == 0:
+            for _ in range(min(2, len(joueur.main))): # défausse soit 2 carte, soit moins s'il en a moins
+                carte_mini = joueur.main[0]
+                for carte in joueur.main[1:]:
+                    if carte_mini > carte:
+                        carte_mini = carte
+                cartesADefausser.append(carte_mini)
+
+        if self.nbCartesJoueesBase == 1 and len(joueur.main) > 0:
+            carte_a_jouer = min(joueur.main) # key=lambda x:x.valeur si jamais bug
+            cartesADefausser.append(min(joueur.main))
+        
+        return cartesADefausser
 
   
 
 
 
     def pioche_base(self, plateau, joueur):
-        nbCartes = 0
+        cartesAPiocher = []
         for i in range(5 - len(plateau.joueurs[joueur].main)):
-            if i <= 2:
-                plateau.joueurs[joueur].ajouter_cartes(plateau.pioche[len(plateau.pioche) - i])
-                nbCartes += 1
-        plateau.retirer_pioche(nbCartes)
+            if i <= 1:
+                cartesAPiocher.append(plateau.pioche[len(plateau.pioche) - i])
+        return cartesAPiocher
 
   
 
 
 
-    def contre_base(self, plateauJeu, cartes, joueurCible, joueurCourant):
-        pass
+    def contre_base(self, plateau, carteAttaque, joueurCible, joueurCourant):
+        carteContre = Carte("K", 20)
+        for carte in plateau.joueurs[joueurCible].main:
+            if carte.motif == carteAttaque.motif and carte.valeur >= carteAttaque.valeur and carte.valeur < carteContre:
+                carteContre = carte
+        
+        if carteContre.valeur == 20:
+            return None
+        return carteContre
+
+
+
 
 
     def recherche_carte(self, main, motif, valeur=None):
@@ -200,6 +216,10 @@ class Ia:
 
         return carteCherchee
 
+
+
+
+
     def recherche_carte_liste(self, main, cartes):
         cartesRechechees = []
         for motif, valeur in cartes:
@@ -209,6 +229,10 @@ class Ia:
                 cartesRechechees.append(self.recherche_carte(main, motif, valeur))
 
         return cartesRechechees
+
+
+
+
 
     def convertir_sortie_minimax_vers_sortie_ia(self, plateau, idJoueur, action):
         mainJoueurCourant = plateau.joueurs[idJoueur].main
@@ -273,6 +297,8 @@ class Ia:
 
 
 
+
+
     def calcul_coup_minimax(self, plateau, idJoueur, nbCartesJouees):
         if not self.coupAJouer:
             etat = {"pioche": plateau.pioche, "listeJoueurs": list(range(len(plateau.joueurs)))}
@@ -291,6 +317,8 @@ class Ia:
 
 
 
+
+
     def defausse_minimax_coup_bas(self, plateau, joueurCible, joueurCourant):
         etat = {"pioche": plateau.pioche, "listeJoueurs": list(range(len(plateau.joueurs)))}
         etatJoueurs = {x: {"main": plateau.joueurs[x].main,\
@@ -306,8 +334,15 @@ class Ia:
         arbre = Arborescence(self.evaluation, 5, plateau.taille, etat, dernierCoup, joueurCible, vaRecevoirTomates=False, estAttaque=True)
         self.coupAJouer = choisir_coup(arbre, joueurCible, self.niveau)
 
+
+
+
+
     def defausse_minimax_fin_tour(self, plateau, joueurCible):
         self.coupAJouer[0] = ("defausse fin", 0)
+
+
+
 
 
     def defausse_minimax(self, plateau, joueurCible, nombreCartesDefausse=None, joueurCourant=None):
@@ -319,11 +354,18 @@ class Ia:
         return self.calcul_coup(plateau, joueurCible, 1)
 
 
+
+
+
     def pioche_minimax(self, plateau, joueur):
         nombreCartePioche = min(2, 5-len(plateau.joueurs[joueur].main), len(plateau.pioche))
         if nombreCartePioche > 0:
             return plateau.pioche[-nombreCartePioche:]
         return []
+
+
+
+
 
     def contre_minimax(self, plateau, cartes, joueurCible, joueurCourant):
         etat = {"pioche": plateau.pioche, "listeJoueurs": list(range(len(plateau.joueurs)))}
@@ -343,6 +385,8 @@ class Ia:
         self.coupAJouer = choisir_coup(arbre, joueurCible, self.niveau)
 
         return self.calcul_coup(plateau, joueurCible, 1)
+
+
 
 
 
