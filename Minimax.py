@@ -2,7 +2,7 @@ from Arborescence import Arborescence
 
 def minimax(arbre, joueurCourant, pmax):
     if arbre.est_fini() or pmax == 0:
-        valeur = arbre.evaluation()
+        valeur = arbre.evaluation(arbre.etat, arbre.taillePlateau, arbre.joueurCourant)
         arbre.valeur = valeur
         return valeur
     valeur = {idJoueur: float("-inf") for idJoueur in arbre.etat["listeJoueurs"]}
@@ -24,7 +24,7 @@ def choisir_coup(arbre, joueurCourant, pmax):
         if joueurCourant not in meilleurFils.valeur.keys() or fils.valeur[joueurCourant] > meilleurFils.valeur[joueurCourant]:
             meilleurFils = fils
         if fils.valeur[joueurCourant] == meilleurFils.valeur[joueurCourant]\
-                and fils.evaluation()[joueurCourant] > meilleurFils.evaluation()[joueurCourant]:
+                and fils.evaluation(fils.etat, fils.taillePlateau, fils.joueurCourant)[joueurCourant] > meilleurFils.evaluation(meilleurFils.etat, meilleurFils.taillePlateau, meilleurFils.joueurCourant)[joueurCourant]:
             meilleurFils = fils
     return meilleurFils.dernierCoup["cartes"]
 

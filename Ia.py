@@ -5,10 +5,13 @@ from Carte import Carte
 from Minimax import choisir_coup
 from Arborescence import Arborescence
 
+from evaluation1 import evaluation
+
 class Ia:
-  def __init__(self, niveau):
+  def __init__(self, niveau, evaluation_ia=evaluation):
     self.niveau = niveau
     self.coupAJouer = []
+    self.evaluation = evaluation_ia
     
     if niveau == 0:
         self.calcul_coup = self.calcul_coup_base
@@ -276,7 +279,7 @@ class Ia:
                          "position": plateau.joueurs[x].position}
                      for x in range(len(plateau.joueurs))}
       etat.update(etatJoueurs)
-      arbre = Arborescence(5, plateau.taille, etat, joueurCourant=idJoueur, vaRecevoirTomates=(nbCartesJouees == 0))
+      arbre = Arborescence(self.evaluation, 5, plateau.taille, etat, joueurCourant=idJoueur, vaRecevoirTomates=(nbCartesJouees == 0))
       self.coupAJouer = choisir_coup(arbre, idJoueur, self.niveau)
 
     coupJoue = self.convertir_sortie_minimax_vers_sortie_ia(plateau, idJoueur, self.coupAJouer[0])
@@ -295,7 +298,7 @@ class Ia:
 
     dernierCoup = {"cartes": [("coup bas", joueurCible)], "joueur": joueurCourant, "position": positionJoueurCourant}
 
-    arbre = Arborescence(5, plateau.taille, etat, dernierCoup, joueurCible, vaRecevoirTomates=False, estAttaque=True)
+    arbre = Arborescence(self.evaluation, 5, plateau.taille, etat, dernierCoup, joueurCible, vaRecevoirTomates=False, estAttaque=True)
     self.coupAJouer = choisir_coup(arbre, joueurCible, self.niveau)
 
   def defausse_minimax_fin_tour(self, plateau, joueurCible):
@@ -329,7 +332,7 @@ class Ia:
     dernierCoup = {"cartes": [("endurance", joueurCible, carteJoue.motif, carteJoue.valeur)], "joueur": joueurCourant,
                    "position": positionJoueurCourant}
 
-    arbre = Arborescence(5, plateau.taille, etat, dernierCoup, joueurCible, vaRecevoirTomates=False, estAttaque=True)
+    arbre = Arborescence(self.evaluation, 5, plateau.taille, etat, dernierCoup, joueurCible, vaRecevoirTomates=False, estAttaque=True)
     self.coupAJouer = choisir_coup(arbre, joueurCible, self.niveau)
 
     return self.calcul_coup(plateau, joueurCible, 1)
