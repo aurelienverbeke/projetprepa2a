@@ -17,6 +17,8 @@ def minimax(arbre, joueurCourant, pmax):
 
 def choisir_coup(arbre, joueurCourant, pmax):
     minimax(arbre, joueurCourant, pmax)
+    if not arbre.sousArbres:
+        return [("fin", 0)]
     meilleurFils = arbre.sousArbres[0]
     for fils in arbre.sousArbres:
         if joueurCourant not in fils.valeur.keys():
