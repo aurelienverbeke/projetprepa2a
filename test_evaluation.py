@@ -75,12 +75,12 @@ def test_evaluation(taillePlateau, nombreParties, *args):
 
         iasGagante = ias[0]
         nombreVictoiresParJoueur[iasGagante.index] += 1
-        print(f"Partie {indexPartie+1} terminee, victoire : {iasGagante.index}")
+        print(f"Partie {indexPartie+1} terminee")
 
     return nombreVictoiresParJoueur
 
 
 
 if __name__ == "__main__":
-    from Evaluation import evaluation
-    print(test_evaluation(5, 100, (evaluation, 1), (evaluation, 1)))
+    from evaluation1 import evaluation
+    print(test_evaluation(5, 100, (evaluation, 3), (evaluation, 2)))

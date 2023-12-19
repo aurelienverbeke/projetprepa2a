@@ -1,3 +1,18 @@
+SCORE_COEFFICIENT_ENDURANCE = 100
+SCORE_COEFFICIENT_NB_CARTES = 0
+SCORE_CARTE_DEPLACEMENT = 0
+SCORE_CARTE_JOKER = 0
+SCORE_COEFFICIENT_CARTE_ATTAQUE = 0
+SCORE_POSITION_CENTRE = 10
+SCORE_POSITION_COIN = -10
+SCORE_POSITION_EXTERIEUR = -10
+SCORE_CENTRE_COURONNE = 10
+SCORE_ATTAQUE_ADVERSAIRE = 0
+SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = 0
+SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = 0
+SCORE_ADVERSAIRE_VOISIN = 0
+SCORE_JOKER_CARTES_ADVERSAIRE = 0
+
 POSITIONS_COURONNE = [(ligne, colonne) for ligne in [-1, 0, 1] for colonne in [-1, 0, 1] if (ligne, colonne) != (0, 0)]
 POSITIONS_COINS = []
 
@@ -25,7 +40,7 @@ def voisins(etat, ligne, colonne, extremite):
 
     return voisins
 
-def evaluation(etat, taille, joueurCourant, constantes=None):
+def evaluation(etat, taille, joueurCourant):
     """
     Attribue un score pour chaque joueur
     On part de 0 et on ajoute ou enleve un certain nombre de points en fonction d'une situation analysee comme bonne ou mauvaise
@@ -34,37 +49,6 @@ def evaluation(etat, taille, joueurCourant, constantes=None):
         - (list): pour chaque joueur, son score
             exemple: [<score joueur0>, <score joueur1>, <score joueur2>]
     """
-    if constantes is not None:
-        SCORE_COEFFICIENT_ENDURANCE = constantes[0]
-        SCORE_COEFFICIENT_NB_CARTES = constantes[1]
-        SCORE_CARTE_DEPLACEMENT = constantes[2]
-        SCORE_CARTE_JOKER = constantes[3]
-        SCORE_COEFFICIENT_CARTE_ATTAQUE = constantes[4]
-        SCORE_POSITION_CENTRE = constantes[5]
-        SCORE_POSITION_COIN = constantes[6]
-        SCORE_POSITION_EXTERIEUR = constantes[7]
-        SCORE_CENTRE_COURONNE = constantes[8]
-        SCORE_ATTAQUE_ADVERSAIRE = constantes[9]
-        SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = constantes[10]
-        SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = constantes[11]
-        SCORE_ADVERSAIRE_VOISIN = constantes[12]
-        SCORE_JOKER_CARTES_ADVERSAIRE = constantes[13]
-    else:
-        SCORE_COEFFICIENT_ENDURANCE = 100
-        SCORE_COEFFICIENT_NB_CARTES = 0
-        SCORE_CARTE_DEPLACEMENT = 0
-        SCORE_CARTE_JOKER = 0
-        SCORE_COEFFICIENT_CARTE_ATTAQUE = 0
-        SCORE_POSITION_CENTRE = 10
-        SCORE_POSITION_COIN = -10
-        SCORE_POSITION_EXTERIEUR = -10
-        SCORE_CENTRE_COURONNE = 10
-        SCORE_ATTAQUE_ADVERSAIRE = 0
-        SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = 0
-        SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = 0
-        SCORE_ADVERSAIRE_VOISIN = 0
-        SCORE_JOKER_CARTES_ADVERSAIRE = 0
-
     extremite = taille//2
     POSITIONS_COINS = [(-extremite, -extremite), \
                            (extremite, extremite), \
