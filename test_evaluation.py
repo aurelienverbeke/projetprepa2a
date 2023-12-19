@@ -1,10 +1,22 @@
 from Ia import Ia
 from RdR_jeu import RoiDuRing
 
-def test_evaluation(taillePlateau, niveauIas, nombreParties, *args):
+def test_evaluation(taillePlateau, nombreParties, *args):
+    """
+    Fait jouer les ias et retourne le nombre de victoire pour chacune d'elles
+
+    Parametres :
+        - taillePlateau (int) : taille du plateau de jeu
+        - nombreParties (int) : le nombre de parties joues
+        - En suivant les argument sont des couples (evaluation : fonction, niveau : niveau)
+        si a la place de l'evaluation on met "base", l'ia de base jouera
+
+    Renvoie un dictionnaire ayant pour clé le numero de l'ia et en valeur le nombre de parties gagnees
+    (numero dans l'ordre donne en argument)
+    """
     nombreVictoiresParJoueur = {x: 0 for x in range(len(args))}
     for indexPartie in range(nombreParties):
-        ias = [Ia(niveauIas, evaluation, index) if evaluation != "base" else Ia(0) for index, evaluation in enumerate(args)]
+        ias = [Ia(evaluation[1], evaluation[0], index) if evaluation[0] != "base" else Ia(0) for index, evaluation in enumerate(args)]
         nbeJoueur = len(ias)
         plateauJeu = RoiDuRing(taillePlateau, nbeJoueur)
         fin = False
@@ -71,4 +83,4 @@ def test_evaluation(taillePlateau, niveauIas, nombreParties, *args):
 
 if __name__ == "__main__":
     from evaluation1 import evaluation
-    print(test_evaluation(5, 1, 100, evaluation, evaluation, evaluation, evaluation))
+    print(test_evaluation(5, 100, (evaluation, 3), (evaluation, 2)))
