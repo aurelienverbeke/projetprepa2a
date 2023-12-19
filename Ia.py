@@ -226,11 +226,14 @@ class Ia:
 
     def recherche_carte_liste(self, main, cartes):
         cartesRechechees = []
+        mainJoueur = main[:]
         for motif, valeur in cartes:
             if valeur == 0 or type(valeur) == tuple:
-                cartesRechechees.append(self.recherche_carte(main, motif))
+                cartesRechechees.append(self.recherche_carte(mainJoueur, motif))
+                mainJoueur.remove(cartesRechechees[-1])
             else:
-                cartesRechechees.append(self.recherche_carte(main, motif, valeur))
+                cartesRechechees.append(self.recherche_carte(mainJoueur, motif, valeur))
+                mainJoueur.remove(cartesRechechees[-1])
 
         return cartesRechechees
 
