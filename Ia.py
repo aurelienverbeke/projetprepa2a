@@ -35,6 +35,7 @@ class Ia:
 
     def calcul_coup_base(self, plateau, idJoueur, nbCartesJouees):
         joueur = plateau.joueurs[idJoueur]
+
         if self.nbCartesJoueesBase < self.nbCartesAJouerBase:
             cartesJoker = []
             cartesAttaque = []
@@ -46,22 +47,26 @@ class Ia:
                     cartesAttaque.append(carte)
                 else:
                     cartesDeplacement.append(carte)
+            
             if cartesJoker != [] and self.carte_possible(plateau, joueur, cartesJoker[0]):
                 carteJouee = cartesJoker[0] # permet d'en prendre 1
-                cible = choice(self.cible_carte(plateau, joueur, carte))
+                cible = choice(self.cible_carte(plateau, joueur, carteJouee))
                 return 1, [carteJouee], cible
-            elif cartesAttaque != []:
+            
+            if cartesAttaque != []:
                 cartesJouables = []
                 for carte in cartesAttaque:
                     if self.carte_possible(plateau, joueur, carte):
                         cartesJouables.append(carte)
-                carteJouee = choice(cartesJouables)
-                cible = choice(self.carte_possible(plateau, joueur, carteJouee))
-                if cible == (0,0):
-                    return 2, [carteJouee], cible
-                else:
-                    return 3, [carteJouee], cible
-            elif cartesDeplacement != [] and joueur.position != (0,0):
+                if cartesJouables != []:
+                    carteJouee = choice(cartesJouables)
+                    cible = choice(self.cible_carte(plateau, joueur, carteJouee))
+                    if cible == (0,0):
+                        return 2, [carteJouee], cible
+                    else:
+                        return 3, [carteJouee], cible
+            
+            if cartesDeplacement != [] and joueur.position != (0,0):
                 # liste de tuple sous la forme (carte, cible, distance au centre)
                 listeCibles = []
                 for carte in cartesDeplacement:
@@ -71,10 +76,8 @@ class Ia:
                         listeCibles.append((carte, cible, distance))
                 carteJouee, cible, _ = min(listeCibles, key=lambda x:listeCibles[x])
                 return 4, [carteJouee], cible
-            else:
-                return 5, [], ()
-        else:
-            return 5, [], ()
+        
+        return 5, [], ()
 
 
 
