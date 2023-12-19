@@ -3,8 +3,8 @@ from RdR_jeu import RoiDuRing
 
 def test_evaluation(taillePlateau, niveauIas, nombreParties, *args):
     nombreVictoiresParJoueur = {x: 0 for x in range(len(args))}
-    for _ in range(nombreParties):
-        ias = [Ia(niveauIas, evaluation, index) for index, evaluation in enumerate(args)]
+    for indexPartie in range(nombreParties):
+        ias = [Ia(niveauIas, evaluation, index) if evaluation != "base" else Ia(0) for index, evaluation in enumerate(args)]
         nbeJoueur = len(ias)
         plateauJeu = RoiDuRing(taillePlateau, nbeJoueur)
         fin = False
@@ -63,6 +63,7 @@ def test_evaluation(taillePlateau, niveauIas, nombreParties, *args):
 
         iasGagante = ias[0]
         nombreVictoiresParJoueur[iasGagante.index] += 1
+        print(f"Partie {indexPartie+1} terminee")
 
     return nombreVictoiresParJoueur
 
@@ -70,4 +71,4 @@ def test_evaluation(taillePlateau, niveauIas, nombreParties, *args):
 
 if __name__ == "__main__":
     from evaluation1 import evaluation
-    print(test_evaluation(5, 1, 20, evaluation, evaluation))
+    print(test_evaluation(5, 1, 100, evaluation, evaluation, evaluation, evaluation))
