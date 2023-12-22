@@ -83,4 +83,4 @@ def test_evaluation(taillePlateau, nombreParties, *args):
 
 if __name__ == "__main__":
     from evaluation1 import evaluation
-    print(test_evaluation(5, 100, (evaluation, 0), (evaluation, 1)))
+    print(test_evaluation(5, 1000, (evaluation, 0), (evaluation, 1)))

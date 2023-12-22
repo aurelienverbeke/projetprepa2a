@@ -74,8 +74,9 @@ class Ia:
                     for cible in cibles:
                         distance = sqrt(cible[0]**2 + cible[1]**2)
                         listeCibles.append((carte, cible, distance))
-                carteJouee, cible, _ = min(listeCibles, key=lambda x: x[2])
-                return 4, [carteJouee], cible
+                if listeCibles:
+                    carteJouee, cible, _ = min(listeCibles, key=lambda x: x[2])
+                    return 4, [carteJouee], cible
         
         return 5, [], ()
 
@@ -101,7 +102,7 @@ class Ia:
                                                 joueur.position[0] + 1] and\
                     autre_joueur.position[1] in [joueur.position[1]-1,
                                                 joueur.position[1],
-                                                joueur.position[1] + 1]:
+                                                joueur.position[1] + 1] and autre_joueur.main:
                     cibles.append(autre_joueur.position)
         elif carte.motif == "K":
             for autre_joueur in joueurs:

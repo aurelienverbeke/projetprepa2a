@@ -101,6 +101,7 @@ class RoiDuRing:
         if carteJoue[0] not in self.joueurs[joueurCourant].main:
             raise ValueError("Tentative d'utilisation d'un joker qui n'est pas dans la main")
         if not self.joueurs[joueurCible].main:
+            print(joueurCourant)
             raise ValueError("Tentative de vol de carte a un joueur qui n'en a pas")
 
         carteVolee = self.joueurs[joueurCible].main[0]
