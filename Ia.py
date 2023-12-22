@@ -74,7 +74,7 @@ class Ia:
                     for cible in cibles:
                         distance = sqrt(cible[0]**2 + cible[1]**2)
                         listeCibles.append((carte, cible, distance))
-                carteJouee, cible, _ = min(listeCibles, key=lambda x:listeCibles[x])
+                carteJouee, cible, _ = min(listeCibles, key=lambda x: x[2])
                 return 4, [carteJouee], cible
         
         return 5, [], ()
@@ -164,8 +164,9 @@ class Ia:
         return cartesDefaussees
     """
 
-    def defausse_base(self, plateau, joueur, nb=0):
+    def defausse_base(self, plateau, idJoueur, nb=0):
         cartesADefausser = []
+        joueur = plateau.joueurs[idJoueur]
 
         if self.nbCartesJoueesBase == 0:
             for _ in range(min(2, len(joueur.main))): # défausse soit 2 carte, soit moins s'il en a moins
@@ -186,20 +187,20 @@ class Ia:
 
 
     def pioche_base(self, plateau, joueur):
-        cartesAPiocher = []
-        for i in range(5 - len(plateau.joueurs[joueur].main)):
-            if i <= 1:
-                cartesAPiocher.append(plateau.pioche[len(plateau.pioche) - i])
-        return cartesAPiocher
+        nombreCartePioche = min(2, 5-len(plateau.joueurs[joueur].main), len(plateau.pioche))
+        if nombreCartePioche > 0:
+            return plateau.pioche[-nombreCartePioche:]
+        return []
 
   
 
 
 
     def contre_base(self, plateau, carteAttaque, joueurCible, joueurCourant):
+        carteAttaque = carteAttaque[0]
         carteContre = Carte("K", 20)
         for carte in plateau.joueurs[joueurCible].main:
-            if carte.motif == carteAttaque.motif and carte.valeur >= carteAttaque.valeur and carte.valeur < carteContre:
+            if carte.motif == carteAttaque.motif and carte.valeur >= carteAttaque.valeur and carte.valeur < carteContre.valeur:
                 carteContre = carte
         
         if carteContre.valeur == 20:

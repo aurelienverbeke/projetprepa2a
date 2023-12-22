@@ -31,7 +31,7 @@ while not fin:
             else:
                 coup_contre = ias[joueurCible].contre(plateauJeu, actionJoue[1], joueurCible, joueurCourant)
                 # carte ou None si pas de contre
-                if coup_contre != None:
+                if coup_contre is not None:
                     plateauJeu.joueurs[joueurCible].retirer_cartes([coup_contre])
                     plateauJeu.ajouter_defausse([coup_contre])
                     plateauJeu.joueurs[joueurCourant].retirer_cartes(actionJoue[1])
