@@ -39,7 +39,7 @@ def test_evaluation(taillePlateau, nombreParties, *args):
                     else:
                         coup_contre = ias[joueurCible].contre(plateauJeu, actionJoue[1], joueurCible, joueurCourant)
                         # carte ou None si pas de contre
-                        if coup_contre != None:
+                        if coup_contre is not None:
                             plateauJeu.joueurs[joueurCible].retirer_cartes([coup_contre])
                             plateauJeu.ajouter_defausse([coup_contre])
                             plateauJeu.joueurs[joueurCourant].retirer_cartes(actionJoue[1])
@@ -83,4 +83,4 @@ def test_evaluation(taillePlateau, nombreParties, *args):
 
 if __name__ == "__main__":
     from evaluation1 import evaluation
-    print(test_evaluation(5, 100, (evaluation, 3), (evaluation, 1)))
+    print(test_evaluation(5, 100, (evaluation, 0), (evaluation, 1)))

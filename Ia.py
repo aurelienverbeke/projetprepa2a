@@ -164,7 +164,7 @@ class Ia:
         return cartesDefaussees
     """
 
-    def defausse_base(self, plateau, idJoueur, nb=0):
+    def defausse_base(self, plateau, idJoueur, nb=0, joueurQuiAttaque=None):
         cartesADefausser = []
         joueur = plateau.joueurs[idJoueur]
 
