@@ -75,12 +75,36 @@ def test_evaluation(taillePlateau, nombreParties, *args):
 
         iasGagante = ias[0]
         nombreVictoiresParJoueur[iasGagante.index] += 1
-        print(f"Partie {indexPartie+1} terminee")
+        #print(f"Partie {indexPartie+1} terminee")
 
     return nombreVictoiresParJoueur
 
 
 
 if __name__ == "__main__":
-    from evaluation1 import evaluation
+    from evaluation1 import evaluation as fonctionEvaluation
+
+    SCORE_COEFFICIENT_ENDURANCE = 0.5574092285494507  # positif
+    SCORE_COEFFICIENT_NB_CARTES = -0.3135579853185746
+    SCORE_CARTE_DEPLACEMENT = 0.945416959484985
+    SCORE_CARTE_JOKER = 0.8840249987143396
+    SCORE_COEFFICIENT_CARTE_ATTAQUE = 0.05788165007228763
+    SCORE_POSITION_CENTRE = -0.4037012340428947
+    SCORE_POSITION_COIN = 0.6637052944271506
+    SCORE_POSITION_EXTERIEUR = 0.734875824117758
+    SCORE_CENTRE_COURONNE = -0.5816066336369692
+    SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = 0.6979950230267356  # negatif
+    SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = -0.8332953504646066  # endurance de l'adversaire qu'on peut taper #negatif
+    SCORE_ADVERSAIRE_VOISIN = -0.4088906604399667  # le voisin peut nous taper #negatif
+    SCORE_JOKER_CARTES_ADVERSAIRE = 0.35732831500244
+
+    constantesEvaluation = [SCORE_COEFFICIENT_ENDURANCE, SCORE_COEFFICIENT_NB_CARTES, SCORE_CARTE_DEPLACEMENT,
+                            SCORE_CARTE_JOKER, SCORE_COEFFICIENT_CARTE_ATTAQUE,
+                            SCORE_POSITION_CENTRE, SCORE_POSITION_COIN, SCORE_POSITION_EXTERIEUR, SCORE_CENTRE_COURONNE,
+                            SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES,
+                            SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN, SCORE_ADVERSAIRE_VOISIN,
+                            SCORE_JOKER_CARTES_ADVERSAIRE]
+
+    evaluation = (fonctionEvaluation, constantesEvaluation)
+
     print(test_evaluation(5, 1000, (evaluation, 0), (evaluation, 1)))

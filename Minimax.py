@@ -2,7 +2,7 @@ from Arborescence import Arborescence
 
 def minimax(arbre, joueurCourant, pmax):
     if arbre.est_fini() or pmax == 0:
-        valeur = arbre.evaluation(arbre.etat, arbre.taillePlateau, arbre.joueurCourant)
+        valeur = arbre.evaluation[0](arbre.etat, arbre.taillePlateau, arbre.joueurCourant, arbre.evaluation[1])
         arbre.valeur = valeur
         return valeur
     valeur = {idJoueur: float("-inf") for idJoueur in arbre.etat["listeJoueurs"]}

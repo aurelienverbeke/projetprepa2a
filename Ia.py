@@ -5,15 +5,33 @@ from Carte import Carte
 from Minimax import choisir_coup
 from Arborescence import Arborescence
 
-from evaluation1 import evaluation
+from evaluation1 import evaluation as fonctionEvaluation
 
+SCORE_COEFFICIENT_ENDURANCE = 1  # positif
+SCORE_COEFFICIENT_NB_CARTES = .1
+SCORE_CARTE_DEPLACEMENT = 0
+SCORE_CARTE_JOKER = 0
+SCORE_COEFFICIENT_CARTE_ATTAQUE = 0
+SCORE_POSITION_CENTRE = 2
+SCORE_POSITION_COIN = -2
+SCORE_POSITION_EXTERIEUR = -1
+SCORE_CENTRE_COURONNE = 1
+SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = -.5  # negatif
+SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = -1  # endurance de l'adversaire qu'on peut taper #negatif
+SCORE_ADVERSAIRE_VOISIN = -50  # le voisin peut nous taper #negatif
+SCORE_JOKER_CARTES_ADVERSAIRE = 2
 
+constantesEvaluation = [SCORE_COEFFICIENT_ENDURANCE, SCORE_COEFFICIENT_NB_CARTES, SCORE_CARTE_DEPLACEMENT, SCORE_CARTE_JOKER, SCORE_COEFFICIENT_CARTE_ATTAQUE,
+                        SCORE_POSITION_CENTRE, SCORE_POSITION_COIN, SCORE_POSITION_EXTERIEUR, SCORE_CENTRE_COURONNE, SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES,
+                        SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN, SCORE_ADVERSAIRE_VOISIN, SCORE_JOKER_CARTES_ADVERSAIRE]
+
+evaluation = (fonctionEvaluation, constantesEvaluation)
 
 class Ia:
     def __init__(self, niveau, evaluation_ia=evaluation, index=0):
         self.niveau = niveau
         self.coupAJouer = []
-        self.evaluation = evaluation_ia
+        self.evaluation = evaluation_ia # Tuple avec la fonction d'evaluation et la liste des constantes associees
         self.index = index
         self.nbCartesJoueesBase = 0
         self.nbCartesAJouerBase = randint(1, 3)
