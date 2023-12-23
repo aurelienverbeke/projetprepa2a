@@ -2,7 +2,7 @@ from Ia import Ia
 from RdR_jeu import RoiDuRing
 
 
-def test_evaluation(taillePlateau, nombreParties, *args):
+def test_evaluation(taillePlateau, nombreParties, afficher, *args):
     """
     Fait jouer les ias et retourne le nombre de victoire pour chacune d'elles
 
@@ -77,7 +77,8 @@ def test_evaluation(taillePlateau, nombreParties, *args):
 
         iasGagante = ias[0]
         nombreVictoiresParJoueur[iasGagante.index] += 1
-        print(f"Partie {indexPartie+1} terminee")
+        if afficher:
+            print(f"Partie {indexPartie+1} terminee, victoire : {iasGagante.index}")
 
     return nombreVictoiresParJoueur
 
@@ -85,4 +86,4 @@ def test_evaluation(taillePlateau, nombreParties, *args):
 if __name__ == "__main__":
     from Versions_Ia import evaluationv1, evaluationv2, evaluationAntiBase
 
-    print(test_evaluation(5, 100, (evaluationv2, 1), (evaluationv2, 3)))
+    print(test_evaluation(5, 100, True, (evaluationv2, 1), (evaluationv2, 3)))
