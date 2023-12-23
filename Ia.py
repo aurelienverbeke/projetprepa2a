@@ -66,10 +66,12 @@ class Ia:
                 else:
                     cartesDeplacement.append(carte)
             
-            if cartesJoker != [] and self.carte_possible(plateau, joueur, cartesJoker[0]):
-                carteJouee = cartesJoker[0] # permet d'en prendre 1
-                cible = choice(self.cible_carte(plateau, joueur, carteJouee))
-                return 1, [carteJouee], cible
+            if cartesJoker != []:
+                ciblesCarte = self.cible_carte(plateau, joueur, cartesJoker[0])
+                if ciblesCarte != []:
+                    carteJouee = cartesJoker[0] # permet d'en prendre 1
+                    cible = choice(self.cible_carte(plateau, joueur, carteJouee))
+                    return 1, [carteJouee], cible
             
             if cartesAttaque != []:
                 cartesJouables = []
