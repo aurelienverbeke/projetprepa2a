@@ -1,14 +1,14 @@
 from random import random, choice, randint
-from test_evaluation import test_evaluation
-from evaluation1 import evaluation as fonctionEvaluation
+from Test_evaluation import test_evaluation
+from Evaluation import evaluation as fonctionEvaluation
 
 NOMBRE_PARAMETRES = 13
 TAILLE_PLATEAU = 5
 NOMBRE_PARTIES_PAR_EVALUATION = 10
 PROPORTION_SELECTIONNE = .2
 PROBABILITE_MUTATION = .1
-FORCE_MUTATION = .1
-MULTIPLICATEUR_SCORE_CONTRE_IA_BASE = 10
+FORCE_MUTATION = .5
+MULTIPLICATEUR_SCORE_CONTRE_IA_BASE = 5
 
 
 def generer_population_initiale(taillePopulation):
@@ -96,7 +96,7 @@ def mutation(population):
 
     """
 
-    for individu in population:
+    for individu in population[int(len(population)*PROPORTION_SELECTIONNE):]:
         if random() < PROBABILITE_MUTATION:
             parametreMute = randint(0, NOMBRE_PARAMETRES - 1)
             individu[parametreMute] += (2 * random() - 1) * FORCE_MUTATION
@@ -114,7 +114,7 @@ def trouver_parametres(taillePopulation, nombreIterations):
     """
     population = generer_population_initiale(taillePopulation)
 
-    print("Population Initiale creee")
+    print("Population Initiale creee\n")
 
     for i in range(nombreIterations - 1):
         scoresPopulation = fitness(population)  # On donne un score a chaque individu de la population
@@ -123,6 +123,15 @@ def trouver_parametres(taillePopulation, nombreIterations):
         mutation(nouvellePopulation)  # On modifie aleatoirement les parametres pour ajouter un peu de diversite
         population = nouvellePopulation
         print(f"Iteration {i+1} terminee")
+        meilleurIndividu = max(population, key=lambda x: scoresPopulation[population.index(x)])
+        evaluation = (fonctionEvaluation, meilleurIndividu)
+        print("Meilleur individu de la population:")
+        print(meilleurIndividu)
+        print("Parties test contre l'ia de base (0=individu, 1=ia de base)")
+        print(test_evaluation(TAILLE_PLATEAU, 1000, (evaluation, 1), (evaluation, 0)))
+        print("Parties de test de l'ia de niveau 2 contre l'ia de niveau 1:")
+        print(test_evaluation(TAILLE_PLATEAU, 100, (evaluation, 2), (evaluation, 1)))
+        print("\n")
 
     scoresPopulationFinale = fitness(population)
     return max(population, key=lambda x: scoresPopulationFinale[population.index(x)])

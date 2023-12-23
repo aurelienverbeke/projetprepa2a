@@ -1,6 +1,7 @@
 from Ia import Ia
 from RdR_jeu import RoiDuRing
 
+
 def test_evaluation(taillePlateau, nombreParties, *args):
     """
     Fait jouer les ias et retourne le nombre de victoire pour chacune d'elles
@@ -16,7 +17,8 @@ def test_evaluation(taillePlateau, nombreParties, *args):
     """
     nombreVictoiresParJoueur = {x: 0 for x in range(len(args))}
     for indexPartie in range(nombreParties):
-        ias = [Ia(evaluation[1], evaluation[0], index) if evaluation[0] != "base" else Ia(0) for index, evaluation in enumerate(args)]
+        ias = [Ia(evaluation[1], evaluation[0], index) if evaluation[0] != "base" else Ia(0) for index, evaluation in
+               enumerate(args)]
         nbeJoueur = len(ias)
         plateauJeu = RoiDuRing(taillePlateau, nbeJoueur)
         fin = False
@@ -80,72 +82,7 @@ def test_evaluation(taillePlateau, nombreParties, *args):
     return nombreVictoiresParJoueur
 
 
-
 if __name__ == "__main__":
-    from evaluation1 import evaluation as fonctionEvaluation
+    from Versions_Ia import evaluationv1, evaluationv2, evaluationAntiBase
 
-    """
-    Speciale anti ia-base
-    SCORE_COEFFICIENT_ENDURANCE = 0.5574092285494507  # positif
-    SCORE_COEFFICIENT_NB_CARTES = -0.3135579853185746
-    SCORE_CARTE_DEPLACEMENT = 0.945416959484985
-    SCORE_CARTE_JOKER = 0.8840249987143396
-    SCORE_COEFFICIENT_CARTE_ATTAQUE = 0.05788165007228763
-    SCORE_POSITION_CENTRE = -0.4037012340428947
-    SCORE_POSITION_COIN = 0.6637052944271506
-    SCORE_POSITION_EXTERIEUR = 0.734875824117758
-    SCORE_CENTRE_COURONNE = -0.5816066336369692
-    SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = 0.6979950230267356  # negatif
-    SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = -0.8332953504646066  # endurance de l'adversaire qu'on peut taper #negatif
-    SCORE_ADVERSAIRE_VOISIN = -0.4088906604399667  # le voisin peut nous taper #negatif
-    SCORE_JOKER_CARTES_ADVERSAIRE = 0.35732831500244"""
-
-    """
-    v1
-    """
-    SCORE_COEFFICIENT_ENDURANCE = 0.9628588159836444  # positif
-    SCORE_COEFFICIENT_NB_CARTES = 0.05112433673627392
-    SCORE_CARTE_DEPLACEMENT = -0.312435719530578
-    SCORE_CARTE_JOKER = -0.6772687021650643
-    SCORE_COEFFICIENT_CARTE_ATTAQUE = -0.00440300016277595
-    SCORE_POSITION_CENTRE = 0.506520229163939
-    SCORE_POSITION_COIN = -0.8809645652205069
-    SCORE_POSITION_EXTERIEUR = -0.9499262806863871
-    SCORE_CENTRE_COURONNE = 0.05632247385282252
-    SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = 0.31058542889415475  # negatif
-    SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = 0.41363518319427284  # endurance de l'adversaire qu'on peut taper #negatif
-    SCORE_ADVERSAIRE_VOISIN = -0.6760596183749275  # le voisin peut nous taper #negatif
-    SCORE_JOKER_CARTES_ADVERSAIRE = -0.09169285939100913
-    constantesEvaluation1 = [SCORE_COEFFICIENT_ENDURANCE, SCORE_COEFFICIENT_NB_CARTES, SCORE_CARTE_DEPLACEMENT,
-                            SCORE_CARTE_JOKER, SCORE_COEFFICIENT_CARTE_ATTAQUE,
-                            SCORE_POSITION_CENTRE, SCORE_POSITION_COIN, SCORE_POSITION_EXTERIEUR, SCORE_CENTRE_COURONNE,
-                            SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES,
-                            SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN, SCORE_ADVERSAIRE_VOISIN,
-                            SCORE_JOKER_CARTES_ADVERSAIRE]
-
-    # v2
-    SCORE_COEFFICIENT_ENDURANCE = 0.9146235725876997  # positif
-    SCORE_COEFFICIENT_NB_CARTES = -0.586608631882148
-    SCORE_CARTE_DEPLACEMENT = 0.4140604934402905
-    SCORE_CARTE_JOKER = 0.024029377889100978
-    SCORE_COEFFICIENT_CARTE_ATTAQUE = 0.07182888450097447
-    SCORE_POSITION_CENTRE = 0.018400571450920777
-    SCORE_POSITION_COIN = 0.5024507555372837
-    SCORE_POSITION_EXTERIEUR = 0.6708306814632802
-    SCORE_CENTRE_COURONNE = -0.3000578915515826
-    SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = 0.664121029184833 # negatif
-    SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = 0.6687592776290099  # endurance de l'adversaire qu'on peut taper #negatif
-    SCORE_ADVERSAIRE_VOISIN = -0.874430297817717  # le voisin peut nous taper #negatif
-    SCORE_JOKER_CARTES_ADVERSAIRE = 0.6434812847505766
-
-    constantesEvaluation = [SCORE_COEFFICIENT_ENDURANCE, SCORE_COEFFICIENT_NB_CARTES, SCORE_CARTE_DEPLACEMENT,
-                            SCORE_CARTE_JOKER, SCORE_COEFFICIENT_CARTE_ATTAQUE,
-                            SCORE_POSITION_CENTRE, SCORE_POSITION_COIN, SCORE_POSITION_EXTERIEUR, SCORE_CENTRE_COURONNE,
-                            SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES,
-                            SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN, SCORE_ADVERSAIRE_VOISIN,
-                            SCORE_JOKER_CARTES_ADVERSAIRE]
-
-    evaluation = (fonctionEvaluation, constantesEvaluation)
-    evaluation_1 = (fonctionEvaluation, constantesEvaluation1)
-
-    print(test_evaluation(5, 1000, (evaluation_1, 1), (evaluation, 1)))
+    print(test_evaluation(5, 100, (evaluationv2, 1), (evaluationv2, 3)))
