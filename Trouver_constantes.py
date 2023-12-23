@@ -4,7 +4,7 @@ from evaluation1 import evaluation as fonctionEvaluation
 
 NOMBRE_PARAMETRES = 13
 TAILLE_PLATEAU = 5
-NOMBRE_PARTIES_PAR_EVALUATION = 100
+NOMBRE_PARTIES_PAR_EVALUATION = 10
 PROPORTION_SELECTIONNE = .2
 PROBABILITE_MUTATION = .1
 FORCE_MUTATION = .1
@@ -31,9 +31,12 @@ def fitness(population):
     """
     scores = {x: 0 for x in range(len(population))}
 
-    for index, constantesEvaluation in enumerate(population):
-        scores[index] = test_evaluation(TAILLE_PLATEAU, NOMBRE_PARTIES_PAR_EVALUATION, ((fonctionEvaluation, constantesEvaluation), 1),
-                        ((fonctionEvaluation, constantesEvaluation), 0))[0]
+    for indexIndividu1, constantesEvaluation1 in enumerate(population[:-1]):
+        for indexIndividu2, constantesEvaluation2 in enumerate(population[indexIndividu1+1:]):
+            resultatPartie = test_evaluation(TAILLE_PLATEAU, NOMBRE_PARTIES_PAR_EVALUATION, ((fonctionEvaluation, constantesEvaluation1), 1),
+                            ((fonctionEvaluation, constantesEvaluation2), 1))
+            scores[indexIndividu1] += resultatPartie[0]
+            scores[indexIndividu2] += resultatPartie[1]
 
     return scores
 
@@ -105,6 +108,8 @@ def trouver_parametres(taillePopulation, nombreIterations):
     Renvoie les meilleurs parametres trouves
     """
     population = generer_population_initiale(taillePopulation)
+
+    print("Population Initiale creee")
 
     for i in range(nombreIterations - 1):
         scoresPopulation = fitness(population)  # On donne un score a chaque individu de la population
