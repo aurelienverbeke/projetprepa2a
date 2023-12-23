@@ -33,12 +33,12 @@ def fitness(population):
     scores = {x: 0 for x in range(len(population))}
 
     for indexIndividu1, constantesEvaluation1 in enumerate(population[:-1]):
-        resultatContreIaBase = test_evaluation(TAILLE_PLATEAU, NOMBRE_PARTIES_PAR_EVALUATION, ((fonctionEvaluation, constantesEvaluation1), 1),
+        resultatContreIaBase = test_evaluation(TAILLE_PLATEAU, NOMBRE_PARTIES_PAR_EVALUATION, False, ((fonctionEvaluation, constantesEvaluation1), 1),
                             ((fonctionEvaluation, constantesEvaluation1), 0))[0]
 
         scores[indexIndividu1] += resultatContreIaBase*MULTIPLICATEUR_SCORE_CONTRE_IA_BASE
         for indexIndividu2, constantesEvaluation2 in enumerate(population[indexIndividu1+1:]):
-            resultatPartie = test_evaluation(TAILLE_PLATEAU, NOMBRE_PARTIES_PAR_EVALUATION, ((fonctionEvaluation, constantesEvaluation1), 1),
+            resultatPartie = test_evaluation(TAILLE_PLATEAU, NOMBRE_PARTIES_PAR_EVALUATION, False, ((fonctionEvaluation, constantesEvaluation1), 1),
                             ((fonctionEvaluation, constantesEvaluation2), 1))
             scores[indexIndividu1] += resultatPartie[0]
             scores[indexIndividu2] += resultatPartie[1]
@@ -128,9 +128,9 @@ def trouver_parametres(taillePopulation, nombreIterations):
         print("Meilleur individu de la population:")
         print(meilleurIndividu)
         print("Parties test contre l'ia de base (0=individu, 1=ia de base)")
-        print(test_evaluation(TAILLE_PLATEAU, 1000, (evaluation, 1), (evaluation, 0)))
+        print(test_evaluation(TAILLE_PLATEAU, 1000, False, (evaluation, 1), (evaluation, 0)))
         print("Parties de test de l'ia de niveau 2 contre l'ia de niveau 1:")
-        print(test_evaluation(TAILLE_PLATEAU, 100, (evaluation, 2), (evaluation, 1)))
+        print(test_evaluation(TAILLE_PLATEAU, 100, False, (evaluation, 2), (evaluation, 1)))
         print("\n")
 
     scoresPopulationFinale = fitness(population)
@@ -141,4 +141,4 @@ if __name__ == "__main__":
     constantesEvaluation = trouver_parametres(100, 10)
     evaluation = (fonctionEvaluation, constantesEvaluation)
     print(constantesEvaluation)
-    print(test_evaluation(TAILLE_PLATEAU, 1000, (evaluation, 1), (evaluation, 0)))
+    print(test_evaluation(TAILLE_PLATEAU, 1000, False, (evaluation, 1), (evaluation, 0)))
