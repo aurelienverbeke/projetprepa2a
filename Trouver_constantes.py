@@ -8,6 +8,7 @@ NOMBRE_PARTIES_PAR_EVALUATION = 10
 PROPORTION_SELECTIONNE = .2
 PROBABILITE_MUTATION = .1
 FORCE_MUTATION = .1
+MULTIPLICATEUR_SCORE_CONTRE_IA_BASE = 10
 
 
 def generer_population_initiale(taillePopulation):
@@ -32,6 +33,10 @@ def fitness(population):
     scores = {x: 0 for x in range(len(population))}
 
     for indexIndividu1, constantesEvaluation1 in enumerate(population[:-1]):
+        resultatContreIaBase = test_evaluation(TAILLE_PLATEAU, NOMBRE_PARTIES_PAR_EVALUATION, ((fonctionEvaluation, constantesEvaluation1), 1),
+                            ((fonctionEvaluation, constantesEvaluation1), 0))[0]
+
+        scores[indexIndividu1] += resultatContreIaBase*MULTIPLICATEUR_SCORE_CONTRE_IA_BASE
         for indexIndividu2, constantesEvaluation2 in enumerate(population[indexIndividu1+1:]):
             resultatPartie = test_evaluation(TAILLE_PLATEAU, NOMBRE_PARTIES_PAR_EVALUATION, ((fonctionEvaluation, constantesEvaluation1), 1),
                             ((fonctionEvaluation, constantesEvaluation2), 1))
