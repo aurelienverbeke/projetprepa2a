@@ -141,7 +141,6 @@ def trouver_constantes(taillePopulation, nombreIterations):
         scoresPopulation = fitness(population)  # On donne un score a chaque individu de la population
         populationSelectionnee = selection(population, scoresPopulation)  # On selectionne les meilleurs individus
         nouvellePopulation = reproduction(populationSelectionnee, taillePopulation)  # On en cree d'autres a partir de ceux selectionnes
-        print(len(nouvellePopulation))
         mutation(nouvellePopulation)  # On modifie aleatoirement les parametres pour ajouter un peu de diversite
         stocker(nouvellePopulation) # On stocke la nouvelle population dans un fichier
         tfinal = time()
