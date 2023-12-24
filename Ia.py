@@ -80,11 +80,11 @@ class Ia:
                         cartesJouables.append(carte)
                 if cartesJouables != []:
                     carteJouee = choice(cartesJouables)
-                    cible = choice(self.cible_carte(plateau, joueur, carteJouee))
-                    if cible == (0,0):
-                        return 2, [carteJouee], cible
-                    else:
-                        return 3, [carteJouee], cible
+                    cibles = self.cible_carte(plateau, joueur, carteJouee)
+                    cible = choice(cibles)
+                    if cible[0] == (0,0) and ((cible[1] == "endurance" and (cible[0], "poussee") in cartesJouables) or cible[1] == "poussee"):
+                        return 2, [carteJouee], cible[0]
+                    return 3, [carteJouee], cible[0]
             
             if cartesDeplacement != [] and joueur.position != (0,0):
                 # liste de tuple sous la forme (carte, cible, distance au centre)
@@ -126,18 +126,80 @@ class Ia:
                     cibles.append(autre_joueur.position)
         elif carte.motif == "K":
             for autre_joueur in joueurs:
-                if autre_joueur.position == (joueur.position[0],joueur.position[1]+1) or\
-                    autre_joueur.position == (joueur.position[0],joueur.position[1]-1) or\
-                    autre_joueur.position == (joueur.position[0]+1,joueur.position[1]) or\
-                    autre_joueur.position == (joueur.position[0]-1,joueur.position[1]):
-                    cibles.append(autre_joueur.position)
+                if autre_joueur.position == (joueur.position[0], joueur.position[1]+1):
+                    cibles.append((autre_joueur.position, "endurance"))
+                    peutPousser = True
+                    for encore_autre_joueur in set(joueurs)-{autre_joueur}:
+                        if encore_autre_joueur.position == (joueur.position[0], joueur.position[1]+2):
+                            peutPousser == False
+                            break
+                    if peutPousser:
+                        cibles.append((autre_joueur.position, "poussee"))
+                elif autre_joueur.position == (joueur.position[0], joueur.position[1]-1):
+                    cibles.append((autre_joueur.position, "endurance"))
+                    peutPousser = True
+                    for encore_autre_joueur in set(joueurs)-{autre_joueur}:
+                        if encore_autre_joueur.position == (joueur.position[0], joueur.position[1]-2):
+                            peutPousser == False
+                            break
+                    if peutPousser:
+                        cibles.append((autre_joueur.position, "poussee"))
+                elif autre_joueur.position == (joueur.position[0]+1, joueur.position[1]):
+                    cibles.append((autre_joueur.position, "endurance"))
+                    peutPousser = True
+                    for encore_autre_joueur in set(joueurs)-{autre_joueur}:
+                        if encore_autre_joueur.position == (joueur.position[0]+2, joueur.position[1]):
+                            peutPousser == False
+                            break
+                    if peutPousser:
+                        cibles.append((autre_joueur.position, "poussee"))
+                elif autre_joueur.position == (joueur.position[0]-1,joueur.position[1]):
+                    cibles.append((autre_joueur.position, "endurance"))
+                    peutPousser = True
+                    for encore_autre_joueur in set(joueurs)-{autre_joueur}:
+                        if encore_autre_joueur.position == (joueur.position[0]-2, joueur.position[1]):
+                            peutPousser == False
+                            break
+                    if peutPousser:
+                        cibles.append((autre_joueur.position, "poussee"))
         elif carte.motif == "C":
             for autre_joueur in joueurs:
-                if autre_joueur.position == (joueur.position[0]+1,joueur.position[1]+1) or\
-                    autre_joueur.position == (joueur.position[0]+1,joueur.position[1]-1) or\
-                    autre_joueur.position == (joueur.position[0]-1,joueur.position[1]+1) or\
-                    autre_joueur.position == (joueur.position[0]-1,joueur.position[1]-1):
+                if autre_joueur.position == (joueur.position[0]+1,joueur.position[1]+1):
                     cibles.append(autre_joueur.position)
+                    peutPousser = True
+                    for encore_autre_joueur in set(joueurs)-{autre_joueur}:
+                        if encore_autre_joueur.position == (joueur.position[0]+2, joueur.position[1]+2):
+                            peutPousser == False
+                            break
+                    if peutPousser:
+                        cibles.append((autre_joueur.position, "poussee"))
+                elif autre_joueur.position == (joueur.position[0]+1,joueur.position[1]-1):
+                    cibles.append(autre_joueur.position)
+                    peutPousser = True
+                    for encore_autre_joueur in set(joueurs)-{autre_joueur}:
+                        if encore_autre_joueur.position == (joueur.position[0]+2, joueur.position[1]-2):
+                            peutPousser == False
+                            break
+                    if peutPousser:
+                        cibles.append((autre_joueur.position, "poussee"))
+                elif autre_joueur.position == (joueur.position[0]-1,joueur.position[1]+1):
+                    cibles.append(autre_joueur.position)
+                    peutPousser = True
+                    for encore_autre_joueur in set(joueurs)-{autre_joueur}:
+                        if encore_autre_joueur.position == (joueur.position[0]-2, joueur.position[1]+2):
+                            peutPousser == False
+                            break
+                    if peutPousser:
+                        cibles.append((autre_joueur.position, "poussee"))
+                elif autre_joueur.position == (joueur.position[0]-1,joueur.position[1]-1):
+                    cibles.append(autre_joueur.position)
+                    peutPousser = True
+                    for encore_autre_joueur in set(joueurs)-{autre_joueur}:
+                        if encore_autre_joueur.position == (joueur.position[0]-2, joueur.position[1]-2):
+                            peutPousser == False
+                            break
+                    if peutPousser:
+                        cibles.append((autre_joueur.position, "poussee"))
         elif carte.motif == "T":
             for incr in [(0,1), (0,-1), (1,0), (-1,0)]:
                 if abs(joueur.position[0] + incr[0]) <= plateau.rayonGrille and abs(joueur.position[1] + incr[1]) <= plateau.rayonGrille:
