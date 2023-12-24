@@ -37,3 +37,16 @@ constantesEvaluationv2 = [0.9146235725876997, -0.586608631882148, 0.414060493440
                           0.6434812847505766]
 
 evaluationv2 = (fonctionEvaluation, constantesEvaluationv2)
+
+"""
+Une ia trouvée par hasard pendant des tests, mais qui pour une raison qu'on ignore démolis les autres en restant dans le coin à rien faire
+"""
+
+constantesEvaluationAuPif = [0.504710834542148, 0.1793831001254127, -0.04691120140175786,
+                             0.5545760713810846, -0.01258038560946062, -0.11688599409955724,
+                             0.3623633006012117, -0.9930385713430139, -0.6979513887378919,
+                             0.0033575191234938018, 0.1888761309824094, -0.18307775281940697,
+                             -0.2107698615742244]
+
+evaluationAuPif = (fonctionEvaluation, constantesEvaluationAuPif)
+
