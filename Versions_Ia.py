@@ -15,7 +15,7 @@ constantesEvaluationAntiBase = [0.5574092285494507, -0.3135579853185746, 0.94541
 evaluationAntiBase = (fonctionEvaluation, constantesEvaluationAntiBase)
 
 """
-La premiere vraie version de l'ia, elle est deja pas trop mal mais elle se fait dechirer par l'ia de base
+La premiere vraie version de l'ia, qui est déja pas mal du tout
 """
 
 constantesEvaluationv1 = [0.9628588159836444, 0.05112433673627392, -0.312435719530578,
@@ -27,7 +27,7 @@ constantesEvaluationv1 = [0.9628588159836444, 0.05112433673627392, -0.3124357195
 evaluationv1 = (fonctionEvaluation, constantesEvaluationv1)
 
 """
-La deuxieme version de l'ia qui se fait battre de peu par la premiere mais qui bat l'ia de base
+Tentative de deuxieme version de l'ia mais elle se fait battre par la premiere
 """
 
 constantesEvaluationv2 = [0.9146235725876997, -0.586608631882148, 0.4140604934402905,

@@ -5,7 +5,7 @@ from Carte import Carte
 from Minimax import choisir_coup
 from Arborescence import Arborescence
 
-from Versions_Ia import evaluationv2 as evaluation
+from Versions_Ia import evaluationv1 as evaluation
 
 class Ia:
     def __init__(self, niveau, evaluation_ia=evaluation, index=0):
@@ -169,11 +169,20 @@ class Ia:
         cartesADefausser = []
         joueur = plateau.joueurs[idJoueur]
 
+        if nb == 2:
+            for _ in range(2): # défausse soit 2 carte, soit moins s'il en a moins
+                carte_mini = joueur.main[0]
+                for carte in joueur.main[1:]:
+                    if carte_mini > carte and carte not in cartesADefausser:
+                        carte_mini = carte
+                cartesADefausser.append(carte_mini)
+            return cartesADefausser
+
         if self.nbCartesJoueesBase == 0:
             for _ in range(min(2, len(joueur.main))): # défausse soit 2 carte, soit moins s'il en a moins
                 carte_mini = joueur.main[0]
                 for carte in joueur.main[1:]:
-                    if carte_mini > carte:
+                    if carte_mini > carte and carte not in cartesADefausser:
                         carte_mini = carte
                 cartesADefausser.append(carte_mini)
 

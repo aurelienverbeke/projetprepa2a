@@ -86,4 +86,4 @@ def test_evaluation(taillePlateau, nombreParties, afficher, *args):
 if __name__ == "__main__":
     from Versions_Ia import evaluationv1, evaluationv2, evaluationAntiBase
 
-    print(test_evaluation(5, 100, True, (evaluationv2, 1), (evaluationv2, 3)))
+    print(test_evaluation(5, 100, True, (evaluationv1, 1), (evaluationv1, 3)))
