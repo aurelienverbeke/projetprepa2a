@@ -5,27 +5,7 @@ from Carte import Carte
 from Minimax import choisir_coup
 from Arborescence import Arborescence
 
-from evaluation1 import evaluation as fonctionEvaluation
-
-SCORE_COEFFICIENT_ENDURANCE = 0.9628588159836444  # positif
-SCORE_COEFFICIENT_NB_CARTES = 0.05112433673627392
-SCORE_CARTE_DEPLACEMENT = -0.312435719530578
-SCORE_CARTE_JOKER = -0.6772687021650643
-SCORE_COEFFICIENT_CARTE_ATTAQUE = -0.00440300016277595
-SCORE_POSITION_CENTRE = 0.506520229163939
-SCORE_POSITION_COIN = -0.8809645652205069
-SCORE_POSITION_EXTERIEUR = -0.9499262806863871
-SCORE_CENTRE_COURONNE = 0.05632247385282252
-SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = 0.31058542889415475  # negatif
-SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = 0.41363518319427284  # endurance de l'adversaire qu'on peut taper #negatif
-SCORE_ADVERSAIRE_VOISIN = -0.6760596183749275  # le voisin peut nous taper #negatif
-SCORE_JOKER_CARTES_ADVERSAIRE = -0.09169285939100913
-
-constantesEvaluation = [SCORE_COEFFICIENT_ENDURANCE, SCORE_COEFFICIENT_NB_CARTES, SCORE_CARTE_DEPLACEMENT, SCORE_CARTE_JOKER, SCORE_COEFFICIENT_CARTE_ATTAQUE,
-                        SCORE_POSITION_CENTRE, SCORE_POSITION_COIN, SCORE_POSITION_EXTERIEUR, SCORE_CENTRE_COURONNE, SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES,
-                        SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN, SCORE_ADVERSAIRE_VOISIN, SCORE_JOKER_CARTES_ADVERSAIRE]
-
-evaluation = (fonctionEvaluation, constantesEvaluation)
+from Versions_Ia import evaluationv1 as evaluation
 
 class Ia:
     def __init__(self, niveau, evaluation_ia=evaluation, index=0):
@@ -251,11 +231,20 @@ class Ia:
         cartesADefausser = []
         joueur = plateau.joueurs[idJoueur]
 
+        if nb == 2:
+            for _ in range(min(2, len(joueur.main))): # défausse soit 2 carte, soit moins s'il en a moins
+                carte_mini = joueur.main[0]
+                for carte in joueur.main[1:]:
+                    if carte_mini > carte and carte not in cartesADefausser:
+                        carte_mini = carte
+                cartesADefausser.append(carte_mini)
+            return cartesADefausser
+
         if self.nbCartesJoueesBase == 0:
             for _ in range(min(2, len(joueur.main))): # défausse soit 2 carte, soit moins s'il en a moins
                 carte_mini = joueur.main[0]
                 for carte in joueur.main[1:]:
-                    if carte_mini > carte:
+                    if carte_mini > carte and carte not in cartesADefausser:
                         carte_mini = carte
                 cartesADefausser.append(carte_mini)
 
