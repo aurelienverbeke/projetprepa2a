@@ -139,6 +139,7 @@ def trouver_constantes(taillePopulation, nombreIterations):
         print(f"Debut de l'iteration {i+1}")
         t = time()
         scoresPopulation = fitness(population)  # On donne un score a chaque individu de la population
+        meilleurIndividu = max(population, key=lambda x: scoresPopulation[population.index(x)])
         populationSelectionnee = selection(population, scoresPopulation)  # On selectionne les meilleurs individus
         nouvellePopulation = reproduction(populationSelectionnee, taillePopulation)  # On en cree d'autres a partir de ceux selectionnes
         mutation(nouvellePopulation)  # On modifie aleatoirement les parametres pour ajouter un peu de diversite
@@ -147,7 +148,6 @@ def trouver_constantes(taillePopulation, nombreIterations):
         tfinal = time()
         print(f"Iteration {i+1} terminee")
         print(f"Cette itération a pris {tfinal - t} s")
-        meilleurIndividu = max(population, key=lambda x: scoresPopulation[population.index(x)])
         evaluation = (fonctionEvaluation, meilleurIndividu)
         print("Meilleur individu de la population:")
         print(meilleurIndividu)
@@ -162,7 +162,7 @@ def trouver_constantes(taillePopulation, nombreIterations):
 
 
 if __name__ == "__main__":
-    constantesEvaluation = trouver_constantes(100, 100)
+    constantesEvaluation = trouver_constantes(100, 1000)
     evaluation = (fonctionEvaluation, constantesEvaluation)
     print(constantesEvaluation)
     print(test_evaluation(TAILLE_PLATEAU, 1000, False, (evaluation, 1), (evaluation, 0)))
