@@ -143,6 +143,7 @@ def trouver_constantes(taillePopulation, nombreIterations):
         nouvellePopulation = reproduction(populationSelectionnee, taillePopulation)  # On en cree d'autres a partir de ceux selectionnes
         mutation(nouvellePopulation)  # On modifie aleatoirement les parametres pour ajouter un peu de diversite
         stocker(nouvellePopulation)  # On stocke la nouvelle population dans un fichier
+        population = nouvellePopulation
         tfinal = time()
         print(f"Iteration {i+1} terminee")
         print(f"Cette itération a pris {tfinal - t} s")
