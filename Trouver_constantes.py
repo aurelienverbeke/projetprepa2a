@@ -2,6 +2,7 @@ from random import random, choice, randint
 from Test_evaluation import test_evaluation
 from Evaluation import evaluation as fonctionEvaluation
 from Versions_Ia import evaluationv1 as ancienneEvaluation
+from time import time
 
 NOMBRE_PARAMETRES = 13
 TAILLE_PLATEAU = 5
@@ -96,7 +97,6 @@ def mutation(population):
             parametreMute = randint(0, NOMBRE_PARAMETRES - 1)
             individu[parametreMute] += (2 * random() - 1) * FORCE_MUTATION
 
-
 def trouver_parametres(taillePopulation, nombreIterations):
     """
     Trouve les parametres optimaux a mettre dans l'evaluation
@@ -112,20 +112,23 @@ def trouver_parametres(taillePopulation, nombreIterations):
     print("Population Initiale creee\n")
 
     for i in range(nombreIterations - 1):
+        print(f"Debut de l'iteration {i+1}")
+        t = time()
         scoresPopulation = fitness(population)  # On donne un score a chaque individu de la population
         populationSelectionnee = selection(population, scoresPopulation)  # On selectionne les meilleurs individus
         nouvellePopulation = reproduction(populationSelectionnee, taillePopulation)  # On en cree d'autres a partir de ceux selectionnes
         mutation(nouvellePopulation)  # On modifie aleatoirement les parametres pour ajouter un peu de diversite
-        population = nouvellePopulation
+        tfinal = time()
         print(f"Iteration {i+1} terminee")
+        print(f"Cette itération a pris {tfinal - t} s")
         meilleurIndividu = max(population, key=lambda x: scoresPopulation[population.index(x)])
         evaluation = (fonctionEvaluation, meilleurIndividu)
         print("Meilleur individu de la population:")
         print(meilleurIndividu)
-        print("Parties test contre l'ia de base (0=individu, 1=ia de base)")
-        print(test_evaluation(TAILLE_PLATEAU, 1000, False, (evaluation, 1), (evaluation, 0)))
-        print("Parties de test conte la meilleure ia actuelle (0=ancienne ia, 1=nouvelle ia:")
-        print(test_evaluation(TAILLE_PLATEAU, 1000, False, (ancienneEvaluation, 1), (evaluation, 1)))
+        print("Parties test contre l'ia de base (0=individu, 1=ia de base):")
+        print(test_evaluation(TAILLE_PLATEAU, 100, False, (evaluation, 1), (evaluation, 0)))
+        print("Parties de test conte la meilleure ia actuelle (0=ancienne ia, 1=nouvelle ia):")
+        print(test_evaluation(TAILLE_PLATEAU, 100, False, (ancienneEvaluation, 1), (evaluation, 1)))
         print("\n")
 
     scoresPopulationFinale = fitness(population)
@@ -133,7 +136,7 @@ def trouver_parametres(taillePopulation, nombreIterations):
 
 
 if __name__ == "__main__":
-    constantesEvaluation = trouver_parametres(10, 10)
+    constantesEvaluation = trouver_parametres(200, 10)
     evaluation = (fonctionEvaluation, constantesEvaluation)
     print(constantesEvaluation)
     print(test_evaluation(TAILLE_PLATEAU, 1000, False, (evaluation, 1), (evaluation, 0)))
