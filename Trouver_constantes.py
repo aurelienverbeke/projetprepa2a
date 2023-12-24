@@ -1,6 +1,7 @@
 from random import random, choice, randint
 from Test_evaluation import test_evaluation
 from Evaluation import evaluation as fonctionEvaluation
+from Versions_Ia import evaluationv1 as ancienneEvaluation
 
 NOMBRE_PARAMETRES = 13
 TAILLE_PLATEAU = 5
@@ -123,8 +124,8 @@ def trouver_parametres(taillePopulation, nombreIterations):
         print(meilleurIndividu)
         print("Parties test contre l'ia de base (0=individu, 1=ia de base)")
         print(test_evaluation(TAILLE_PLATEAU, 1000, False, (evaluation, 1), (evaluation, 0)))
-        print("Parties de test de l'ia de niveau 2 contre l'ia de niveau 1:")
-        print(test_evaluation(TAILLE_PLATEAU, 100, False, (evaluation, 2), (evaluation, 1)))
+        print("Parties de test conte la meilleure ia actuelle (0=ancienne ia, 1=nouvelle ia:")
+        print(test_evaluation(TAILLE_PLATEAU, 100, False, (ancienneEvaluation, 1), (evaluation, 1)))
         print("\n")
 
     scoresPopulationFinale = fitness(population)
@@ -132,7 +133,7 @@ def trouver_parametres(taillePopulation, nombreIterations):
 
 
 if __name__ == "__main__":
-    constantesEvaluation = trouver_parametres(100, 10)
+    constantesEvaluation = trouver_parametres(200, 10)
     evaluation = (fonctionEvaluation, constantesEvaluation)
     print(constantesEvaluation)
     print(test_evaluation(TAILLE_PLATEAU, 1000, False, (evaluation, 1), (evaluation, 0)))
