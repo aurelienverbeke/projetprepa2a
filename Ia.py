@@ -62,7 +62,7 @@ class Ia:
                     carteJouee = choice(cartesJouables)
                     cibles = self.cible_carte(plateau, joueur, carteJouee)
                     cible = choice(cibles)
-                    if cible[0] == (0,0) and ((cible[1] == "endurance" and (cible[0], "poussee") in cartesJouables) or cible[1] == "poussee"):
+                    if cible[0] == (0,0) and ((cible[1] == "endurance" and (cible[0], "poussee") in cibles) or cible[1] == "poussee"):
                         return 2, [carteJouee], cible[0]
                     return 3, [carteJouee], cible[0]
             
@@ -145,7 +145,7 @@ class Ia:
         elif carte.motif == "C":
             for autre_joueur in joueurs:
                 if autre_joueur.position == (joueur.position[0]+1,joueur.position[1]+1):
-                    cibles.append(autre_joueur.position)
+                    cibles.append((autre_joueur.position, "endurance"))
                     peutPousser = True
                     for encore_autre_joueur in set(joueurs)-{autre_joueur}:
                         if encore_autre_joueur.position == (joueur.position[0]+2, joueur.position[1]+2):
@@ -154,7 +154,7 @@ class Ia:
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
                 elif autre_joueur.position == (joueur.position[0]+1,joueur.position[1]-1):
-                    cibles.append(autre_joueur.position)
+                    cibles.append((autre_joueur.position, "endurance"))
                     peutPousser = True
                     for encore_autre_joueur in set(joueurs)-{autre_joueur}:
                         if encore_autre_joueur.position == (joueur.position[0]+2, joueur.position[1]-2):
@@ -163,7 +163,7 @@ class Ia:
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
                 elif autre_joueur.position == (joueur.position[0]-1,joueur.position[1]+1):
-                    cibles.append(autre_joueur.position)
+                    cibles.append((autre_joueur.position, "endurance"))
                     peutPousser = True
                     for encore_autre_joueur in set(joueurs)-{autre_joueur}:
                         if encore_autre_joueur.position == (joueur.position[0]-2, joueur.position[1]+2):
@@ -172,7 +172,7 @@ class Ia:
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
                 elif autre_joueur.position == (joueur.position[0]-1,joueur.position[1]-1):
-                    cibles.append(autre_joueur.position)
+                    cibles.append((autre_joueur.position, "endurance"))
                     peutPousser = True
                     for encore_autre_joueur in set(joueurs)-{autre_joueur}:
                         if encore_autre_joueur.position == (joueur.position[0]-2, joueur.position[1]-2):
