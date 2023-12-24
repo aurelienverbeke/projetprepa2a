@@ -3,6 +3,7 @@ from Test_evaluation import test_evaluation
 from Evaluation import evaluation as fonctionEvaluation
 from Versions_Ia import evaluationv1 as ancienneEvaluation
 from time import time
+import os
 
 NOMBRE_PARAMETRES = 13
 TAILLE_PLATEAU = 5
@@ -97,7 +98,19 @@ def mutation(population):
             parametreMute = randint(0, NOMBRE_PARAMETRES - 1)
             individu[parametreMute] += (2 * random() - 1) * FORCE_MUTATION
 
-def trouver_parametres(taillePopulation, nombreIterations):
+
+def stocker(population):
+    with open(f"Populations/Population_{len(population)}.txt", "w") as fichier:
+        fichier.write(str(population))
+
+
+def charger_population(taillePopulation):
+    with open(f"Populations/Population_{taillePopulation}.txt", "r") as fichier:
+        population = eval(fichier.read())  # Oui je sais c'est dangereux mais flemme
+    return population
+
+
+def trouver_constantes(taillePopulation, nombreIterations):
     """
     Trouve les parametres optimaux a mettre dans l'evaluation
 
@@ -107,9 +120,20 @@ def trouver_parametres(taillePopulation, nombreIterations):
 
     Renvoie les meilleurs parametres trouves
     """
-    population = generer_population_initiale(taillePopulation)
+    if not os.path.isdir("Populations"):
+        os.mkdir("Populations")
 
-    print("Population Initiale creee\n")
+    if os.path.exists(f"Populations/Population_{taillePopulation}.txt"):
+        population = charger_population(taillePopulation)
+        print("Population initiale chargee\n")
+        if len(population) < taillePopulation:
+            print(f"Attention, la population chargée a une taille plus faible que la population demandee {len(population)}, cet ecart sera comble lors de la reproduction\n"
+                  "Cela risque de reduire l'efficacite du programme car il y aura moins de diversite dans les individus\n")
+        if len(population) > taillePopulation:
+            raise Exception("La population chargée a une taille trop grande")
+    else:
+        population = generer_population_initiale(taillePopulation)
+        print("Population initiale creee\n")
 
     for i in range(nombreIterations - 1):
         print(f"Debut de l'iteration {i+1}")
@@ -117,7 +141,9 @@ def trouver_parametres(taillePopulation, nombreIterations):
         scoresPopulation = fitness(population)  # On donne un score a chaque individu de la population
         populationSelectionnee = selection(population, scoresPopulation)  # On selectionne les meilleurs individus
         nouvellePopulation = reproduction(populationSelectionnee, taillePopulation)  # On en cree d'autres a partir de ceux selectionnes
+        print(len(nouvellePopulation))
         mutation(nouvellePopulation)  # On modifie aleatoirement les parametres pour ajouter un peu de diversite
+        stocker(nouvellePopulation) # On stocke la nouvelle population dans un fichier
         tfinal = time()
         print(f"Iteration {i+1} terminee")
         print(f"Cette itération a pris {tfinal - t} s")
@@ -136,7 +162,7 @@ def trouver_parametres(taillePopulation, nombreIterations):
 
 
 if __name__ == "__main__":
-    constantesEvaluation = trouver_parametres(200, 10)
+    constantesEvaluation = trouver_constantes(200, 10)
     evaluation = (fonctionEvaluation, constantesEvaluation)
     print(constantesEvaluation)
     print(test_evaluation(TAILLE_PLATEAU, 1000, False, (evaluation, 1), (evaluation, 0)))
