@@ -50,3 +50,15 @@ constantesEvaluationAuPif = [0.504710834542148, 0.1793831001254127, -0.046911201
 
 evaluationAuPif = (fonctionEvaluation, constantesEvaluationAuPif)
 
+"""
+Aurelien
+Rien de particulier
+"""
+
+constantesEvaluationv3 = [0.3872186235471915, -0.5436791183303773, -0.856738925752206,
+                          0.8598392105410928, 0.08230557329317989, 0.10405119579044975,
+                          0.43007510088970324, -0.08228187029257783, -0.9697029330342855,
+                          0.7033725134329096, -0.775809740080875, -0.9870346029379287,
+                          0.21509413124727628]
+
+evaluationv3 = (fonctionEvaluation, constantesEvaluationv3)
