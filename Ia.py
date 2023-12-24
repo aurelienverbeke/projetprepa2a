@@ -111,7 +111,7 @@ class Ia:
                     peutPousser = True
                     for encore_autre_joueur in set(joueurs)-{autre_joueur}:
                         if encore_autre_joueur.position == (joueur.position[0], joueur.position[1]+2):
-                            peutPousser == False
+                            peutPousser = False
                             break
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
@@ -120,7 +120,7 @@ class Ia:
                     peutPousser = True
                     for encore_autre_joueur in set(joueurs)-{autre_joueur}:
                         if encore_autre_joueur.position == (joueur.position[0], joueur.position[1]-2):
-                            peutPousser == False
+                            peutPousser = False
                             break
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
@@ -129,7 +129,7 @@ class Ia:
                     peutPousser = True
                     for encore_autre_joueur in set(joueurs)-{autre_joueur}:
                         if encore_autre_joueur.position == (joueur.position[0]+2, joueur.position[1]):
-                            peutPousser == False
+                            peutPousser = False
                             break
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
@@ -138,7 +138,7 @@ class Ia:
                     peutPousser = True
                     for encore_autre_joueur in set(joueurs)-{autre_joueur}:
                         if encore_autre_joueur.position == (joueur.position[0]-2, joueur.position[1]):
-                            peutPousser == False
+                            peutPousser = False
                             break
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
@@ -149,7 +149,7 @@ class Ia:
                     peutPousser = True
                     for encore_autre_joueur in set(joueurs)-{autre_joueur}:
                         if encore_autre_joueur.position == (joueur.position[0]+2, joueur.position[1]+2):
-                            peutPousser == False
+                            peutPousser = False
                             break
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
@@ -158,7 +158,7 @@ class Ia:
                     peutPousser = True
                     for encore_autre_joueur in set(joueurs)-{autre_joueur}:
                         if encore_autre_joueur.position == (joueur.position[0]+2, joueur.position[1]-2):
-                            peutPousser == False
+                            peutPousser = False
                             break
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
@@ -167,7 +167,7 @@ class Ia:
                     peutPousser = True
                     for encore_autre_joueur in set(joueurs)-{autre_joueur}:
                         if encore_autre_joueur.position == (joueur.position[0]-2, joueur.position[1]+2):
-                            peutPousser == False
+                            peutPousser = False
                             break
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
@@ -176,7 +176,7 @@ class Ia:
                     peutPousser = True
                     for encore_autre_joueur in set(joueurs)-{autre_joueur}:
                         if encore_autre_joueur.position == (joueur.position[0]-2, joueur.position[1]-2):
-                            peutPousser == False
+                            peutPousser = False
                             break
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
