@@ -61,9 +61,6 @@ class Ia:
                 if cartesJouables != []:
                     carteJouee = choice(cartesJouables)
                     cibles = self.cible_carte(plateau, joueur, carteJouee)
-                    print("calcul_coup")
-                    print(carteJouee)
-                    print(cibles)
                     cible = choice(cibles)
                     if cible[0] == (0,0) and ((cible[1] == "endurance" and (cible[0], "poussee") in cibles) or cible[1] == "poussee"):
                         return 2, [carteJouee], cible[0]
