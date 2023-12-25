@@ -65,6 +65,7 @@ evaluationv3 = (fonctionEvaluation, constantesEvaluationv3)
 
 """
 Raphael
+Elle reste dans le coins a faire des coups bas, ce qui est étrange
 """
 
 constantesEvaluationv4 = [0.9386240745800618, 0.5618241094511123, -0.334763700934104,
@@ -78,6 +79,8 @@ evaluationv4 = (fonctionEvaluation, constantesEvaluationv4)
 
 """
 Raphael, apres l'avoir fait tourner la nuit
+Elle reste dans le coins a faire des coups bas, ce qui est étrange
+De plus augmenter la pronfondeur de la rend pas meilleure
 """
 
 constantesEvaluationv5 = [0.9386240745800618, 0.5618241094511123, -0.334763700934104,
