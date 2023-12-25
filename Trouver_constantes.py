@@ -10,7 +10,7 @@ TAILLE_PLATEAU = 5
 NOMBRE_PARTIES_PAR_EVALUATION = 10
 PROPORTION_SELECTIONNE = .2
 PROBABILITE_MUTATION = .5
-FORCE_MUTATION = .1
+FORCE_MUTATION = .5
 
 def generer_population_initiale(taillePopulation):
     """
@@ -153,8 +153,10 @@ def trouver_constantes(taillePopulation, nombreIterations):
         print(meilleurIndividu)
         print("Parties test contre l'ia de base (0=individu, 1=ia de base):")
         print(test_evaluation(TAILLE_PLATEAU, 100, False, (evaluation, 1), (evaluation, 0)))
-        print("Parties de test conte la meilleure ia actuelle (0=ancienne ia, 1=nouvelle ia):")
-        print(test_evaluation(TAILLE_PLATEAU, 100, False, (ancienneEvaluation, 1), (evaluation, 1)))
+        print("Parties de test contre la meilleure ia actuelle (0=nouvelle ia, 1=ancienne ia):")
+        print(test_evaluation(TAILLE_PLATEAU, 100, False, (evaluation, 1), (ancienneEvaluation, 1)))
+        print("Parties de test entre le niveau 1 et 2 (vérification de la cohérence) (0=niveau 2, 1=niveau 1):")
+        print(test_evaluation(TAILLE_PLATEAU, 100, False, (evaluation, 2), (evaluation, 1)))
         print("\n")
 
     scoresPopulationFinale = fitness(population)

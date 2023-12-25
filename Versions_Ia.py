@@ -90,3 +90,26 @@ constantesEvaluationv5 = [0.9386240745800618, 0.5618241094511123, -0.33476370093
                           -0.5752784895764536]
 
 evaluationv5 = (fonctionEvaluation, constantesEvaluationv5)
+
+"""
+Raphael
+Une version de l'ia avec un taux de mutations beaucoup plus élevée
+Elle continue a rester dans le coin
+"""
+
+constantesEvaluationv6 = [-0.2770479126714529, -0.48853789999693653, 0.8139388046456881,
+                          0.3022126745633138, 0.04356374978916766, 0.2782026870831862,
+                          0.08088256336079463, 0.09986354289525412, 0.757741665092817,
+                          0.956975667987398, 0.08699722537594856, 1.002789871849126,
+                          -0.1973582755756424]
+
+evaluationv6 = (fonctionEvaluation, constantesEvaluationv6)
+
+"""
+Raphael
+Une version de l'ia avec un taux de mutations et une force de mutations beaucoup plus élevée
+"""
+
+constantesEvaluationv7 = [0.49227498427617755, -0.5123862143654934, -0.9207815490188376, 0.6766142875925762, -0.2195603249179483, -0.07519458297042503, -0.7465788928624175, -0.698584875449898, -0.7345554958349496, 0.5608879640968181, 0.9758612230238863, 0.3483625676874744, 0.21235295031568358]
+
+evaluationv7 = (fonctionEvaluation, constantesEvaluationv7)
