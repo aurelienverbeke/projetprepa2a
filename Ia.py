@@ -5,7 +5,7 @@ from Carte import Carte
 from Minimax import choisir_coup
 from Arborescence import Arborescence
 
-from Versions_Ia import evaluationv1 as evaluation
+from Versions_Ia import evaluationv3 as evaluation
 
 class Ia:
     def __init__(self, niveau, evaluation_ia=evaluation, index=0):
