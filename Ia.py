@@ -7,6 +7,8 @@ from Arborescence import Arborescence
 
 from Versions_Ia import evaluationv1 as evaluation
 
+
+
 class Ia:
     def __init__(self, niveau, evaluation_ia=evaluation, index=0):
         self.niveau = niveau
@@ -21,6 +23,11 @@ class Ia:
             self.defausse = self.defausse_base
             self.pioche = self.pioche_base
             self.contre = self.contre_base
+        elif niveau == -1:
+            self.calcul_coup = self.calcul_coup_humain
+            self.defausse = self.defausse_humain
+            self.pioche = self.pioche_humain
+            self.contre = self.contre_humain
         else:
             self.calcul_coup = self.calcul_coup_minimax
             self.defausse = self.defausse_minimax
@@ -470,8 +477,51 @@ class Ia:
 
 
 
-    def calcul_coup_humain(self, plateau, cartes, nbCartesJouees):
-        pass
+    def calcul_coup_humain(self, plateau, idJoueur, nbCartesJouees):
+        print(f"\n---------- {plateau.joueurs[idJoueur].pion} : C'est à votre tour de jouer ----------\n")
+        
+        print(f"Votre main :")
+        for indice, carte in enumerate(plateau.joueurs[idJoueur].main):
+            print(f"({indice}) {carte}")
+        print(f"({len(plateau.joueurs[idJoueur].main)}) Fin de tour")
+        
+        idCarte = input("\nChoisissez une carte : ")
+        while True:
+            if not idCarte in [str(x) for x in range(len(plateau.joueurs[idJoueur].main) + 1)]:
+                idCarte = input("\nCarte non existante. Choisissez une carte : ")
+                continue
+            
+            carte = plateau.joueurs[idJoueur].main[int(idCarte)]
+            cibles = cible_carte(plateau, plateau.joueurs[idJoueur], carte)
+            if cibles==[]:
+                idCarte = input("\nCarte non jouable. Choisissez une carte : ")
+                continue
+            
+            break
+        
+        chiffres = [str(x) for x in range(1, plaeau.taille + 1)]
+        lettres = [chr(65+x) for x in range(plateau.taille)] + [chr(97+x) for x in range(plateau.taille)]
+        tout = chiffres + lettres
+        cible = input("\nChoisissez une cible : ")
+        while len(cible) != 2\
+                or cible[0] not in tout\
+                or cible[1] not in tout\
+                or (cible[0] in lettres and cible[1] in lettres)\
+                or (cible[0] in chiffres and cible[1] in chiffres):
+            cibleEchecs = input("Case non existante. Choisissez une cible : ")
+            
+        if cible[0] in lettres:
+            cible = (int(cible[1])-plateau.rayonGrille-1, ord(cible[0].upper())-65-plateau.rayonGrille)
+        else:
+            cible = (int(cible[0])-plateau.rayonGrille-1, ord(cible[1].upper())-65-plateau.rayonGrille)
+
+        action = None
+        if carte.motif in ["C", "K"]:
+            print("\nTypes d'actions possibles :\n(0) : endurance\n(1) : poussee")
+            action = input("Choisissez un type d'action : ")
+            while action not in ["0", "1"]:
+                action = input("Choix non possible. Choisissez un type d'action : ")
+            action = int(action)
 
 
 
