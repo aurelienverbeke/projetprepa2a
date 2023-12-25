@@ -53,6 +53,7 @@ evaluationAuPif = (fonctionEvaluation, constantesEvaluationAuPif)
 """
 Aurelien
 Rien de particulier
+Note de Raphael: C'est pour l'instant la meilleure
 """
 
 constantesEvaluationv3 = [0.3872186235471915, -0.5436791183303773, -0.856738925752206,
