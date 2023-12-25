@@ -470,6 +470,34 @@ class Ia:
 
 
 
+    def calcul_coup_humain(self, plateau, cartes, nbCartesJouees):
+        pass
+
+
+
+
+
+    def defausse_humain(self, plateau, idJoueur, nb=0, joueurQuiAttaque=None):
+        pass
+
+
+
+
+
+    def pioche_humain(self, plateau, joueur):
+        pass
+
+
+
+
+
+    def contre_humain(self, plateau, carteAttaque, joueurCible, joueurCourant):
+        pass
+
+
+
+
+
 if __name__ == "__main__":
     from RdR_jeu import RoiDuRing
 
