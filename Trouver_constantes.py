@@ -93,7 +93,9 @@ def mutation(population):
 
     """
 
-    for individu in population[int(len(population)*PROPORTION_SELECTIONNE):]:
+    for indexIndividu, individu in enumerate(population):
+        if indexIndividu < int(len(population)*PROPORTION_SELECTIONNE):
+            continue
         if random() < PROBABILITE_MUTATION:
             parametreMute = randint(0, NOMBRE_PARAMETRES - 1)
             individu[parametreMute] += (2 * random() - 1) * FORCE_MUTATION
