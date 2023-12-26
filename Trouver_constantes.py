@@ -1,7 +1,7 @@
 from random import random, choice, randint
 from Test_evaluation import test_evaluation
-from Evaluation import evaluation as fonctionEvaluation
-from Evaluation import NOMBRE_PARAMETRES
+from EvaluationV2 import evaluation as fonctionEvaluation
+from EvaluationV2 import NOMBRE_PARAMETRES
 from Versions_Ia import evaluationv10 as ancienneEvaluation
 from time import time
 import os
@@ -166,7 +166,7 @@ def trouver_constantes(taillePopulation, nombreIterations):
 
 
 if __name__ == "__main__":
-    constantesEvaluation = trouver_constantes(200, 1000)
+    constantesEvaluation = trouver_constantes(20, 1000)
     evaluation = (fonctionEvaluation, constantesEvaluation)
     print(constantesEvaluation)
     print(test_evaluation(TAILLE_PLATEAU, 1000, False, (evaluation, 1), (evaluation, 0)))
