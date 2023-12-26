@@ -1,6 +1,6 @@
 POSITIONS_COURONNE = [(ligne, colonne) for ligne in [-1, 0, 1] for colonne in [-1, 0, 1] if (ligne, colonne) != (0, 0)]
 POSITIONS_COINS = []
-
+NOMBRE_PARAMETRES = 13
 
 def est_dans_grille(position, extremite):
     """

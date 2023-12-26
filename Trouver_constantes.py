@@ -1,11 +1,11 @@
 from random import random, choice, randint
 from Test_evaluation import test_evaluation
 from Evaluation import evaluation as fonctionEvaluation
+from Evaluation import NOMBRE_PARAMETRES
 from Versions_Ia import evaluationv1 as ancienneEvaluation
 from time import time
 import os
 
-NOMBRE_PARAMETRES = 13
 TAILLE_PLATEAU = 5
 NOMBRE_PARTIES_PAR_EVALUATION = 10
 PROPORTION_SELECTIONNE = .2
