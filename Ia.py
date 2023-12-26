@@ -581,6 +581,37 @@ class Ia:
     def defausse_humain(self, plateau, idJoueur, nb=0, joueurQuiAttaque=None):
         joueurs = plateau.joueurs
         joueur = joueurs[idJoueur]
+        main = joueur.main[::] # copie
+        nbCartes = len(main)
+        cartesADefausser = []
+
+        print(f"\n---------- {joueur.pion} : C'est à votre tour de jouer ----------\n")
+
+        idCarte= -1
+        is_pioching = True
+        
+        idCarte = input("\nChoisissez une carte à défausser : ")
+        while is_pioching:
+            print(f"Votre main :")
+            for indice, carte in enumerate(main):
+                print(f"({indice}) {carte}")
+            print(f"({nbCartes}) Arrêter de piocher")
+            
+        
+            if not idCarte in [str(x) for x in range(nbCartes + 1)]:
+                idCarte = input("\nCarte non existante. Choisissez une carte : ")
+                continue
+            elif idCarte == nbCartes:
+                is_pioching = False
+            else:
+                carte = main[int(idCarte)]
+                cartesADefausser.append(carte)
+                main.remove(carte)
+        return cartesADefausser
+
+
+
+    def pioche_humain(self, plateau, joueur):
         main = joueur.main
         nbCartes = len(main)
         cartesADefausser = []
@@ -601,11 +632,6 @@ class Ia:
             carte = main[int(idCarte)]
             cartesADefausser.append(carte)
         return cartesADefausser
-
-
-
-    def pioche_humain(self, plateau, joueur):
-        pass
 
 
 
