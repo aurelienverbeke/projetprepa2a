@@ -53,7 +53,6 @@ evaluationAuPif = (fonctionEvaluation, constantesEvaluationAuPif)
 """
 Aurelien
 Rien de particulier
-Note de Raphael: C'est pour l'instant la meilleure
 """
 
 constantesEvaluationv3 = [0.3872186235471915, -0.5436791183303773, -0.856738925752206,
@@ -119,3 +118,17 @@ constantesEvaluationv7 = [-0.026220113908397735, 0.4692947124679605, -0.90241211
                           -0.562478402411785]
 
 evaluationv7 = (fonctionEvaluation, constantesEvaluationv7)
+
+"""
+Raphael
+Un version de l'ia plus aggressive
+Elle est meilleure que la v3
+"""
+
+constantesEvaluationv8 = [0.9551818767024354, 0.5813632782256248, -0.5447709667236378,
+                          0.5066845969305593, -0.060721104865883335, 1.2067107590524473,
+                          -0.17646443032109382, -0.9982831579604721, -0.2973004302711102,
+                          0.2970901166706561, 0.8000080158827763, 0.4756257660022638,
+                          0.3217740121954631]
+
+evaluationv8 = (fonctionEvaluation, constantesEvaluationv8)
