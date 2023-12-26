@@ -17,6 +17,7 @@ while not fin:
     stop = False
     nbeAction = 0
     while not stop:        
+        coup_contre = None
         actionJoue = ias[joueurCourant].calcul_coup(plateauJeu, joueurCourant, nbeAction)
         if actionJoue[0] != 5:
             nbeAction += 1  
@@ -46,7 +47,7 @@ while not fin:
                         del ias[idJoueurMort]
         else:
             plateauJeu.jouer(joueurCourant, actionJoue)
-        plateauJeu.afficher(joueurCourant, actionJoue)
+        plateauJeu.afficher(joueurCourant, actionJoue, coup_contre)
         stop = actionJoue[0]==5
         if stop:
             if nbeAction==0:
