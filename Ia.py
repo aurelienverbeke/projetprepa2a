@@ -640,12 +640,34 @@ class Ia:
                     return plateau.pioche[-int(nbChoix):]
 
 
-
-
-
-
     def contre_humain(self, plateau, carteAttaque, joueurCible, joueurCourant):
-        pass
+        main = joueurCible.main
+        cartesPossibles = []
+        for carte in main:
+            if carte.motif == carteAttaque.motif and carte.valeur >= carteAttaque.valeur:
+                cartesPossibles.append(carte)
+        nbCartes = len(cartesPossibles)   
+        
+        print(f"\n---------- {joueurCible.pion} : Vous vous faites attaquer par {joueurCourant.pion} ! ----------\n")
+        print(f"Il vous attaque avec {carteAttaque}")
+        print(f"Vous pouvez contrer avec :")
+        for indice, carte in enumerate(cartesPossibles):
+            print(f"({indice}) {carte}")
+        print(f"({nbCartes}) Ne pas contrer")
+        
+        is_contring = True
+        
+        idCarte = input("\nChoisissez la carte avec laquelle vous voulez contrer : ")
+        while is_contring:
+            if not idCarte in [str(x) for x in range(nbCartes+1)]:
+                idCarte = input("\ID de carte non cohérent. Choisissez la carte avec laquelle vous voulez contrer :")
+                continue
+            else:
+                if idCarte == str(nbCartes):
+                    return None
+                else:
+                    return cartesPossibles[int(idCarte)]
+        
 
 
 
