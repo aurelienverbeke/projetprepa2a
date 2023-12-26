@@ -483,8 +483,11 @@ class Ia:
         main = joueur.main
         nbCartes = len(main)
 
-        print(f"\n---------- {plateau.joueurs[idJoueur].pion} : C'est à votre tour de jouer ----------\n")
+        # on met la couleur en rouge
+        print(f"\033[0;31m\n---------- {plateau.joueurs[idJoueur].pion} : C'est à votre tour de jouer ----------\n")
         
+        
+
         print(f"Votre main :")
         for indice, carte in enumerate(main):
             print(f"({indice}) {carte}")
@@ -497,19 +500,21 @@ class Ia:
                 idCarte = input("\nCarte non existante. Choisissez une carte : ")
                 continue
             
-            # TODO il faut prendre en compte si c'est un coup bas ou un fin de tour
-
-            carte = main[int(idCarte)]
-            cibles = self.cible_carte(plateau, joueur, carte)
-            if cibles==[]:
-                idCarte = input("\nCarte non jouable. Choisissez une carte : ")
-                continue
+            if idCarte not in [str(nbCartes), str(nbCartes+1)]:
+                carte = main[int(idCarte)]
+                cibles = self.cible_carte(plateau, joueur, carte)
+                if cibles==[]:
+                    idCarte = input("\nCarte non jouable. Choisissez une carte : ")
+                    continue
             
             break
         
-        if carte == nbCartes:
+        
+        
+        idCarte = int(idCarte)
+        if idCarte == nbCartes:
             # coup bas
-            cible = input("Choisissez une cible : ")
+            cible = input("Choisissez un joueur cible : ")
             pionCorrespond = False
             joueurCible = None
             
@@ -523,9 +528,9 @@ class Ia:
                 if pionCorrespond:
                     break
 
-                cible = input("Ce joueur n'existe pas. Choisissez une cible : ")
+                cible = input("Ce joueur n'existe pas. Choisissez un joueur cible : ")
             
-            cartesCoupBas = input("Choisissez 3 cartes a utiliser : ")
+            cartesCoupBas = input("Choisissez 3 cartes a utiliser (exemple : 21 pour les cartes 1 et 2) : ")
             while True:
                 if len(cartesCoupBas) != 3:
                     cartesCoupBas = input("Nombre de cartes incoherent. Choisissez 3 cartes a utiliser : ")
@@ -543,36 +548,82 @@ class Ia:
                 break
 
             
+            print("\033[0m") # pour realigner le prochain affichage de plateau, et on remet la couleur normale
             return 0, [main[indice] for indice in cartesCoupBas], joueurCible.position
             
 
-        elif carte == nbCartes+1:
+        
+        elif idCarte == nbCartes+1:
             # fin de tour
+            print("\033[0m") # pour realigner le prochain affichage de plateau, et on remet la couleur normale
             return 5, [], ()
+        
+        
+
         else:
+            # carte d'attaque, de deplacement ou joker
             chiffres = [str(x) for x in range(1, plateau.taille + 1)]
             lettres = [chr(65+x) for x in range(plateau.taille)] + [chr(97+x) for x in range(plateau.taille)]
             tout = chiffres + lettres
-            cible = input("\nChoisissez une cible : ")
-            while len(cible) != 2\
-                    or cible[0] not in tout\
-                    or cible[1] not in tout\
-                    or (cible[0] in lettres and cible[1] in lettres)\
-                    or (cible[0] in chiffres and cible[1] in chiffres):
-                cibleEchecs = input("Case non existante. Choisissez une cible : ")
+            cible = input("\nChoisissez une cible (exemple : 3B ou 4A): ")
+            while True:
+                if len(cible) != 2\
+                        or cible[0] not in tout\
+                        or cible[1] not in tout\
+                        or (cible[0] in lettres and cible[1] in lettres)\
+                        or (cible[0] in chiffres and cible[1] in chiffres):
+                    cible = input("Case non existante. Choisissez une cible : ")
+                    continue
                 
-            if cible[0] in lettres:
-                cible = (int(cible[1])-plateau.rayonGrille-1, ord(cible[0].upper())-65-plateau.rayonGrille)
-            else:
-                cible = (int(cible[0])-plateau.rayonGrille-1, ord(cible[1].upper())-65-plateau.rayonGrille)
+                if cible[0] in lettres:
+                    # de la forme "B2"
+                    cible = (int(cible[1])-plateau.rayonGrille-1, ord(cible[0].upper())-65-plateau.rayonGrille)
+                else:
+                    # de la forme "2B"
+                    cible = (int(cible[0])-plateau.rayonGrille-1, ord(cible[1].upper())-65-plateau.rayonGrille)
 
-            action = None
+                if carte.motif in ["C", "K"]:
+                    ciblesPossibles = cible_carte(plateau, joueur, carte)
+                    if cible not in [ciblePossible[0] for ciblePossible in ciblesPossibles]:
+                        cible = input("Vous ne pouvez pas jouer a cet emplacement. Choisissez une cible : ")
+                        continue
+                    
+                    peutEndurance = False
+                    peutPoussee = False
+                    action = 0
+                    actionsPossibles = []
+                    for ciblePossible in ciblesPossibles:
+                        if ciblePossible[1] == "endurance":
+                            peutEndurance = True
+                        else:
+                            peutPoussee = True
+                    if len(actionsPossibles) == 2:
+                        print("Types d'actions possibles : ")
+                        if peutEndurance:
+                            print("(0) Endurance")
+                            actionsPossibles.append("0")
+                        if peutPoussee:
+                            print("(1) Poussee")
+                            actionsPossibles.append("1")
+
+                        action = input("Choisissez un type d'action : ")
+                        while action not in actionsPossibles:
+                            action = input("Choix non possible. Choisissez un type d'action : ")
+                
+                else:
+                    if cible not in self.cible_carte(plateau, joueur, carte):
+                        cible = input("Vous ne pouvez pas jouer a cet emplacement. Choisissez une cible : ")
+                        continue
+
+                break
+
+            print("\033[0m") # pour realigner le prochain affichage de plateau, et on remet la couleur normale
             if carte.motif in ["C", "K"]:
-                print("\nTypes d'actions possibles :\n(0) : endurance\n(1) : poussee")
-                action = input("Choisissez un type d'action : ")
-                while action not in ["0", "1"]:
-                    action = input("Choix non possible. Choisissez un type d'action : ")
-                action = int(action)
+                return 3-int(action), [carte], cible
+            elif carte.motif == "J":
+                return 1, [carte], cible
+            else:
+                return 4, [carte], cible
 
 
 
@@ -585,55 +636,60 @@ class Ia:
         nbCartes = len(main)
         cartesADefausser = []
 
-        print(f"\n---------- {joueur.pion} : C'est à votre tour de jouer ----------\n")
+        print(f"\033[0;31m\n---------- {joueur.pion} : C'est à votre tour de jouer ----------\n")
 
         idCarte= -1
-        is_defaussing = True
+        isDefaussing = True
+        
+        print(f"Votre main :")
+        for indice, carte in enumerate(main):
+            print(f"({indice}) {carte}")
+        print(f"({nbCartes}) Arrêter de defausser")
         
         idCarte = input("\nChoisissez une carte à défausser : ")
-        while is_defaussing:
-            print(f"Votre main :")
-            for indice, carte in enumerate(main):
-                print(f"({indice}) {carte}")
-            print(f"({nbCartes}) Arrêter de piocher")
-            
-        
+        while isDefaussing:
             if not idCarte in [str(x) for x in range(nbCartes + 1)]:
                 idCarte = input("\nCarte non existante. Choisissez une carte : ")
                 continue
-            elif idCarte == nbCartes:
-                is_defaussing = False
+            elif int(idCarte) == nbCartes:
+                isDefaussing = False
             else:
                 carte = main[int(idCarte)]
                 cartesADefausser.append(carte)
                 main.remove(carte)
+                nbCartes = len(main)
+        
+        print("\033[0m") # pour realigner le prochain affichage de plateau, et on remet la couleur normale
         return cartesADefausser
 
 
 
-    def pioche_humain(self, plateau, joueur):
+
+
+    def pioche_humain(self, plateau, idJoueur):
+        joueur = plateau.joueurs[idJoueur]
         main = joueur.main
         nbCartes = len(main)
         nbMaxPioche = min(2, 5-nbCartes)
 
-        print(f"\n---------- {joueur.pion} : C'est à votre tour de jouer ----------\n")
+        print(f"\033[0;31m\n---------- {joueur.pion} : C'est à votre tour de jouer ----------\n")
 
         print(f"Votre main :")
-        for carte in enumerate(main):
+        for carte in main:
             print(f"{carte}")
-        print("La pioche :")
-        print("(0) Ne rien piocher")
+        print("\nLa pioche :")
         for indice, carte in enumerate(plateau.pioche[-nbMaxPioche:]):
             print(f"({indice+1}) {carte}")
             
         is_pioching = True
         
-        nbChoix = input("\nChoisissez le nombre de cartes à piocher (ie jusqu'à où piocher) : ")
+        nbChoix = input("\nChoisissez le nombre de cartes à piocher (0, 1 ou 2) : ")
         while is_pioching:
-            if not nbChoix in [str(x) for x in range(nbMaxPioche+1)]:
+            if not nbChoix in [str(x) for x in range(3)]:
                 nbChoix = input("\nNombre de cartes non cohérent. Choisissez un nombre de cartes à piocher :")
                 continue
             else:
+                print("\033[0m") # pour realigner le prochain affichage de plateau, et on remet la couleur normale
                 if nbChoix == "0":
                     return []
                 else:
@@ -648,7 +704,7 @@ class Ia:
                 cartesPossibles.append(carte)
         nbCartes = len(cartesPossibles)   
         
-        print(f"\n---------- {joueurCible.pion} : Vous vous faites attaquer par {joueurCourant.pion} ! ----------\n")
+        print(f"\033[0;31m\n---------- {joueurCible.pion} : Vous vous faites attaquer par {joueurCourant.pion} ! ----------\n")
         print(f"Il vous attaque avec {carteAttaque}")
         print(f"Vous pouvez contrer avec :")
         for indice, carte in enumerate(cartesPossibles):
