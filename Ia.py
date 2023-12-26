@@ -535,7 +535,7 @@ class Ia:
                     cartesCoupBas = input("Certaines cartes sont identiques. Choisissez 3 cartes a utiliser : ")
                     continue
 
-                valeursPossibles = [str(x) for x in range(nbCartes)]:
+                valeursPossibles = [str(x) for x in range(nbCartes)]
                 if cartesCoupBas[0] not in valeursPossibles or cartesCoupBAs[1] not in valeursPossibles or cartesCoupBas[2] not in valeursPossibles:
                     cartesCoupBas = input("Une des cartes des pas jouable. Choisissez 3 cartes à utiliser : ")
                     continue
