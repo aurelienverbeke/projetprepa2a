@@ -250,7 +250,7 @@ class RoiDuRing:
         self.pioche.extend(self.defausse)
         self.defausse = []
 
-    def afficher(self, joueurCourant, actionJoue, coupContre = None, afficheAlternatif=False):
+    def afficher(self, joueurCourant=None, actionJoue=None, coupContre = None, afficheAlternatif=False):
         """
         Affiche les informations du coup courant :
             Pion du joueur
@@ -273,9 +273,11 @@ class RoiDuRing:
                 Endurance : endurance du joueur
                 Main : carte 1 , carte 2, ...
         """
-        if actionJoue[0] in [0, 1, 2, 3, 4]:
-            result = self.joueurs[joueurCourant].pion
-            result += self.affiche_action(actionJoue, coupContre, afficheAlternatif)
+        if actionJoue is None or actionJoue[0] in [0, 1, 2, 3, 4]:
+            result = ""
+            if actionJoue is not None: # Permet d'afficher le plateau lorsqu'un joueur humain veut jouer
+                result += self.joueurs[joueurCourant].pion
+                result += self.affiche_action(actionJoue, coupContre, afficheAlternatif)
             result += "\n    "
             lettres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
             longueurGrille = self.taille
@@ -308,7 +310,7 @@ class RoiDuRing:
                     if afficheAlternatif:
                         affCarte = carte.motif + str(carte.valeur)
                     else:
-                        affCarte = carte.__str__()
+                        affCarte = carte.__str__() + " (" + carte.motif + str(carte.valeur) + ")"
                     result += affCarte + ', '
                 result += '\n'
             print(result)
@@ -319,7 +321,7 @@ class RoiDuRing:
             if afficheAlternatif:
                 result += carte.motif + str(carte.valeur)
             else:
-                result += carte.__str__() + ' '
+                result += carte.__str__() + " (" + carte.motif + str(carte.valeur) + ") "
         if actionJoue[0] == 2 or actionJoue[0] == 3:
             for i in range(len(self.joueurs)):
                 if self.joueurs[i].position == actionJoue[2]:
