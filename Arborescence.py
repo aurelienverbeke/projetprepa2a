@@ -103,8 +103,16 @@ class Arborescence:
                  vaRecevoirTomates=True, estAttaque=False):
         """
         Paramètres:
+            - evaluation (fonction, list[float]) : evaluation utilisee, avec la fonction et la liste des constantes associées
+            - nombreDeplacementParNoeud (int) : nombre de deplacement autorise par noeud (maximumn 5)
+            - taillePlateau (int) : taille du plateau (longueur d'un cote), une partie classique se joue en taille 5
             - etat (dict) : de la forme {"pioche": list(cartes), "listeJoueurs" : list(idJoueur),
               idJoueur : {"main" : list(cartes), "endurance" : int, "position" : tuple(int)}}
+            - dernierCoup (dict) : dictionnaire representant le coup joue pour arriver a ce noeud, de la forme
+              {"cartes" : list[type de coup et carte joue], "joueur" : int, "position" : (int, int)}
+            - joueurCourant (int) : le joueur controlant le noeud
+            - vaRecevoirTomates (bool) : Si cette valeur est a True et que le joueur fini son tour, on considere qu'il recevra des tomates
+            - estAttaque (bool) : True si le coup a jouer est une reception a une attaque (contre ou coup bas)
         """
         self.etat = etat
         self.joueurCourant = joueurCourant
@@ -124,6 +132,15 @@ class Arborescence:
                            (self.extremite, -self.extremite)]
 
     def voisins(self, ligne, colonne):
+        """
+        Donne la liste des joueurs voisins d'une position
+
+        Parametres:
+            - ligne (int)
+            - colonne (int)
+
+        Renvoie la liste des identifiants des joueurs voisins
+        """
         voisins = []
 
         for y in range(ligne - 1, ligne + 2):
@@ -384,6 +401,7 @@ class Arborescence:
     def generer_fils(self):
         """
         Genere les fils de self, les ajoute à self.sousArbres et revoie un constructeur parcourant tous les fils
+        (pour pouvoir appeler la fonction directement dans une boucle for)
         """
         mainJoueurCourant = self.etat[self.joueurCourant]["main"]
         positionJoueurCourant = self.etat[self.joueurCourant]["position"]
@@ -551,8 +569,8 @@ class Arborescence:
                                                                 deplacementDiagonalPossible,
                                                                 valeurCarteAttaqueLateral,
                                                                 valeurCarteAttaqueDiagonal,
-                                                                max(len(self.etat[self.joueurCourant])-3, 0),
-                                                                jokerPossible)
+                                                                jokerPossible,
+                                                                max(len(self.etat[self.joueurCourant])-3, 0))
 
                 for cartesDefausses in possibiliteDefausse:
                     # Si on defausse 3 cartes, autant faire un coup bas
@@ -599,66 +617,11 @@ class Arborescence:
                                             deplacements=[(self.joueurCourant, case)])
 
     def est_fini(self):
+        """
+        Revoie True si le noeud représente une partie terminee
+        """
         nbVivants = 0
         for idJoueur in self.etat["listeJoueurs"]:
             if self.etat[idJoueur]["endurance"] > 0:
                 nbVivants += 1
         return nbVivants <= 1 or self.joueurCourant not in self.etat["listeJoueurs"]
-
-    def evaluation_test(self):
-        return {idJoueur: float("inf") if self.etat[idJoueur]["position"] == (0, 0) else 0 for idJoueur in
-                self.etat["listeJoueurs"]}
-
-
-if __name__ == "__main__":
-    from time import time
-
-    etat = {"pioche": [Carte("T", 6), Carte("T", 7), Carte("T", 8)], "defausse": [],
-            0: {"main": [Carte("T", 3), Carte("C", 4), Carte("C", 10), Carte("J", 11), Carte("P", 4)], "endurance": 10,
-                "position": (0, 0)},
-            1: {"main": [Carte("K", 15), Carte("K", 9), Carte("C", 1)], "endurance": 10, "position": (0, 1)},
-            2: {"main": [Carte("K", 5), Carte("T", 18), Carte("C", 2)], "endurance": 10, "position": (0, 2)}}
-    A = Arborescence(5, 5, etat)
-    nombreNoeuds = 1
-    t = time()
-    nombreNoeuds += len(A.sousArbres)
-    for fils in A.generer_fils():
-        nombreNoeuds += len(fils.sousArbres)
-        for fils_2 in fils.generer_fils():
-            nombreNoeuds += len(fils_2.sousArbres)
-            for fils_3 in fils_2.generer_fils():
-                nombreNoeuds += len(fils_3.sousArbres)
-    print(time() - t)
-    print(nombreNoeuds)
-    print(len(A.sousArbres))
-    print("")
-
-    for i in range(len(A.sousArbres)):
-        if A.sousArbres[i].dernierCoup["cartes"][-1][0] != "pousser":
-            continue
-        print(len(A.sousArbres[i].sousArbres))
-        print(A.sousArbres[i].etat[0]["position"])
-        print(A.sousArbres[i].etat[1]["position"])
-        print(A.sousArbres[i].etat[0]["endurance"])
-        print(A.sousArbres[i].estAttaque)
-        print(A.sousArbres[i].joueurCourant)
-        print([(c.motif, c.valeur) for c in A.sousArbres[i].etat[0]["main"]])
-        print([(c.motif, c.valeur) for c in A.sousArbres[i].etat[1]["main"]])
-        print([(c.motif, c.valeur) for c in A.sousArbres[i].etat[2]["main"]])
-        print(A.sousArbres[i].dernierCoup)
-        print([(c.motif, c.valeur) for c in A.sousArbres[i].etat["pioche"]])
-        print("")
-        """
-        j = 1
-        print(len(A.sousArbres[i].sousArbres))
-        print(A.sousArbres[i].sousArbres[j].etat[0]["position"])
-        print(A.sousArbres[i].sousArbres[j].etat[1]["position"])
-        print(A.sousArbres[i].sousArbres[j].etat[0]["endurance"])
-        print(A.sousArbres[i].sousArbres[j].estAttaque)
-        print(A.sousArbres[i].sousArbres[j].joueurCourant)
-        print([(c.motif, c.valeur) for c in A.sousArbres[i].sousArbres[j].etat[0]["main"]])
-        print([(c.motif, c.valeur) for c in A.sousArbres[i].sousArbres[j].etat[1]["main"]])
-        print([(c.motif, c.valeur) for c in A.sousArbres[i].sousArbres[j].etat[2]["main"]])
-        print(A.sousArbres[i].sousArbres[j].dernierCoup)
-        print([(c.motif, c.valeur) for c in A.sousArbres[i].sousArbres[j].etat["pioche"]])
-        """
