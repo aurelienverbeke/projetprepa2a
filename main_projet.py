@@ -46,7 +46,7 @@ while not fin:
                         del ias[idJoueurMort]
         else:
             plateauJeu.jouer(joueurCourant, actionJoue)
-        plateauJeu.afficher(joueurCourant, actionJoue, None, True)
+        plateauJeu.afficher(joueurCourant, actionJoue)
         stop = actionJoue[0]==5
         if stop:
             if nbeAction==0:
