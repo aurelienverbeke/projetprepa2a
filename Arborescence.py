@@ -448,8 +448,8 @@ class Arborescence:
                                             prochainJoueur=self.dernierCoup["joueur"])
 
                 cartesPouvantContrer = [carte for carte in mainJoueurCourant
-                                        if carte.motif == self.dernierCoup["cartes"][-1][0]
-                                        and carte.valeur >= self.dernierCoup["cartes"][-1][2]]
+                                        if carte.motif == self.dernierCoup["cartes"][-1][2]
+                                        and carte.valeur >= self.dernierCoup["cartes"][-1][3]]
                 if cartesPouvantContrer:
                     # On prendra toujours la carte la plus faible qui peut contrer
                     carteContre = min(cartesPouvantContrer)
@@ -459,7 +459,7 @@ class Arborescence:
                     yield self.creer_sous_arbre(coupJoue=coupJoue,
                                                 vaRecevoirTomates=self.vaRecevoirTomates,
                                                 prochainJoueur=self.dernierCoup["joueur"],
-                                                cartesARetirer=[(self.joueurCourant, [carteContre])])
+                                                cartesARetirer=[(self.joueurCourant, [(carteContre.motif, carteContre.valeur)])])
             return
 
         cartesUtilisePourAllerACase = dict()

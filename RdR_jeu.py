@@ -324,7 +324,7 @@ class RoiDuRing:
             for i in range(len(self.joueurs)):
                 if self.joueurs[i].position == actionJoue[2]:
                     result += f"\nCible : Joueur {i}"
-        if coupContre != None:
+        if coupContre is not None:
             result += f"\nContre : {coupContre.__str__()}"
         return result
     
