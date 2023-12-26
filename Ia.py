@@ -478,50 +478,101 @@ class Ia:
 
 
     def calcul_coup_humain(self, plateau, idJoueur, nbCartesJouees):
+        joueurs = plateau.joueurs
+        joueur = joueurs[idJoueur]
+        main = joueur.main
+        nbCartes = len(main)
+
         print(f"\n---------- {plateau.joueurs[idJoueur].pion} : C'est à votre tour de jouer ----------\n")
         
         print(f"Votre main :")
-        for indice, carte in enumerate(plateau.joueurs[idJoueur].main):
+        for indice, carte in enumerate(main):
             print(f"({indice}) {carte}")
-        print(f"({len(plateau.joueurs[idJoueur].main)}) Fin de tour")
+        print(f"({nbCartes}) Coup bas")
+        print(f"({nbCartes+1}) Fin de tour")
         
         idCarte = input("\nChoisissez une carte : ")
         while True:
-            if not idCarte in [str(x) for x in range(len(plateau.joueurs[idJoueur].main) + 1)]:
+            if not idCarte in [str(x) for x in range(nbCartes + 2)]:
                 idCarte = input("\nCarte non existante. Choisissez une carte : ")
                 continue
             
-            carte = plateau.joueurs[idJoueur].main[int(idCarte)]
-            cibles = cible_carte(plateau, plateau.joueurs[idJoueur], carte)
+            # TODO il faut prendre en compte si c'est un coup bas ou un fin de tour
+
+            carte = main[int(idCarte)]
+            cibles = cible_carte(plateau, joueur, carte)
             if cibles==[]:
                 idCarte = input("\nCarte non jouable. Choisissez une carte : ")
                 continue
             
             break
         
-        chiffres = [str(x) for x in range(1, plaeau.taille + 1)]
-        lettres = [chr(65+x) for x in range(plateau.taille)] + [chr(97+x) for x in range(plateau.taille)]
-        tout = chiffres + lettres
-        cible = input("\nChoisissez une cible : ")
-        while len(cible) != 2\
-                or cible[0] not in tout\
-                or cible[1] not in tout\
-                or (cible[0] in lettres and cible[1] in lettres)\
-                or (cible[0] in chiffres and cible[1] in chiffres):
-            cibleEchecs = input("Case non existante. Choisissez une cible : ")
+        if carte == nbCartes:
+            # coup bas
+            cible = input("Choisissez une cible : ")
+            pionCorrespond = False
+            joueurCible = None
             
-        if cible[0] in lettres:
-            cible = (int(cible[1])-plateau.rayonGrille-1, ord(cible[0].upper())-65-plateau.rayonGrille)
-        else:
-            cible = (int(cible[0])-plateau.rayonGrille-1, ord(cible[1].upper())-65-plateau.rayonGrille)
+            while True:
+                for autreJoueur in set(joueurs) - {joueur}:
+                    if autreJoueur.pion == cible:
+                        pionCorrespond = True
+                        joueurCible = autreJoueur
+                        break
 
-        action = None
-        if carte.motif in ["C", "K"]:
-            print("\nTypes d'actions possibles :\n(0) : endurance\n(1) : poussee")
-            action = input("Choisissez un type d'action : ")
-            while action not in ["0", "1"]:
-                action = input("Choix non possible. Choisissez un type d'action : ")
-            action = int(action)
+                if pionCorrespond:
+                    break
+
+                cible = input("Ce joueur n'existe pas. Choisissez une cible : ")
+            
+            cartesCoupBas = input("Choisissez 3 cartes a utiliser : ")
+            while True:
+                if len(cartesCoupBas) != 3:
+                    cartesCoupBas = input("Nombre de cartes incoherent. Choisissez 3 cartes a utiliser : ")
+                    continue
+
+                if cartesCoupBas[0] == cartesCoupBas[1] or cartesCoupBas[1] == cartesCoupBas[2] or cartesCoupBas[0] == cartesCoupBas[2]:
+                    cartesCoupBas = input("Certaines cartes sont identiques. Choisissez 3 cartes a utiliser : ")
+                    continue
+
+                valeursPossibles = [str(x) for x in range(nbCartes)]:
+                if cartesCoupBas[0] not in valeursPossibles or cartesCoupBAs[1] not in valeursPossibles or cartesCoupBas[2] not in valeursPossibles:
+                    cartesCoupBas = input("Une des cartes des pas jouable. Choisissez 3 cartes à utiliser : ")
+                    continue
+                
+                break
+
+            
+            return 0, [main[indice] for indice in cartesCoupBas], joueurCible.position
+            
+
+        elif carte == nbCartes+1:
+            # fin de tour
+            return 5, [], ()
+        else:
+            chiffres = [str(x) for x in range(1, plateau.taille + 1)]
+            lettres = [chr(65+x) for x in range(plateau.taille)] + [chr(97+x) for x in range(plateau.taille)]
+            tout = chiffres + lettres
+            cible = input("\nChoisissez une cible : ")
+            while len(cible) != 2\
+                    or cible[0] not in tout\
+                    or cible[1] not in tout\
+                    or (cible[0] in lettres and cible[1] in lettres)\
+                    or (cible[0] in chiffres and cible[1] in chiffres):
+                cibleEchecs = input("Case non existante. Choisissez une cible : ")
+                
+            if cible[0] in lettres:
+                cible = (int(cible[1])-plateau.rayonGrille-1, ord(cible[0].upper())-65-plateau.rayonGrille)
+            else:
+                cible = (int(cible[0])-plateau.rayonGrille-1, ord(cible[1].upper())-65-plateau.rayonGrille)
+
+            action = None
+            if carte.motif in ["C", "K"]:
+                print("\nTypes d'actions possibles :\n(0) : endurance\n(1) : poussee")
+                action = input("Choisissez un type d'action : ")
+                while action not in ["0", "1"]:
+                    action = input("Choix non possible. Choisissez un type d'action : ")
+                action = int(action)
 
 
 
