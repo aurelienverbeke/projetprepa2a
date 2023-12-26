@@ -122,7 +122,6 @@ evaluationv7 = (fonctionEvaluation, constantesEvaluationv7)
 """
 Raphael
 Un version de l'ia plus aggressive
-Elle est meilleure que la v3
 """
 
 constantesEvaluationv8 = [0.9551818767024354, 0.5813632782256248, -0.5447709667236378,
@@ -148,6 +147,7 @@ evaluationv9 = (fonctionEvaluation, constantesEvaluationv9)
 
 """
 Raphael, après l'avoir fait tourner toute la nuit
+C'est pour l'instant la meilleure ia
 """
 
 constantesEvaluationv10 = [0.9551818767024354, 0.5813632782256248, -0.5053973630204334,

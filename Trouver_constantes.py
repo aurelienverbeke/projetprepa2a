@@ -2,7 +2,7 @@ from random import random, choice, randint
 from Test_evaluation import test_evaluation
 from Evaluation import evaluation as fonctionEvaluation
 from Evaluation import NOMBRE_PARAMETRES
-from Versions_Ia import evaluationv1 as ancienneEvaluation
+from Versions_Ia import evaluationv10 as ancienneEvaluation
 from time import time
 import os
 
