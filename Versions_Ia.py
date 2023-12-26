@@ -145,3 +145,15 @@ constantesEvaluationv9 = [-0.825734832241195, 0.5943128873260486, 0.638527531463
                           0.3637936998644319]
 
 evaluationv9 = (fonctionEvaluation, constantesEvaluationv9)
+
+"""
+Raphael, après l'avoir fait tourner toute la nuit
+"""
+
+constantesEvaluationv10 = [0.9551818767024354, 0.5813632782256248, -0.5053973630204334,
+                           0.5066845969305593, -0.060721104865883335, 1.2067107590524473,
+                           -0.17646443032109382, -0.4293145232463491, -0.2973004302711102,
+                           0.08875914492537995, 0.8000080158827763, 0.9583449424032568,
+                           0.837670597208072]
+
+evaluationv10 = (fonctionEvaluation, constantesEvaluationv10)
