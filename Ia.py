@@ -500,7 +500,7 @@ class Ia:
             # TODO il faut prendre en compte si c'est un coup bas ou un fin de tour
 
             carte = main[int(idCarte)]
-            cibles = cible_carte(plateau, joueur, carte)
+            cibles = self.cible_carte(plateau, joueur, carte)
             if cibles==[]:
                 idCarte = input("\nCarte non jouable. Choisissez une carte : ")
                 continue
@@ -588,10 +588,10 @@ class Ia:
         print(f"\n---------- {joueur.pion} : C'est à votre tour de jouer ----------\n")
 
         idCarte= -1
-        is_pioching = True
+        is_defaussing = True
         
         idCarte = input("\nChoisissez une carte à défausser : ")
-        while is_pioching:
+        while is_defaussing:
             print(f"Votre main :")
             for indice, carte in enumerate(main):
                 print(f"({indice}) {carte}")
@@ -602,7 +602,7 @@ class Ia:
                 idCarte = input("\nCarte non existante. Choisissez une carte : ")
                 continue
             elif idCarte == nbCartes:
-                is_pioching = False
+                is_defaussing = False
             else:
                 carte = main[int(idCarte)]
                 cartesADefausser.append(carte)
@@ -614,24 +614,31 @@ class Ia:
     def pioche_humain(self, plateau, joueur):
         main = joueur.main
         nbCartes = len(main)
-        cartesADefausser = []
+        nbMaxPioche = min(2, 5-nbCartes)
 
         print(f"\n---------- {joueur.pion} : C'est à votre tour de jouer ----------\n")
 
         print(f"Votre main :")
-        for indice, carte in enumerate(main):
-            print(f"({indice}) {carte}")
-        print(f"({nbCartes}) Fin de tour")
-        
-        idCarte = input("\nChoisissez une carte à défausser : ")
-        while idCarte != nbCartes:
-            if not idCarte in [str(x) for x in range(nbCartes + 1)]:
-                idCarte = input("\nCarte non existante. Choisissez une carte : ")
-                continue
+        for carte in enumerate(main):
+            print(f"{carte}")
+        print("La pioche :")
+        print("(0) Ne rien piocher")
+        for indice, carte in enumerate(plateau.pioche[-nbMaxPioche:]):
+            print(f"({indice+1}) {carte}")
             
-            carte = main[int(idCarte)]
-            cartesADefausser.append(carte)
-        return cartesADefausser
+        is_pioching = True
+        
+        nbChoix = input("\nChoisissez le nombre de cartes à piocher (ie jusqu'à où piocher) : ")
+        while is_pioching:
+            if not nbChoix in [str(x) for x in range(nbMaxPioche+1)]:
+                nbChoix = input("\nNombre de cartes non cohérent. Choisissez un nombre de cartes à piocher :")
+                continue
+            else:
+                if nbChoix == "0":
+                    return []
+                else:
+                    return plateau.pioche[-int(nbChoix):]
+
 
 
 
