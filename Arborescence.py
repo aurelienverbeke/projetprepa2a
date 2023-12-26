@@ -256,7 +256,7 @@ class Arborescence:
         return deplacementLateralPossible, deplacementDiagonalPossible, valeurCarteAttaqueLateral, valeurCarteAttaqueDiagonal, jokerPossible
 
     def possibilite_defausse(self, deplacementLateralPossible, deplacementDiagonalPossible, valeurCarteAttaqueLateral,
-                             valeurCarteAttaqueDiagonal, jokerPossible, estCoupBas=False):
+                             valeurCarteAttaqueDiagonal, jokerPossible, nombreCarteMaxADefausser, estCoupBas=False):
         """
         Renvoie toutes les defausses possibles
 
@@ -290,7 +290,7 @@ class Arborescence:
         if estCoupBas:
             possibiliteDefausse = [x for x in possibiliteDefausse if len(x) == 2]
         else:
-            possibiliteDefausse = [x for x in possibiliteDefausse if len(x) < 4]
+            possibiliteDefausse = [x for x in possibiliteDefausse if len(x) <= nombreCarteMaxADefausser or len(x) == 3] # On empeche de defausser inutilement
         return possibiliteDefausse
 
     def cartes_a_voler(self, joueur):
@@ -402,6 +402,7 @@ class Arborescence:
                                                                 valeurCarteAttaqueLateral,
                                                                 valeurCarteAttaqueDiagonal,
                                                                 jokerPossible,
+                                                                5,
                                                                 estCoupBas=True)
 
                 for cartesDefausses in possibiliteDefausse:
@@ -550,6 +551,7 @@ class Arborescence:
                                                                 deplacementDiagonalPossible,
                                                                 valeurCarteAttaqueLateral,
                                                                 valeurCarteAttaqueDiagonal,
+                                                                max(len(self.etat[self.joueurCourant])-3, 0),
                                                                 jokerPossible)
 
                 for cartesDefausses in possibiliteDefausse:

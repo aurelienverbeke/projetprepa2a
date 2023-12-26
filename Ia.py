@@ -5,7 +5,7 @@ from Carte import Carte
 from Minimax import choisir_coup
 from Arborescence import Arborescence
 
-from Versions_Ia import evaluationv7 as evaluation
+from Versions_Ia import evaluationv8 as evaluation
 
 
 

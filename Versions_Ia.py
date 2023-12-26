@@ -53,7 +53,6 @@ evaluationAuPif = (fonctionEvaluation, constantesEvaluationAuPif)
 """
 Aurelien
 Rien de particulier
-Note de Raphaël : C'est pour l'instant la meilleure ia mais uniquement du niveau 2
 """
 
 constantesEvaluationv3 = [0.3872186235471915, -0.5436791183303773, -0.856738925752206,
@@ -123,7 +122,7 @@ evaluationv7 = (fonctionEvaluation, constantesEvaluationv7)
 """
 Raphael
 Un version de l'ia plus aggressive
-Elle est meilleure que la v3 sauf au niveau 2
+Elle est meilleure que la v3
 """
 
 constantesEvaluationv8 = [0.9551818767024354, 0.5813632782256248, -0.5447709667236378,
