@@ -166,7 +166,7 @@ def trouver_constantes(taillePopulation, nombreIterations):
 
 
 if __name__ == "__main__":
-    constantesEvaluation = trouver_constantes(20, 1000)
+    constantesEvaluation = trouver_constantes(200, 1000)
     evaluation = (fonctionEvaluation, constantesEvaluation)
     print(constantesEvaluation)
     print(test_evaluation(TAILLE_PLATEAU, 1000, False, (evaluation, 1), (evaluation, 0)))
