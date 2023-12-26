@@ -536,7 +536,7 @@ class Ia:
                     continue
 
                 valeursPossibles = [str(x) for x in range(nbCartes)]
-                if cartesCoupBas[0] not in valeursPossibles or cartesCoupBAs[1] not in valeursPossibles or cartesCoupBas[2] not in valeursPossibles:
+                if cartesCoupBas[0] not in valeursPossibles or cartesCoupBas[1] not in valeursPossibles or cartesCoupBas[2] not in valeursPossibles:
                     cartesCoupBas = input("Une des cartes des pas jouable. Choisissez 3 cartes à utiliser : ")
                     continue
                 
@@ -579,9 +579,28 @@ class Ia:
 
 
     def defausse_humain(self, plateau, idJoueur, nb=0, joueurQuiAttaque=None):
-        pass
+        joueurs = plateau.joueurs
+        joueur = joueurs[idJoueur]
+        main = joueur.main
+        nbCartes = len(main)
+        cartesADefausser = []
 
+        print(f"\n---------- {joueur.pion} : C'est à votre tour de jouer ----------\n")
 
+        print(f"Votre main :")
+        for indice, carte in enumerate(main):
+            print(f"({indice}) {carte}")
+        print(f"({nbCartes}) Fin de tour")
+        
+        idCarte = input("\nChoisissez une carte à défausser : ")
+        while idCarte != nbCartes:
+            if not idCarte in [str(x) for x in range(nbCartes + 1)]:
+                idCarte = input("\nCarte non existante. Choisissez une carte : ")
+                continue
+            
+            carte = main[int(idCarte)]
+            cartesADefausser.append(carte)
+        return cartesADefausser
 
 
 
