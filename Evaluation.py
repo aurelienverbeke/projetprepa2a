@@ -8,7 +8,7 @@ def est_dans_grille(position, extremite):
 
     Parametres :
         - position (tuple(int, int)) : coordonnees
-        - extremite (list[tuple(int, int)]) : liste des positions correspondant aux coins du plateau
+        - extremite (int) : distance entre le centre et un des bords du plateau
 
     Revoie True si les coordonnees sont bien dans la grille, False sinon
     """
@@ -22,7 +22,7 @@ def voisins(etat, ligne, colonne, extremite):
             - etat (dict) : dictionnaire representant la situation (voir dans Arborescence pour plus de details
             - ligne (int)
             - colonne (int)
-            - extremite (list[tuple(int, int)]) : liste des positions correspondant aux coins du plateau
+            - extremite (int) : distance entre le centre et un des bords du plateau
 
         Renvoie la liste des identifiants des joueurs voisins
         """
