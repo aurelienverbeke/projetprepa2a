@@ -10,7 +10,7 @@ TAILLE_PLATEAU = 5
 NOMBRE_PARTIES_PAR_EVALUATION = 10
 PROPORTION_SELECTIONNE = .2
 PROBABILITE_MUTATION = .5
-FORCE_MUTATION = .5
+FORCE_MUTATION = 1
 
 def generer_population_initiale(taillePopulation):
     """
@@ -166,7 +166,7 @@ def trouver_constantes(taillePopulation, nombreIterations):
 
 
 if __name__ == "__main__":
-    constantesEvaluation = trouver_constantes(100, 1000)
+    constantesEvaluation = trouver_constantes(200, 1000)
     evaluation = (fonctionEvaluation, constantesEvaluation)
     print(constantesEvaluation)
     print(test_evaluation(TAILLE_PLATEAU, 1000, False, (evaluation, 1), (evaluation, 0)))
