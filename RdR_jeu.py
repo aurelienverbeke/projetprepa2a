@@ -327,7 +327,7 @@ class RoiDuRing:
                 if self.joueurs[i].position == actionJoue[2]:
                     result += f"\nCible : Joueur {i}"
         if coupContre is not None:
-            result += f"\nContre : {coupContre.__str__()}"
+            result += f"\nContre : {coupContre.__str__()} ({coupContre.motif}{coupContre.valeur})"
         return result
     
     def retirer_pioche(self, nbCartes):
