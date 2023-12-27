@@ -1,23 +1,5 @@
 from Carte import Carte
 
-SCORE_COEFFICIENT_ENDURANCE = 100
-SCORE_COEFFICIENT_NB_CARTES = 0
-SCORE_CARTE_DEPLACEMENT = 0
-SCORE_CARTE_JOKER = 0
-SCORE_COEFFICIENT_CARTE_ATTAQUE = 0
-SCORE_POSITION_CENTRE = 10
-SCORE_POSITION_COIN = -10
-SCORE_POSITION_EXTERIEUR = -10
-SCORE_CENTRE_COURONNE = 10
-SCORE_ATTAQUE_ADVERSAIRE = 0
-SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRES = 0
-SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN = 0
-SCORE_ADVERSAIRE_VOISIN = 0
-SCORE_JOKER_CARTES_ADVERSAIRE = 0
-
-POSITIONS_COURONNE = [(ligne, colonne) for ligne in [-1, 0, 1] for colonne in [-1, 0, 1] if (ligne, colonne) != (0, 0)]
-POSITIONS_COINS = []
-
 
 def cases_accessibles(deplacementLateralRestant, deplacementDiagonalRestant, rayonGrille, coupsRestants, position,
                       positionsAdversaires, cartesUtilisePourAllerACase, deplacementsEffectues=None):
