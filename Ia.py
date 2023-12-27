@@ -716,7 +716,9 @@ class Ia:
                     return plateau.pioche[-int(nbChoix):]
 
 
-    def contre_humain(self, plateau, carteAttaque, joueurCible, joueurCourant):
+    def contre_humain(self, plateau, carteAttaque, idJoueurCible, idJoueurCourant):
+        joueurCible = plateau.joueurs[idJoueurCible]
+        joueurCourant = plateau.joueurs[idJoueurCourant]
         main = joueurCible.main
         cartesPossibles = []
         for carte in main:
