@@ -15,9 +15,9 @@ class Ia:
 
     Attributs :
         - niveau (int) : (-1) humain, (0) IA de base, (1 et +) arborescence et fonction d'evaluation
-        - coupAJouer (list) : TODO
+        - coupAJouer (list) : utilise avec minimax, liste des coups que l'ia va jouer
         - evaluation (tuple (fonction, list(float))) : tuple contenant la fonction d'evaluation et la liste des constantes qu'elle utilise
-        - index (int) : TODO
+        - index (int) : "numero" de l'ia, utile pour la fonction test_evaluation
         - nbCartesAJouerBase (int) : a chaque tour, l'IA de base joue un nombre aleatoire de cartes
     """
     def __init__(self, niveau, evaluation_ia=evaluation, index=0):
@@ -393,7 +393,12 @@ class Ia:
 
     def recherche_carte(self, main, motif, valeur=None):
         """
-        TODO
+        Renvoie la carte cherchee correspondant a un motif et une valeur
+
+        Parametres:
+            - main (list[Cartes]) : main dans laquelle on cherche la carte
+            - motif (str) : motif de la carte cherchee
+            - valeur (int) : valeur de la carte cherchee, si rien n'est donne, renverra la carte avec la plus petite valeur)
         """
         carteCherchee = None
         valeurCarteARetirer = float("inf")
@@ -410,7 +415,11 @@ class Ia:
 
     def recherche_carte_liste(self, main, cartes):
         """
-        TODO
+        Renvoie la liste de carte recherchees
+
+        Parametres:
+            - main (list[Carte]) : main dans laquelle on cherche les cartes
+            - cartes (list[tuple(str, int)]) : liste des motifs et valeurs des cartes recherches
         """
         cartesRechechees = []
         mainJoueur = main[:]
@@ -430,7 +439,7 @@ class Ia:
 
     def convertir_sortie_minimax_vers_sortie_ia(self, plateau, idJoueur, action):
         """
-        TODO
+        Convertis le coups donne par minimax en un coup comprehensible par le programme principal
         """
         mainJoueurCourant = plateau.joueurs[idJoueur].main
         positionJoueurCourant = plateau.joueurs[idJoueur].position
