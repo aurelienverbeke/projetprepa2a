@@ -2,6 +2,7 @@
 Dans ce fichier se trouve plusieurs configurations d'ias crees au fil des tests
 """
 from Evaluation import evaluation as fonctionEvaluation
+from EvaluationV2 import evaluation as fonctionEvaluationv2
 
 """
 Une ia de test qui a bien compris comment battre l'ia de base, mais qui est nulle a chier dans tout autre contexte
@@ -173,3 +174,18 @@ constantesEvaluationv11 = [0.5345283376120997, 0.45457255268243557, -0.018694481
                            0.750382489182811]
 
 evaluationv11 = (fonctionEvaluation, constantesEvaluationv11)
+
+
+"""
+Raphael
+Tentative avec la nouvelle fonction d'evaluation
+"""
+
+constantesEvaluationv12 = [0.5825310298792401, -0.6516281111878923, 0.19683562862750392,
+                           0.14866533914320446, 0.0560059652067475, 0.3731375352592847,
+                           0.26324006958433954, -0.5287449592664077, 0.2144865320575513,
+                           -0.5080328893610218, 0.9371280206405286, -0.3246744255539318,
+                           -0.02991978511217508, 0.28503842544498204, 0.9180399951792813,
+                           0.7128959525948688]
+
+evaluationv12 = (fonctionEvaluationv2, constantesEvaluationv12)
