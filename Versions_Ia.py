@@ -5,6 +5,20 @@ from Evaluation import evaluation as fonctionEvaluation
 from EvaluationV2 import evaluation as fonctionEvaluationv2
 from EvaluationV3 import evaluation as fonctionEvaluationv3
 
+
+"""
+Raphael
+Elle est inspiree de la v8 avec quelques changements
+"""
+
+constanteEvaluationEmpirique = [5, 0.5813632782256248, -0.5447709667236378,
+                                0.5066845969305593, -0.060721104865883335, .8,
+                                -0.17646443032109382, -0.9982831579604721, -0.2973004302711102,
+                                -2, 0.8000080158827763, 0.4756257660022638,
+                                0.3217740121954631]
+
+evaluationEmpirique = (fonctionEvaluation, constanteEvaluationEmpirique)
+
 """
 Une ia de test qui a bien compris comment battre l'ia de base, mais qui est nulle a chier dans tout autre contexte
 """
