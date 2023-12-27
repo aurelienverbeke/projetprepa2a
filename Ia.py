@@ -674,6 +674,7 @@ class Ia:
         
         plateau.afficher()
 
+        # options posssibles pour le joueur
         print(f"Votre main :")
         for indice, carte in enumerate(main):
             print(f"({indice}) {carte} ({carte.motif}{carte.valeur})")
@@ -684,59 +685,71 @@ class Ia:
         
         idCarte = input("\nChoisissez une carte : ")
         while True:
+            # le caractere choisi ne fait pas parti des choix
             if not idCarte in [str(x) for x in range(nbCartes + 2)]:
                 idCarte = input("\nCarte non existante. Choisissez une carte : ")
                 continue
 
+            # le joueur essaie de faire un coup bas mais n'a pas 3 cartes a defausser
             if idCarte == str(nbCartes + 1) and nbCartes < 3:
-                idCarte = input("\nCarte non existante. Choisissez une carte : ")
+                idCarte = input("\nVous n'avez pas assez de cartes. Choisissez une carte : ")
                 continue
             
             if idCarte not in [str(nbCartes), str(nbCartes+1)]:
                 carte = main[int(idCarte)]
                 cibles = self.cible_carte(plateau, joueur, carte)
+                # la carte choisie (hors coup bas et fin de tour) ne peut pas etre utilisee vu la situation du plateau
                 if cibles==[]:
                     idCarte = input("\nCarte non jouable. Choisissez une carte : ")
                     continue
             
+            # la carte est parfaitement jouable
             break
         
-        
-        
         idCarte = int(idCarte)
+       
+
+
+        # coup bas
         if idCarte == nbCartes + 1:
-            # coup bas
             cible = input("Choisissez un joueur cible : ")
             pionCorrespond = False
             joueurCible = None
             
             while True:
                 for autreJoueur in set(joueurs) - {joueur}:
+                    # on a trouve un joueur dont le pion correspond au pion entre par l'utilisateur
                     if autreJoueur.pion == cible:
                         pionCorrespond = True
                         joueurCible = autreJoueur
                         break
 
+                # on a trouve un joueur dont le pion correspond au pion entre par l'utilisateur
                 if pionCorrespond:
                     break
 
+                # on n'a pas trouve de joueur dont le pion correspond au pion entre par l'utilisateur
                 cible = input("Ce joueur n'existe pas. Choisissez un joueur cible : ")
             
             cartesCoupBas = input("Choisissez 3 cartes a utiliser (exemple : 21 pour les cartes 1 et 2) : ")
             while True:
+                # c'est pourtant simple, il faut donner 3 cartes...
                 if len(cartesCoupBas) != 3:
                     cartesCoupBas = input("Nombre de cartes incoherent. Choisissez 3 cartes a utiliser : ")
                     continue
 
+                # des cartes sont identiques
                 if cartesCoupBas[0] == cartesCoupBas[1] or cartesCoupBas[1] == cartesCoupBas[2] or cartesCoupBas[0] == cartesCoupBas[2]:
                     cartesCoupBas = input("Certaines cartes sont identiques. Choisissez 3 cartes a utiliser : ")
                     continue
 
+                # un numero de carte rentre par l'utilisateur ne correspond pas aux cartes jouables
                 valeursPossibles = [str(x) for x in range(nbCartes)]
                 if cartesCoupBas[0] not in valeursPossibles or cartesCoupBas[1] not in valeursPossibles or cartesCoupBas[2] not in valeursPossibles:
-                    cartesCoupBas = input("Une des cartes des pas jouable. Choisissez 3 cartes à utiliser : ")
+                    cartesCoupBas = input("Numero de carte non coherent. Choisissez 3 cartes à utiliser : ")
                     continue
                 
+                # l'utilisateur a rentre 3 cartes a defausser
                 break
 
             
@@ -745,20 +758,21 @@ class Ia:
             
 
         
+        # fin de tour
         elif idCarte == nbCartes:
-            # fin de tour
             print("\033[0m") # pour realigner le prochain affichage de plateau, et on remet la couleur normale
             return 5, [], ()
         
         
 
+        # carte d'attaque, de deplacement ou joker
         else:
-            # carte d'attaque, de deplacement ou joker
             chiffres = [str(x) for x in range(1, plateau.taille + 1)]
             lettres = [chr(65+x) for x in range(plateau.taille)] + [chr(97+x) for x in range(plateau.taille)]
             tout = chiffres + lettres
             cible = input("\nChoisissez une cible (exemple : 3B ou 4A): ")
             while True:
+                # la cible n'est pas de la bonne forme
                 if len(cible) != 2\
                         or cible[0] not in tout\
                         or cible[1] not in tout\
@@ -767,6 +781,7 @@ class Ia:
                     cible = input("Case non existante. Choisissez une cible : ")
                     continue
                 
+                # on transforme une position de type "echecs" en tuple utilisable par le programme
                 if cible[0] in lettres:
                     # de la forme "B2"
                     cible = (int(cible[1])-plateau.rayonGrille-1, ord(cible[0].upper())-65-plateau.rayonGrille)
@@ -774,12 +789,15 @@ class Ia:
                     # de la forme "2B"
                     cible = (int(cible[0])-plateau.rayonGrille-1, ord(cible[1].upper())-65-plateau.rayonGrille)
 
+                # carte d'attaque
                 if carte.motif in ["C", "K"]:
                     ciblesPossibles = self.cible_carte(plateau, joueur, carte)
+                    # la carte n'est pas jouable a cette cible
                     if cible not in [ciblePossible[0] for ciblePossible in ciblesPossibles]:
                         cible = input("Vous ne pouvez pas jouer a cet emplacement. Choisissez une cible : ")
                         continue
                     
+                    # on regarde si le joueur peut seulement taper ou peut aussi pousser
                     peutEndurance = False
                     peutPoussee = False
                     action = 0
@@ -789,6 +807,8 @@ class Ia:
                             peutEndurance = True
                         else:
                             peutPoussee = True
+                    
+                    # s'il peut faire les 2, on lui demande ce qu'il prefere faire
                     if peutPoussee and peutEndurance:
                         print("Types d'actions possibles : ")
                         if peutEndurance:
@@ -799,18 +819,25 @@ class Ia:
                             actionsPossibles.append("1")
 
                         action = input("Choisissez un type d'action : ")
+                        # il n'a pas entre un choix attendu
                         while action not in actionsPossibles:
                             action = input("Choix non possible. Choisissez un type d'action : ")
                 
+                # carte de deplacement
                 else:
+                    # le joueur demande a se deplacer a un emplacement occupe
                     if cible not in self.cible_carte(plateau, joueur, carte):
-                        cible = input("Vous ne pouvez pas jouer a cet emplacement. Choisissez une cible : ")
+                        cible = input("Vous ne pouvez pas vous deplacer a cet emplacement. Choisissez une cible : ")
                         continue
 
+                # la cible entree n'a aucun souci
                 break
 
             print("\033[0m") # pour realigner le prochain affichage de plateau, et on remet la couleur normale
             if carte.motif in ["C", "K"]:
+                # action 0 : endurance
+                # action 1 : poussee
+                # le 3-int() fonctionne donc
                 return 3-int(action), [carte], cible
             elif carte.motif == "J":
                 return 1, [carte], cible
@@ -847,9 +874,11 @@ class Ia:
         if nb == 2:
             plateau.afficher()
 
+        # on lui les options de defausse
         print(f"Votre main :")
         for indice, carte in enumerate(main):
             print(f"({indice}) {carte} ({carte.motif}{carte.valeur})")
+        # coup bas, il est oblige de defausser
         if nb != 2:
             print(f"({nbCartes}) Ne pas defausser")
 
@@ -859,20 +888,25 @@ class Ia:
         else:
             cartesADefausser = input("\nChoisissez les cartes a defausser (exemple : 21 pour les cartes 1 et 2) : ")
         while True:
-            if nb == 2 and len(cartesADefausser) != 2:
+            # coup bas, et le joueur n'a pas defausse 2 cartes (ou moins s'il n'en a plus)
+            if nb == 2 and len(cartesADefausser) != min(2, len(main)):
                 cartesADefausser = input("Nombre de cartes incoherent. Choisissez 2 cartes a defausser : ")
                 continue
 
+            # il y a des cartes identiques
             if len(set(cartesADefausser)) != len(cartesADefausser):
                 cartesADefausser = input("Certaines cartes sont identiques. Choisissez les cartes a defausser : ")
                 continue
 
+            
+            # le joueur a entre un caractere qui ne correspond a aucune carte
             valeursPossibles = [str(x) for x in range(nbCartes)]
             if ((cartesADefausser != str(nbCartes) or nb == 2)
                     and False in [indexCarte in valeursPossibles for indexCarte in cartesADefausser]):
                 cartesADefausser = input("Une des cartes des pas jouable. Choisissez les cartes a defausser : ")
                 continue
 
+            # le joueur a joue comme il le faut
             break
         
         print("\033[0m") # pour realigner le prochain affichage de plateau, et on remet la couleur normale
@@ -904,10 +938,13 @@ class Ia:
         nbMaxPioche = min(2, 5-nbCartes)
 
         print(f"\033[0;31m\n---------- {joueur.pion} : C'est à votre tour de jouer ----------\n")
+        
+        # le joueur a deja 5 cartes
         if nbMaxPioche == 0:
             print("Votre main est pleine, vous ne pouvez donc pas piocher")
             return []
 
+        # le joueur peut piocher, on lui affiche sa main et la pioche
         print(f"Votre main :")
         for carte in main:
             print(f"{carte} ({carte.motif}{carte.valeur})")
@@ -917,8 +954,10 @@ class Ia:
             
         is_pioching = True
         
+        # on lui demande combien de cartes il veut piocher
         nbChoix = input("\nChoisissez le nombre de cartes à piocher (0, 1 ou 2) : ")
         while is_pioching:
+            # le nombre de cartes n'est pas un nombre, ou depasse 5 cartes max dans la main
             if not nbChoix in [str(x) for x in range(nbMaxPioche+1)]:
                 nbChoix = input("\nNombre de cartes non cohérent. Choisissez un nombre de cartes à piocher :")
                 continue
@@ -949,6 +988,7 @@ class Ia:
         joueurCible = plateau.joueurs[idJoueurCible]
         joueurCourant = plateau.joueurs[idJoueurCourant]
         main = joueurCible.main
+        # il faut que la couleur soit la meme et que la valeur soit superieure
         cartesPossibles = []
         for carte in main:
             if carte.motif == carteAttaque[0].motif and carte.valeur >= carteAttaque[0].valeur:
