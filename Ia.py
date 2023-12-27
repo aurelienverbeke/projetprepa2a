@@ -10,25 +10,43 @@ from Versions_Ia import evaluationv8 as evaluation
 
 
 class Ia:
+    """
+    Cette classe gere une IA associee a un joueur
+
+    Attributs :
+        - niveau (int) : (-1) humain, (0) IA de base, (1 et +) arborescence et fonction d'evaluation
+        - coupAJouer (list) : TODO
+        - evaluation (tuple (fonction, list(float))) : tuple contenant la fonction d'evaluation et la liste des constantes qu'elle utilise
+        - index (int) : TODO
+        - nbCartesAJouerBase (int) : a chaque tour, l'IA de base joue un nombre aleatoire de cartes
+    """
     def __init__(self, niveau, evaluation_ia=evaluation, index=0):
+        """
+        Constructeur
+
+        Initialise l'IA en fonction de son niveau, et d'autres parametres en cas de test
+
+        Arguments :
+            - voir attributs de classe
+        """
         self.niveau = niveau
         self.coupAJouer = []
-        self.evaluation = evaluation_ia # Tuple avec la fonction d'evaluation et la liste des constantes associees
+        self.evaluation = evaluation_ia
         self.index = index
-        self.nbCartesJoueesBase = 0
         self.nbCartesAJouerBase = randint(1, 3)
     
-        if niveau == 0:
+        # on associe la bonne fonction a son alias general
+        if niveau == 0: # IA de base
             self.calcul_coup = self.calcul_coup_base
             self.defausse = self.defausse_base
             self.pioche = self.pioche_base
             self.contre = self.contre_base
-        elif niveau == -1:
+        elif niveau == -1: # humain
             self.calcul_coup = self.calcul_coup_humain
             self.defausse = self.defausse_humain
             self.pioche = self.pioche_humain
             self.contre = self.contre_humain
-        else:
+        else: # arborescence et fonction d'evaluation
             self.calcul_coup = self.calcul_coup_minimax
             self.defausse = self.defausse_minimax
             self.pioche = self.pioche_minimax
@@ -39,9 +57,24 @@ class Ia:
 
 
     def calcul_coup_base(self, plateau, idJoueur, nbCartesJouees):
+        """
+        IA de base
+        
+        Calcule le coup a jouer (coup bas, attaque, deplacement, fin de tour)
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - idJoueur (int) : l'index du joueur dans la liste de joueurs dans le plateau de jeu
+            - nbCartesJouees (int) : le nombre de coups deja effectues par le joueur
+
+        Retour :
+            - int : numero de l'action (voir wiki)
+            - list(Carte) : cartes jouees pour l'action
+            - tuple(int, int) : cible de l'action (position)
+        """
         joueur = plateau.joueurs[idJoueur]
 
-        if self.nbCartesJoueesBase < self.nbCartesAJouerBase:
+        if nbCartesJouees < self.nbCartesAJouerBase:
             cartesJoker = []
             cartesAttaque = []
             cartesDeplacement = []
@@ -92,6 +125,18 @@ class Ia:
 
 
     def carte_possible(self, plateau, joueur, carte):
+        """
+        Dit s'il possible pour un joueur de jouer une carte
+        En fait, s'il y a 0 cible, c'est que la carte n'est pas utilisable
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - joueur (Joueur) : le joueur (son instance)
+            - carte (Carte) : carte qu'il souhaite utiliser
+
+        Retour :
+            - Bool : le joueur peut jouer cette carte
+        """
         return self.cible_carte(plateau, joueur, carte) != []
 
 
@@ -99,6 +144,17 @@ class Ia:
 
 
     def cible_carte(self, plateau, joueur, carte):
+        """
+        Renvoie la liste des cibles atteignables par une carte
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - joueur (Joueur) : le joueur (son instance)
+            - carte (Carte) : carte qu'il souhaite utiliser
+
+        Retour :
+            - list(tuple(int, int)) ou list(tuple(int, int), str) en cas de carte d'attaque, pour savoir si on peut pousser ou juste taper : les cibles (positions) de la carte
+        """
         joueurs = list(plateau.joueurs)
         joueurs.remove(joueur)
         cibles = []
@@ -207,34 +263,21 @@ class Ia:
 
 
 
-    """
-    Version recursive by Brice (abandonnee)
-    def defausse_base(self, plateau, joueur, nbe = 0):
-        priorite = {}
-        cartesDefaussees = []
-        for carte in plateau.joueurs[joueur].main:  #Récupération des cartes par valeur
-            if carte.valeur in priorite:
-                priorite[carte.valeur].append(carte)
-            else:
-                priorite[carte.valeur] = [carte]
-        lstValeurs = list(priorite.keys()) #Récupération des valeurs des cartes
-        lstValeurs.sort()
-        if nbe != 0:
-            for i in range(nbe):
-                if priorite[min(lstValeurs)] != []:
-                    carte = [priorite[min(lstValeurs)].pop(0)]
-                    cartesDefaussees.append(carte[0])
-                else:
-                    priorite.remove(min(lstValeurs))
-                    carte = [priorite[min(lstValeurs)].pop(0)]
-                    cartesDefaussees.append(carte[0])
-        else:
-            self.defausse(plateau, joueur, 0)
-
-        return cartesDefaussees
-    """
-
     def defausse_base(self, plateau, idJoueur, nb=0, joueurQuiAttaque=None):
+        """
+        IA de base
+        
+        Donne les cartes a defausser, en fin de tour ou suite a une attaque d'un adversaire
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - idJoueur (int) : l'index du joueur dans la liste de joueurs dans le plateau de jeu
+            - nb (int) : nombre de cartes a defausser, par defaut 0
+            - joueurQuiAttaque (int) : en cas d'attaque par un joueur, l'index de ce dernier dans la liste de joueurs dans le plateau de jeu
+
+        Retour :
+            - list(Carte) : cartes defaussees
+        """
         cartesADefausser = []
         joueur = plateau.joueurs[idJoueur]
 
@@ -247,7 +290,7 @@ class Ia:
                 cartesADefausser.append(carte_mini)
             return cartesADefausser
 
-        if self.nbCartesJoueesBase == 0:
+        if self.nbCartesAJouerBase == 0:
             for _ in range(min(2, len(joueur.main))): # défausse soit 2 carte, soit moins s'il en a moins
                 carte_mini = joueur.main[0]
                 for carte in joueur.main[1:]:
@@ -255,7 +298,7 @@ class Ia:
                         carte_mini = carte
                 cartesADefausser.append(carte_mini)
 
-        if self.nbCartesJoueesBase == 1 and len(joueur.main) > 0:
+        if self.nbCartesAJouerBase == 1 and len(joueur.main) > 0:
             carte_a_jouer = min(joueur.main) # key=lambda x:x.valeur si jamais bug
             cartesADefausser.append(min(joueur.main))
         
@@ -265,8 +308,22 @@ class Ia:
 
 
 
-    def pioche_base(self, plateau, joueur):
-        nombreCartePioche = min(2, 5-len(plateau.joueurs[joueur].main), len(plateau.pioche))
+    def pioche_base(self, plateau, idJoueur):
+        """
+        IA de base
+        
+        Donne les cartes a piocher en fin de tour
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - idJoueur (int) : l'index du joueur dans la liste de joueurs dans le plateau de jeu
+
+        Retour :
+            - list(Carte) : cartes piochees
+        """
+        self.nbCartesJoueesBase = 0
+        self.nbCartesAJouerBase = randint(1, 3)
+        nombreCartePioche = min(2, 5-len(plateau.joueurs[idJoueur].main), len(plateau.pioche))
         if nombreCartePioche > 0:
             return plateau.pioche[-nombreCartePioche:]
         return []
@@ -276,6 +333,20 @@ class Ia:
 
 
     def contre_base(self, plateau, carteAttaque, joueurCible, joueurCourant):
+        """
+        IA de base
+        
+        Choisit si le joueur doit contrer ou non une attaque
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - carteAttaque (list(Carte)) : liste contenant carte d'attaque utilisee
+            - joueurCible (int) : l'index du joueur qui recoit l'attaque dans la liste de joueurs dans le plateau de jeu
+            - joueurCourant (int) : l'index du joueur qui attaque dans la liste de joueurs dans le plateau de jeu
+
+        Retour :
+            - Carte : carte de contre (ou None si pas de contre)
+        """
         carteAttaque = carteAttaque[0]
         carteContre = Carte("K", 20)
         for carte in plateau.joueurs[joueurCible].main:
@@ -291,6 +362,9 @@ class Ia:
 
 
     def recherche_carte(self, main, motif, valeur=None):
+        """
+        TODO
+        """
         carteCherchee = None
         valeurCarteARetirer = float("inf")
         for carte in main:
@@ -305,6 +379,9 @@ class Ia:
 
 
     def recherche_carte_liste(self, main, cartes):
+        """
+        TODO
+        """
         cartesRechechees = []
         mainJoueur = main[:]
         for motif, valeur in cartes:
@@ -322,6 +399,9 @@ class Ia:
 
 
     def convertir_sortie_minimax_vers_sortie_ia(self, plateau, idJoueur, action):
+        """
+        TODO
+        """
         mainJoueurCourant = plateau.joueurs[idJoueur].main
         positionJoueurCourant = plateau.joueurs[idJoueur].position
         typeActionJoue = action[0]
@@ -387,6 +467,21 @@ class Ia:
 
 
     def calcul_coup_minimax(self, plateau, idJoueur, nbCartesJouees):
+        """
+        IA arbrorescence et fonction d'evaluation
+        
+        Calcule le coup a jouer (coup bas, attaque, deplacement, fin de tour)
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - idJoueur (int) : l'index du joueur dans la liste de joueurs dans le plateau de jeu
+            - nbCartesJouees (int) : le nombre de coups deja effectues par le joueur
+
+        Retour:
+            - int : numero de l'action (voir wiki)
+            - list(Carte) : cartes jouees pour l'action
+            - tuple(int, int) : cible de l'action (position)
+        """
         if not self.coupAJouer:
             etat = {"pioche": plateau.pioche, "listeJoueurs": list(range(len(plateau.joueurs)))}
             etatJoueurs = {x: {"main": plateau.joueurs[x].main,\
@@ -407,6 +502,9 @@ class Ia:
 
 
     def defausse_minimax_coup_bas(self, plateau, joueurCible, joueurCourant):
+        """
+        TODO
+        """
         etat = {"pioche": plateau.pioche, "listeJoueurs": list(range(len(plateau.joueurs)))}
         etatJoueurs = {x: {"main": plateau.joueurs[x].main,\
                             "endurance": plateau.joueurs[x].endurance,\
@@ -426,6 +524,9 @@ class Ia:
 
 
     def defausse_minimax_fin_tour(self, plateau, joueurCible):
+        """
+        TODO
+        """
         self.coupAJouer[0] = ("defausse fin", 0)
 
 
@@ -433,6 +534,20 @@ class Ia:
 
 
     def defausse_minimax(self, plateau, joueurCible, nombreCartesDefausse=None, joueurCourant=None):
+        """
+        IA arborescence et fonction d'evaluation
+        
+        Donne les cartes a defausser, en fin de tour ou suite a une attaque d'un adversaire
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - joueurCible (int) : l'index du joueur dans la liste de joueurs dans le plateau de jeu
+            - nombreCartesDefausse (int) : nombre de cartes a defausser, par defaut 0
+            - joueurCourant (int) : en cas d'attaque par un joueur, l'index de ce dernier dans la liste de joueurs dans le plateau de jeu
+
+        Retour:
+            - list(Carte) : cartes defaussees
+        """
         if joueurCourant is None:
             self.defausse_minimax_fin_tour(plateau, joueurCible)
         else:
@@ -444,8 +559,20 @@ class Ia:
 
 
 
-    def pioche_minimax(self, plateau, joueur):
-        nombreCartePioche = min(2, 5-len(plateau.joueurs[joueur].main), len(plateau.pioche))
+    def pioche_minimax(self, plateau, idJoueur):
+        """
+        IA arborescence et fonction d'evaluation
+        
+        Donne les cartes a piocher en fin de tour
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - idJoueur (int) : l'index du joueur dans la liste de joueurs dans le plateau de jeu
+
+        Retour:
+            - list(Carte) : cartes piochees
+        """
+        nombreCartePioche = min(2, 5-len(plateau.joueurs[idJoueur].main), len(plateau.pioche))
         if nombreCartePioche > 0:
             return plateau.pioche[-nombreCartePioche:]
         return []
@@ -455,6 +582,20 @@ class Ia:
 
 
     def contre_minimax(self, plateau, cartes, joueurCible, joueurCourant):
+        """
+        IA arborescence et fonction d'evaluation
+        
+        Choisit si le joueur doit contrer ou non une attaque
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - cartes (list(Carte)): liste contenant la carte d'attaque utilisee
+            - joueurCible (int) : l'index du joueur qui recoit l'attaque dans la liste de joueurs dans le plateau de jeu
+            - joueurCourant (int) : l'index du joueur qui attaque dans la liste de joueurs dans le plateau de jeu
+
+        Retour :
+            - Carte : carte de contre (ou None si pas de contre)
+        """
         etat = {"pioche": plateau.pioche, "listeJoueurs": list(range(len(plateau.joueurs)))}
         etatJoueurs = {x: {"main": plateau.joueurs[x].main,\
                             "endurance": plateau.joueurs[x].endurance,\
@@ -478,6 +619,21 @@ class Ia:
 
 
     def calcul_coup_humain(self, plateau, idJoueur, nbCartesJouees):
+        """
+        IA "humaine" (une personne reelle joue)
+        
+        Calcule le coup a jouer (coup bas, attaque, deplacement, fin de tour) en interagissant avec l'utilisateur
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - idJoueur (int) : l'index du joueur dans la liste de joueurs dans le plateau de jeu
+            - nbCartesJouees (int) : le nombre de coups deja effectues par le joueur
+
+        Retour:
+            - int : numero de l'action (voir wiki)
+            - list(Carte) : cartes jouees pour l'action
+            - tuple(int, int) : cible de l'action (position)
+        """
         joueurs = plateau.joueurs
         joueur = joueurs[idJoueur]
         main = joueur.main
@@ -636,6 +792,21 @@ class Ia:
 
 
     def defausse_humain(self, plateau, idJoueur, nb=0, joueurQuiAttaque=None):
+        """
+        IA "humaine"
+        
+        Donne les cartes a defausser, en fin de tour ou suite a une attaque d'un adversaire
+        Le choix se fait par interaction en console
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - idJoueur (int) : l'index du joueur dans la liste de joueurs dans le plateau de jeu
+            - nb (int) : nombre de cartes a defausser, par defaut 0
+            - joueurQuiAttaque (int) : en cas d'attaque par un joueur, l'index de ce dernier dans la liste de joueurs dans le plateau de jeu
+
+        Retour:
+            - list(Carte) : cartes defaussees
+        """
         joueurs = plateau.joueurs
         joueur = joueurs[idJoueur]
         main = joueur.main[::] # copie
@@ -684,6 +855,19 @@ class Ia:
 
 
     def pioche_humain(self, plateau, idJoueur):
+        """
+        IA "humaine"
+        
+        Donne les cartes a piocher en fin de tour
+        Le choix se fait par interaction en console
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - idJoueur (int) : l'index du joueur dans la liste de joueurs dans le plateau de jeu
+
+        Retour:
+            - list(Carte) : cartes piochees
+        """
         joueur = plateau.joueurs[idJoueur]
         main = joueur.main
         nbCartes = len(main)
@@ -717,6 +901,21 @@ class Ia:
 
 
     def contre_humain(self, plateau, carteAttaque, idJoueurCible, idJoueurCourant):
+        """
+        IA "humaine"
+        
+        Choisit si le joueur doit contrer ou non une attaque
+        Le choix se fait par interaction en console
+
+        Arguments :
+            - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
+            - carteAttaque (list(Carte)) : liste contenant carte d'attaque utilisee
+            - joueurCible (int) : l'index du joueur qui recoit l'attaque dans la liste de joueurs dans le plateau de jeu
+            - joueurCourant (int) : l'index du joueur qui attaque dans la liste de joueurs dans le plateau de jeu
+
+        Retour :
+            - Carte : carte de contre (ou None si pas de contre)
+        """
         joueurCible = plateau.joueurs[idJoueurCible]
         joueurCourant = plateau.joueurs[idJoueurCourant]
         main = joueurCible.main
