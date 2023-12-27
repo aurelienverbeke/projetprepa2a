@@ -14,7 +14,9 @@ class Carte:
 
 
 
-
+    """
+    Surcharge d'operateurs
+    """
     def __lt__(self, other):
         return self.valeur < other.valeur
     
