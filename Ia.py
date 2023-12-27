@@ -321,7 +321,6 @@ class Ia:
         Retour :
             - list(Carte) : cartes piochees
         """
-        self.nbCartesJoueesBase = 0
         self.nbCartesAJouerBase = randint(1, 3)
         nombreCartePioche = min(2, 5-len(plateau.joueurs[idJoueur].main), len(plateau.pioche))
         if nombreCartePioche > 0:
