@@ -559,7 +559,7 @@ class Ia:
 
 
 
-    def pioche_minimax(self, plateau, idjoueur):
+    def pioche_minimax(self, plateau, idJoueur):
         """
         IA arborescence et fonction d'evaluation
         
