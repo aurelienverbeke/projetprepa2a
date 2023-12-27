@@ -1,14 +1,14 @@
 from random import random, choice, randint
 from Test_evaluation import test_evaluation
-from EvaluationV2 import evaluation as fonctionEvaluation
-from EvaluationV2 import NOMBRE_PARAMETRES
-from Versions_Ia import evaluationv10 as ancienneEvaluation
+from EvaluationV3 import evaluation as fonctionEvaluation
+from EvaluationV3 import NOMBRE_PARAMETRES
+from Versions_Ia import evaluationv8 as ancienneEvaluation
 from time import time
 import os
 
 TAILLE_PLATEAU = 5
-NOMBRE_PARTIES_PAR_EVALUATION = 10
-PROPORTION_SELECTIONNE = .2
+NOMBRE_PARTIES_PAR_EVALUATION = 20
+PROPORTION_SELECTIONNE = .3
 PROBABILITE_MUTATION = .5
 FORCE_MUTATION = 1
 
@@ -166,7 +166,7 @@ def trouver_constantes(taillePopulation, nombreIterations):
 
 
 if __name__ == "__main__":
-    constantesEvaluation = trouver_constantes(200, 1000)
+    constantesEvaluation = trouver_constantes(150, 1000)
     evaluation = (fonctionEvaluation, constantesEvaluation)
     print(constantesEvaluation)
     print(test_evaluation(TAILLE_PLATEAU, 1000, False, (evaluation, 1), (evaluation, 0)))
