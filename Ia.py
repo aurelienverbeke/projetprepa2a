@@ -34,6 +34,7 @@ class Ia:
         self.evaluation = evaluation_ia
         self.index = index
         self.nbCartesAJouerBase = randint(1, 3)
+        self.nbCartesJoueesBase = 0
     
         # on associe la bonne fonction a son alias general
         if niveau == 0: # IA de base
@@ -74,6 +75,7 @@ class Ia:
         """
         joueur = plateau.joueurs[idJoueur]
 
+        # on n'a pas encore joue assez de cartes
         if nbCartesJouees < self.nbCartesAJouerBase:
             cartesJoker = []
             cartesAttaque = []
@@ -88,24 +90,30 @@ class Ia:
             
             if cartesJoker != []:
                 ciblesCarte = self.cible_carte(plateau, joueur, cartesJoker[0])
+                # on peut jouer le joker
                 if ciblesCarte != []:
-                    carteJouee = cartesJoker[0] # permet d'en prendre 1
+                    carteJouee = cartesJoker[0] # permet d'en prendre 1 au hasard, de toute facon un joker reste un joker
                     cible = choice(self.cible_carte(plateau, joueur, carteJouee))
+                    self.nbCartesJoueesBase += 1
                     return 1, [carteJouee], cible
             
             if cartesAttaque != []:
+                # on recupere la liste des cartes qui peuvent etre jouees
                 cartesJouables = []
                 for carte in cartesAttaque:
                     if self.carte_possible(plateau, joueur, carte):
                         cartesJouables.append(carte)
                 if cartesJouables != []:
-                    carteJouee = choice(cartesJouables)
+                    carteJouee = choice(cartesJouables) # on en choisit une au hasard
                     cibles = self.cible_carte(plateau, joueur, carteJouee)
-                    cible = choice(cibles)
+                    cible = choice(cibles) # de meme pour sa cible
+                    self.nbCartesJoueesBase += 1
+                    # on fait une poussee si le joueur est au centre, et que c'est possible
                     if cible[0] == (0,0) and ((cible[1] == "endurance" and (cible[0], "poussee") in cibles) or cible[1] == "poussee"):
                         return 2, [carteJouee], cible[0]
                     return 3, [carteJouee], cible[0]
             
+            # on ne bouge pas si on est deja au centre
             if cartesDeplacement != [] and joueur.position != (0,0):
                 # liste de tuple sous la forme (carte, cible, distance au centre)
                 listeCibles = []
@@ -115,9 +123,11 @@ class Ia:
                         distance = sqrt(cible[0]**2 + cible[1]**2)
                         listeCibles.append((carte, cible, distance))
                 if listeCibles:
-                    carteJouee, cible, _ = min(listeCibles, key=lambda x: x[2])
+                    carteJouee, cible, _ = min(listeCibles, key=lambda x: x[2]) # on prend le minimum selon la distance, pour se rapprocher du centre
+                    self.nbCartesJoueesBase += 1
                     return 4, [carteJouee], cible
         
+        # si on n'a ni utilise un joker, ni une attaque ni un deplacement, on clos le tour
         return 5, [], ()
 
 
@@ -158,6 +168,7 @@ class Ia:
         joueurs = list(plateau.joueurs)
         joueurs.remove(joueur)
         cibles = []
+        # carte joker
         if carte.motif == "J":
             for autre_joueur in joueurs:
                 if autre_joueur.position[0] in [joueur.position[0]-1,
@@ -167,15 +178,21 @@ class Ia:
                                                 joueur.position[1],
                                                 joueur.position[1] + 1] and autre_joueur.main:
                     cibles.append(autre_joueur.position)
+        
+
+        # carte attaque carreau (cote)
         elif carte.motif == "K":
             for autre_joueur in joueurs:
                 if autre_joueur.position == (joueur.position[0], joueur.position[1]+1):
                     cibles.append((autre_joueur.position, "endurance"))
                     peutPousser = True
+                    # en cas de poussee, il ne faut pas un autre joueur autre que l'adversaire qui se trouverait derriere
                     for encore_autre_joueur in set(joueurs)-{autre_joueur}:
+                        # un joueur gene la poussee, on ne peut donc pas faire cette action
                         if encore_autre_joueur.position == (joueur.position[0], joueur.position[1]+2):
                             peutPousser = False
                             break
+                    # aucun joueur autre que l'adversaire ne se trouve derriere ce dernier, on peut pousser
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
                 elif autre_joueur.position == (joueur.position[0], joueur.position[1]-1):
@@ -205,6 +222,7 @@ class Ia:
                             break
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
+        # carte attaque coeur (diagonale)
         elif carte.motif == "C":
             for autre_joueur in joueurs:
                 if autre_joueur.position == (joueur.position[0]+1,joueur.position[1]+1):
@@ -243,6 +261,7 @@ class Ia:
                             break
                     if peutPousser:
                         cibles.append((autre_joueur.position, "poussee"))
+        # carte deplacement trefle (cote)
         elif carte.motif == "T":
             for incr in [(0,1), (0,-1), (1,0), (-1,0)]:
                 if abs(joueur.position[0] + incr[0]) <= plateau.rayonGrille and abs(joueur.position[1] + incr[1]) <= plateau.rayonGrille:
@@ -250,6 +269,7 @@ class Ia:
             for autre_joueur in joueurs:
                 if autre_joueur.position in cibles:
                     cibles.remove(autre_joueur.position)
+        # carte deplacement pique (diagonale)
         elif carte.motif == "P":
             for incr in [(1,1), (1,-1), (-1,1), (-1,-1)]:
                 if abs(joueur.position[0] + incr[0]) <= plateau.rayonGrille and abs(joueur.position[1] + incr[1]) <= plateau.rayonGrille:
@@ -281,6 +301,7 @@ class Ia:
         cartesADefausser = []
         joueur = plateau.joueurs[idJoueur]
 
+        # cas de coup bas
         if nb == 2:
             for _ in range(min(2, len(joueur.main))): # défausse soit 2 carte, soit moins s'il en a moins
                 carte_mini = joueur.main[0]
@@ -290,7 +311,9 @@ class Ia:
                 cartesADefausser.append(carte_mini)
             return cartesADefausser
 
-        if self.nbCartesAJouerBase == 0:
+        # on n'a joue aucune carte
+        # défausse soit 2 carte, soit moins s'il en a moins
+        if self.nbCartesJoueesBase == 0:
             for _ in range(min(2, len(joueur.main))): # défausse soit 2 carte, soit moins s'il en a moins
                 carte_mini = joueur.main[0]
                 for carte in joueur.main[1:]:
@@ -298,8 +321,8 @@ class Ia:
                         carte_mini = carte
                 cartesADefausser.append(carte_mini)
 
-        if self.nbCartesAJouerBase == 1 and len(joueur.main) > 0:
-            carte_a_jouer = min(joueur.main) # key=lambda x:x.valeur si jamais bug
+        # on a joue une seule carte, on on defausse une
+        if self.nbCartesJoueesBase == 1 and len(joueur.main) > 0:
             cartesADefausser.append(min(joueur.main))
         
         return cartesADefausser
@@ -313,6 +336,8 @@ class Ia:
         IA de base
         
         Donne les cartes a piocher en fin de tour
+        On en pioche le plus possible (2 max)
+
 
         Arguments :
             - plateau (RoiDuRing) : instance de RoiDuRing, le plateau de jeu
@@ -321,7 +346,10 @@ class Ia:
         Retour :
             - list(Carte) : cartes piochees
         """
+        # remise a zero des parametres pour le tour suivant
         self.nbCartesAJouerBase = randint(1, 3)
+        self.nbCartesJoueesBase = 0
+
         nombreCartePioche = min(2, 5-len(plateau.joueurs[idJoueur].main), len(plateau.pioche))
         if nombreCartePioche > 0:
             return plateau.pioche[-nombreCartePioche:]
@@ -347,13 +375,16 @@ class Ia:
             - Carte : carte de contre (ou None si pas de contre)
         """
         carteAttaque = carteAttaque[0]
-        carteContre = Carte("K", 20)
+        carteContre = Carte("K", 20) # cette carte n'existe pas, c'est une valeur de depart pour determiner la carte min
         for carte in plateau.joueurs[joueurCible].main:
             if carte.motif == carteAttaque.motif and carte.valeur >= carteAttaque.valeur and carte.valeur < carteContre.valeur:
                 carteContre = carte
         
+        # on n'a pas de carte pour contrer
         if carteContre.valeur == 20:
             return None
+        
+        # on a pu contrer
         return carteContre
 
 
