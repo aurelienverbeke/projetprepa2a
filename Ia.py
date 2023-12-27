@@ -722,12 +722,12 @@ class Ia:
         main = joueurCible.main
         cartesPossibles = []
         for carte in main:
-            if carte.motif == carteAttaque.motif and carte.valeur >= carteAttaque.valeur:
+            if carte.motif == carteAttaque[0].motif and carte.valeur >= carteAttaque[0].valeur:
                 cartesPossibles.append(carte)
         nbCartes = len(cartesPossibles)   
         
         print(f"\033[0;31m\n---------- {joueurCible.pion} : Vous vous faites attaquer par {joueurCourant.pion} ! ----------\n")
-        print(f"Il vous attaque avec {carteAttaque}")
+        print(f"Il vous attaque avec {carteAttaque[0]} ({carteAttaque[0].motif}{carteAttaque[0].valeur})")
         print(f"Vous pouvez contrer avec :")
         for indice, carte in enumerate(cartesPossibles):
             print(f"({indice}) {carte} ({carte.motif}{carte.valeur})")
