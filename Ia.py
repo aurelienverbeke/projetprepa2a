@@ -290,7 +290,7 @@ class Ia:
                 cartesADefausser.append(carte_mini)
             return cartesADefausser
 
-        if self.nbCartesJoueesBase == 0:
+        if self.nbCartesAJouerBase == 0:
             for _ in range(min(2, len(joueur.main))): # défausse soit 2 carte, soit moins s'il en a moins
                 carte_mini = joueur.main[0]
                 for carte in joueur.main[1:]:
@@ -298,7 +298,7 @@ class Ia:
                         carte_mini = carte
                 cartesADefausser.append(carte_mini)
 
-        if self.nbCartesJoueesBase == 1 and len(joueur.main) > 0:
+        if self.nbCartesAJouerBase == 1 and len(joueur.main) > 0:
             carte_a_jouer = min(joueur.main) # key=lambda x:x.valeur si jamais bug
             cartesADefausser.append(min(joueur.main))
         
