@@ -34,6 +34,10 @@ class RoiDuRing:
         self.actions = [self.jouer_coup_bas, self.jouer_joker, self.jouer_attaque_pousse, self.jouer_attaque_endurance,
                         self.jouer_mouvement]
 
+    
+
+
+
     def est_dans_grille(self, position):
         """
         Verifie si les coordonnees position sont bien dans la grille
@@ -44,6 +48,10 @@ class RoiDuRing:
         Revoie True si les coordonnees sont bien dans la grille, False sinon
         """
         return -self.rayonGrille <= position[0] <= self.rayonGrille and -self.rayonGrille <= position[1] <= self.rayonGrille
+
+    
+
+
 
     def jouer(self, joueurCourant, actionJoue):
         """
@@ -68,6 +76,10 @@ class RoiDuRing:
         # Appelle la fonction correspondant au type d'action donne
         return self.actions[typeAction](joueurCourant, joueurCible, caseCible, carteJoue)
 
+    
+
+
+
     def jouer_coup_bas(self, joueurCourant, joueurCible, caseCible, carteDefausse):
         """
         Defausse les cartes du joueur ayant fait un coup bas
@@ -85,6 +97,10 @@ class RoiDuRing:
 
         self.joueurs[joueurCourant].retirer_cartes(carteDefausse)
         self.ajouter_defausse(carteDefausse)
+
+    
+
+
 
     def jouer_joker(self, joueurCourant, joueurCible, caseCible, carteJoue):
         """
@@ -109,6 +125,10 @@ class RoiDuRing:
         self.ajouter_defausse(carteJoue)
         self.joueurs[joueurCible].retirer_cartes([carteVolee])
         self.joueurs[joueurCourant].ajouter_cartes([carteVolee])
+
+    
+
+
 
     def jouer_attaque_pousse(self, joueurCourant, joueurCible, caseCible, carteJoue):
         """
@@ -147,6 +167,10 @@ class RoiDuRing:
         self.joueurs[joueurCourant].retirer_cartes(carteJoue)
         self.ajouter_defausse(carteJoue)
 
+    
+
+
+
     def jouer_attaque_endurance(self, joueurCourant, joueurCible, caseCible, carteJoue):
         """
         Retire de l'endurance au joueur cible lors d'une attaque en endurance
@@ -184,6 +208,10 @@ class RoiDuRing:
 
         return joueursMorts
 
+    
+
+
+
     def jouer_mouvement(self, joueurCourant, joueurCible, caseCible, carteJoue):
         """
         Deplace le joueur courant lorsque celui-ci utilise une carte de mouvement
@@ -206,8 +234,16 @@ class RoiDuRing:
         self.joueurs[joueurCourant].retirer_cartes(carteJoue)
         self.ajouter_defausse(carteJoue)
 
+    
+
+
+
     def ajouter_defausse(self, cartesADefausser):
         self.defausse.extend(cartesADefausser)
+
+    
+
+
 
     def nettoyer_joueurs_morts(self):
         joueursMorts = []
@@ -222,6 +258,10 @@ class RoiDuRing:
 
         return indicesJoueursMorts
 
+    
+
+
+
     def est_fini(self):
         # On regarde les joueurs morts
         joueursMorts = self.nettoyer_joueurs_morts()
@@ -230,6 +270,10 @@ class RoiDuRing:
             self.remplir_pioche()
 
         return len(self.joueurs) <= 1, joueursMorts
+
+    
+
+
 
     def joueur_de_case(self,position):
       """
@@ -246,10 +290,18 @@ class RoiDuRing:
           return self.joueurs.index(joueur)
       return -1
 
+    
+
+
+
     def remplir_pioche(self):
         shuffle(self.defausse)
         self.pioche.extend(self.defausse)
         self.defausse = []
+
+    
+
+
 
     def afficher(self, joueurCourant=None, actionJoue=None, coupContre = None, afficheAlternatif=False):
         """
@@ -273,12 +325,21 @@ class RoiDuRing:
             pion du joueur :
                 Endurance : endurance du joueur
                 Main : carte 1 , carte 2, ...
+
+        Arguments :
+            - joueurCourant (int) : numero du joueur qui vient de jouer
+            - actionJoue (tuple(int, list, tuple)) : l'action qui vient d'etre jouee
+            - coupContre (Carte/None) : s'il y a contre, la carte de contre
+            - afficheAlternatif (Bool) : pour test, n'affiche pas le dessin de la carte si vrai 
         """
         if actionJoue is None or actionJoue[0] in [0, 1, 2, 3, 4]:
             result = ""
+            
             if actionJoue is not None: # Permet d'afficher le plateau lorsqu'un joueur humain veut jouer
-                result += self.joueurs[joueurCourant].pion
-                result += self.affiche_action(actionJoue, coupContre, afficheAlternatif)
+                result += self.joueurs[joueurCourant].pion # pion du joueur
+                result += self.affiche_action(actionJoue, coupContre, afficheAlternatif) # action qu'il vient de realiser
+            
+            # le plateau
             result += "\n    "
             lettres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
             longueurGrille = self.taille
@@ -303,6 +364,7 @@ class RoiDuRing:
                 result += ligne
             result += '  ' + ligneTires + '\n\n'
             
+            # on affiche l'endurance et la main de chaque joueur
             for joueur in self.joueurs:
                 result += joueur.pion + ' : \n'
                 result += "Endurance : " + str(joueur.endurance) + '\n'
@@ -316,7 +378,22 @@ class RoiDuRing:
                 result += '\n'
             print(result)
 
-    def affiche_action(self, actionJoue, coupContre = None, afficheAlternatif=False): # Affoche de l'action du joueur
+    
+
+
+
+    def affiche_action(self, actionJoue, coupContre = None, afficheAlternatif=False):
+        """
+        Permet d'afficher l'action effectuee par un joueur
+
+        Arguments :
+            - actionJoue (tuple(int, list, tuple)) : l'action qui vient d'etre jouee
+            - coupContre (Carte/None) : s'il y a contre, la carte de contre
+            - afficheAlternatif (Bool) : pour test, n'affiche pas le dessin de la carte si vrai
+
+        Retour :
+            - (str) : action a print dans affiche
+        """
         result = "\n"
         for carte in actionJoue[1]:
             if afficheAlternatif:
@@ -331,6 +408,10 @@ class RoiDuRing:
             result += f"\nContre : {coupContre.__str__()} ({coupContre.motif}{coupContre.valeur})"
         return result
     
+    
+
+
+
     def retirer_pioche(self, nbCartes):
         for i in range(nbCartes):
             self.pioche.pop()
