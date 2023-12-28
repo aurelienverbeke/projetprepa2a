@@ -17,13 +17,13 @@ def minimax(arbre, joueurCourant, pmax):
         valeur = arbre.evaluation[0](arbre.etat, arbre.taillePlateau, arbre.joueurCourant, arbre.evaluation[1])
         arbre.valeur = valeur
         return valeur
-    valeur = {idJoueur: float("-inf") for idJoueur in arbre.etat["listeJoueurs"]}
+    # On part du pire etat possible : pire score pour le joueur actuel et meilleur score pour les joueurs adverses
+    valeur = {idJoueur: float("-inf") if idJoueur == joueurCourant else float("inf") for idJoueur in arbre.etat["listeJoueurs"]}
     for fils in arbre.generer_fils():
         joueurSuivant = fils.joueurCourant
         valeurFils = minimax(fils, joueurSuivant, pmax-1)
         if joueurCourant in valeurFils.keys(): # Si cette condition est fausse, le joueur est mort, donc il est inutile de le prendre en compte
             valeur = max(valeur, valeurFils, key=lambda x: x[joueurCourant])
-
     arbre.valeur = valeur
     return valeur
 

@@ -75,6 +75,12 @@ def evaluation(etat, taille, joueurCourant, constantes=None):
 
     # on evalue le score pour chaque joueur
     for idJoueur in etat["listeJoueurs"]:
+
+        # Si le joueur est seul sur le terrain, il a gagne
+        if len(etat["listeJoueurs"]) == 1:
+            scores[idJoueur] = float("+inf")
+            continue
+
         joueur = etat[idJoueur]
         colonne = joueur["position"][1]
         ligne = joueur["position"][0]
@@ -135,7 +141,23 @@ def evaluation(etat, taille, joueurCourant, constantes=None):
                         # si on peut le taper, on prend en compte son endurance
                         if ((ligne2 == ligne or colonne2 == colonne) and carte.motif == "K") \
                                 or ((ligne2 != ligne and colonne2 != colonne) and carte.motif == "C"):
-                            scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * endurance2
+
+                            peutContrer = False
+                            for carteAdversaire in main2:
+                                if carte.motif == carteAdversaire.motif and carte.valeur <= carteAdversaire.valeur:
+                                    peutContrer = True
+                                    break
+
+                            # Si l'adversaire peut nous contrer, on n'ajoute que la moitié du score
+                            if peutContrer:
+                                scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * endurance2 / 2
+                            else:
+
+                                # Si il ne reste plus que 2 joueurs, que l'adversaire n'a qu'un point d'endurance et qu'il ne peut pas contrer
+                                if len(etat["listeJoueurs"]) == 2 and endurance2 == 1:
+                                    scores[idJoueur] = float("+inf")
+
+                                scores[idJoueur] += SCORE_COEFFICIENT_ENDURANCE_ADVERSAIRE_VOISIN * endurance2
 
                     for carte in main2:
                         # on peut utiliser un joker sur lui
@@ -148,7 +170,21 @@ def evaluation(etat, taille, joueurCourant, constantes=None):
                     for carte in main2:
                         if ((ligne2 == ligne or colonne2 == colonne) and carte.motif == "K") \
                                 or ((ligne2 != ligne and colonne2 != colonne) and carte.motif == "C"):
-                            scores[idJoueur] += SCORE_ADVERSAIRE_VOISIN
+
+                            peutContrer = False
+                            for carteMain in main:
+                                if carte.motif == carteMain.motif and carte.valeur <= carteMain.valeur:
+                                    peutContrer = True
+                                    break
+
+                            # Si on peut le contrer, on "ajoute" que la moitie du score
+                            if peutContrer:
+                                scores[idJoueur] += SCORE_ADVERSAIRE_VOISIN/2
+                            else:
+                                # Si il ne nous reste qu'un point d'endurance et qu'on ne peut pas contrer
+                                if endurance == 1:
+                                    scores[idJoueur] = float("-inf")
+                                scores[idJoueur] += SCORE_ADVERSAIRE_VOISIN
 
             # quelqu'un est sur le centre, on est sur la couronne, et ce n'est pas a nous de jouer
             surCentre = False
