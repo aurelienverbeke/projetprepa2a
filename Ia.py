@@ -1013,9 +1013,11 @@ class Ia:
         
         idCarte = input("\nChoisissez la carte avec laquelle vous voulez contrer : ")
         while is_contring:
+            # l'indice de carte entre par l'utilisateur ne correspond a rien
             if not idCarte in [str(x) for x in range(nbCartes+1)]:
                 idCarte = input("Numero de carte non cohérent. Choisissez la carte avec laquelle vous voulez contrer :")
                 continue
+            # tout va bien
             else:
                 print("\033[0m") # pour realigner le prochain affichage de plateau, et on remet la couleur normale
                 if idCarte == str(nbCartes):
