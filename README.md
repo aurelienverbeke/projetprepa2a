@@ -11,3 +11,5 @@ Pour faire fonctionner l'ia, les fichiers minimum nécessaires sont
 - Versions_Ia.py
 
 Les autres fichiers ne sont pas nécessaires, ils ont servi a faire des tests et tenter de trouver une bonne ia
+
+Si vous voulez jouer, il faut mettre la difficulte à -1
