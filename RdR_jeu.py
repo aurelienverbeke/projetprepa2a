@@ -239,11 +239,12 @@ class RoiDuRing:
         - position (tuple(int,int)) : Position ligne, colonne désirée
 
       Retourn :
-        - (int ou Joueur) : -1 si aucun joueur à cette position, sinon le Joueur trouvé
+        - int : -1 si aucun joueur à cette position, sinon l'indice du joueur trouvé
       """
       for joueur in self.joueurs:
         if joueur.position == position:
           return self.joueurs.index(joueur)
+      return -1
 
     def remplir_pioche(self):
         shuffle(self.defausse)

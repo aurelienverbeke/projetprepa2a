@@ -13,6 +13,7 @@ class Joueur:
     self.pion = pion
     self.position = position
     self.main = main
+    self.num = {"0": 0,"X": 1,"@": 2, "#": 3}
 
 
 
