@@ -18,7 +18,7 @@ class Ia:
         - coupAJouer (list) : utilise avec minimax, liste des coups que l'ia va jouer
         - evaluation (tuple (fonction, list(float))) : tuple contenant la fonction d'evaluation et la liste des constantes qu'elle utilise
         - index (int) : "numero" de l'ia, utile pour la fonction test_evaluation
-        - nbCartesAJouerBase (int) : a chaque tour, l'IA de base joue un nombre aleatoire de cartes
+        - nbCartesJoueesBase (int) : la fonction defausse a besoin de savoir combien de cartes ont ete jouees
     """
     def __init__(self, niveau, evaluation_ia=evaluation, index=0):
         """
@@ -33,7 +33,6 @@ class Ia:
         self.coupAJouer = []
         self.evaluation = evaluation_ia
         self.index = index
-        self.nbCartesAJouerBase = randint(1, 3)
         self.nbCartesJoueesBase = 0
     
         # on associe la bonne fonction a son alias general
@@ -76,7 +75,7 @@ class Ia:
         joueur = plateau.joueurs[idJoueur]
 
         # on n'a pas encore joue assez de cartes
-        if nbCartesJouees < self.nbCartesAJouerBase:
+        if nbCartesJouees < 3:
             cartesJoker = []
             cartesAttaque = []
             cartesDeplacement = []
@@ -127,7 +126,7 @@ class Ia:
                     self.nbCartesJoueesBase += 1
                     return 4, [carteJouee], cible
         
-        # si on n'a ni utilise un joker, ni une attaque ni un deplacement, on clos le tour
+        # si on n'a ni utilise un joker, ni une attaque ni un deplacement, on clos le tour (ou on a fait deja 3 actions)
         return 5, [], ()
 
 
@@ -347,7 +346,6 @@ class Ia:
             - list(Carte) : cartes piochees
         """
         # remise a zero des parametres pour le tour suivant
-        self.nbCartesAJouerBase = randint(1, 3)
         self.nbCartesJoueesBase = 0
 
         nombreCartePioche = min(2, 5-len(plateau.joueurs[idJoueur].main), len(plateau.pioche))
