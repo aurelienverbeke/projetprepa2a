@@ -1035,18 +1035,3 @@ class Ia:
                     return None
                 else:
                     return cartesPossibles[int(idCarte)]
-        
-
-
-
-
-
-if __name__ == "__main__":
-    from RdR_jeu import RoiDuRing
-
-    plateau = RoiDuRing()
-    ia = Ia(3)
-    coupJoue = ia.calcul_coup_minimax(plateau, 0, 0)
-    print(coupJoue)
-    print([(c.motif, c.valeur) for c in coupJoue[1]])
-    print([(c.motif, c.valeur) for c in plateau.joueurs[0].main])
