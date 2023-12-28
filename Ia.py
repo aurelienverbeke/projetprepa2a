@@ -438,6 +438,11 @@ class Ia:
     def convertir_sortie_minimax_vers_sortie_ia(self, plateau, idJoueur, action):
         """
         Convertis le coups donne par minimax en un coup comprehensible par le programme principal
+
+        Parametres:
+            - plateau (RoiDuRing) : le plateau de jeu correspondant a l'etat actuel
+            - idJoueur (int) : l'index du joueur actuel
+            - action (list) : l'action jouee revoyee par minimax (avec la forme [typeAction, *args])
         """
         mainJoueurCourant = plateau.joueurs[idJoueur].main
         positionJoueurCourant = plateau.joueurs[idJoueur].position
@@ -540,8 +545,14 @@ class Ia:
 
     def defausse_minimax_coup_bas(self, plateau, joueurCible, joueurCourant):
         """
-        TODO
+        Calcule les cartes a defausser avec minimax suite a un coup bas
+
+        Parametres:
+            - plateau (RoiDuRing): plateau representant la situation actuelle
+            - joueurCible (int): l'index du joueur cible
+            - joueurCourant (int): l'index du joueur ayant attaque
         """
+        # On cree un etat comprehensible par l'ia
         etat = {"pioche": plateau.pioche, "listeJoueurs": list(range(len(plateau.joueurs)))}
         etatJoueurs = {x: {"main": plateau.joueurs[x].main,\
                             "endurance": plateau.joueurs[x].endurance,\
@@ -562,7 +573,7 @@ class Ia:
 
     def defausse_minimax_fin_tour(self, plateau, joueurCible):
         """
-        TODO
+        Calcule les cartes a defausser lors d'une fin de tour
         """
         self.coupAJouer[0] = ("defausse fin", 0)
 
