@@ -1,4 +1,3 @@
-from Arborescence import Arborescence
 
 def minimax(arbre, joueurCourant, pmax):
     """

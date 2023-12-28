@@ -1,5 +1,5 @@
 from math import sqrt
-from random import choice, randint
+from random import choice
 
 from Carte import Carte
 from Minimax import choisir_coup

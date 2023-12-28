@@ -2,8 +2,8 @@
 Dans ce fichier se trouve plusieurs configurations d'ias crees au fil des tests
 """
 from Evaluation import evaluation as fonctionEvaluation
-from EvaluationV2 import evaluation as fonctionEvaluationv2
-from EvaluationV3 import evaluation as fonctionEvaluationv3
+#from EvaluationV2 import evaluation as fonctionEvaluationv2
+#from EvaluationV3 import evaluation as fonctionEvaluationv3
 
 
 """
@@ -194,7 +194,7 @@ evaluationv11 = (fonctionEvaluation, constantesEvaluationv11)
 """
 Raphael
 Tentative avec la nouvelle fonction d'evaluation
-"""
+
 
 constantesEvaluationv12 = [0.5825310298792401, -0.6516281111878923, 0.19683562862750392,
                            0.14866533914320446, 0.0560059652067475, 0.3731375352592847,
@@ -206,10 +206,9 @@ constantesEvaluationv12 = [0.5825310298792401, -0.6516281111878923, 0.1968356286
 evaluationv12 = (fonctionEvaluationv2, constantesEvaluationv12)
 
 
-"""
+
 Raphael
 Tentative avec encore une autre fonction d'evaluation, cette fois ci non lineaire
-"""
 
 constantesEvaluationv13 = [0.44649660452800966, 0.991408906317168, -0.9328928111365442,
                            0.09266122492596729, -0.584262739355967, -0.19213616654981558,
@@ -223,3 +222,4 @@ constantesEvaluationv13 = [0.44649660452800966, 0.991408906317168, -0.9328928111
                            -0.48576602335198826, 0.19303196339417195]
 
 evaluationv13 = (fonctionEvaluationv3, constantesEvaluationv13)
+"""
