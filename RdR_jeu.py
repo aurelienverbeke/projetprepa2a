@@ -282,7 +282,7 @@ class RoiDuRing:
       Paramètres :
         - position (tuple(int,int)) : Position ligne, colonne désirée
 
-      Retourn :
+      Return :
         - int : -1 si aucun joueur à cette position, sinon l'indice du joueur trouvé
       """
       for joueur in self.joueurs:
