@@ -23,6 +23,7 @@ class RoiDuRing:
                            (-self.rayonGrille, self.rayonGrille), (self.rayonGrille, -self.rayonGrille)]
         self.joueurs = [Joueur(SYMBOLES_JOUEURS[k], positionsDepart[k]) for k in range(nbe_joueurs)]
 
+        # On remplit la pioche et on distribue les cartes a chaque joueur
         self.pioche = DECK[:]
         shuffle(self.pioche)
         for joueur in self.joueurs:
@@ -63,6 +64,8 @@ class RoiDuRing:
                 - type : 0 (coup bas), 1 (joker), 2 (attaque pousse), 3 (attaque endurance), 4 (mouvement), 5 (fin=rien)
                 - cartes : liste des cartes joues
                 - caseCible : caseCible par l'action
+
+        Si l'attaque était en endurance, renvoie la liste des joueurs morts apres cette action
         """
 
         typeAction = actionJoue[0]
@@ -117,7 +120,6 @@ class RoiDuRing:
         if carteJoue[0] not in self.joueurs[joueurCourant].main:
             raise ValueError("Tentative d'utilisation d'un joker qui n'est pas dans la main")
         if not self.joueurs[joueurCible].main:
-            print(joueurCourant)
             raise ValueError("Tentative de vol de carte a un joueur qui n'en a pas")
 
         carteVolee = self.joueurs[joueurCible].main[0]
@@ -181,6 +183,8 @@ class RoiDuRing:
             - joueurCible (int) : identifiant du joueur cible
             - caseCible : None
             - carteJoue (list[carte]) : liste contenant la carte utilise pour attaquer
+
+        Renvoie la liste des joueurs morts apres cette action
         """
 
         if carteJoue[0] not in self.joueurs[joueurCourant].main:
@@ -198,12 +202,15 @@ class RoiDuRing:
             raise ValueError("Tentative d'attaque en endurance sur un joueur n'etant pas a cote")
 
         vieRetiree = 1
+        # Regle de la case centrale
         if self.joueurs[joueurCourant].position == POSITION_CENTRE:
             vieRetiree = 2
 
         self.joueurs[joueurCible].retirer_vie(vieRetiree)
         self.joueurs[joueurCourant].retirer_cartes(carteJoue)
         self.ajouter_defausse(carteJoue)
+
+        # On regarde si un joueur est mort
         joueursMorts = self.nettoyer_joueurs_morts()
 
         return joueursMorts
@@ -239,6 +246,12 @@ class RoiDuRing:
 
 
     def ajouter_defausse(self, cartesADefausser):
+        """
+        Ajoute les cartes a defausser dans la defausse
+
+        Parametres:
+            - cartesADefausser (list[Carte]) : liste des cartes a defausser
+        """
         self.defausse.extend(cartesADefausser)
 
     
@@ -246,13 +259,19 @@ class RoiDuRing:
 
 
     def nettoyer_joueurs_morts(self):
+        """
+        Retire tous les joueurs morts de self.joueurs et renvoie la liste des indices des joueurs morts
+        """
         joueursMorts = []
         indicesJoueursMorts = []
+
+        # On regarde quels joueurs sont morts
         for joueur in self.joueurs:
             if joueur.endurance <= 0:
                 joueursMorts.append(joueur)
                 indicesJoueursMorts.append(self.joueurs.index(joueur))
 
+        # On supprime les joueurs morts
         for joueur in joueursMorts:
             self.joueurs.remove(joueur)
 
@@ -263,10 +282,18 @@ class RoiDuRing:
 
 
     def est_fini(self):
+        """
+        Verifie si le jeu est fini et renvoie les joueurs morts par les tomates
+
+        Return:
+            - True si le jeu et fini, false sinon
+            - La liste des joueurs morts
+        """
         # On regarde les joueurs morts
         joueursMorts = self.nettoyer_joueurs_morts()
 
-        if not self.pioche:
+        # On remplit la pioche si besoin
+        if len(self.pioche) < 2:
             self.remplir_pioche()
 
         return len(self.joueurs) <= 1, joueursMorts
@@ -295,8 +322,11 @@ class RoiDuRing:
 
 
     def remplir_pioche(self):
+        """
+        Melange la defausse, vide la defausse et remplit la pioche
+        """
         shuffle(self.defausse)
-        self.pioche.extend(self.defausse)
+        self.pioche = self.defausse + self.pioche
         self.defausse = []
 
     
@@ -413,5 +443,11 @@ class RoiDuRing:
 
 
     def retirer_pioche(self, nbCartes):
+        """
+        Retire de la pioche un nombre de carte donne
+
+        Parametres:
+            - nbCartes (int) : Le nombre de cartes a retirer de la pioche
+        """
         for i in range(nbCartes):
             self.pioche.pop()
