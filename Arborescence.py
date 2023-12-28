@@ -287,7 +287,10 @@ class Arborescence:
                                range(jokerPossible + 1)]
 
         if estCoupBas:
-            possibiliteDefausse = [x for x in possibiliteDefausse if len(x) == 2]
+            if [x for x in possibiliteDefausse if len(x) == 2]:
+                possibiliteDefausse = [x for x in possibiliteDefausse if len(x) == 2]
+            else:
+                possibiliteDefausse = [x for x in possibiliteDefausse if len(x) < 2]
         else:
             possibiliteDefausse = [x for x in possibiliteDefausse if len(x) <= nombreCarteMaxADefausser or len(x) == 3] # On empeche de defausser inutilement
         return possibiliteDefausse
