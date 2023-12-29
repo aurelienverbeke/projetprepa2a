@@ -11,7 +11,7 @@ Pour faire fonctionner l'ia, les fichiers minimum nécessaires sont
 Et pour faire fonctionner le jeu en entier, il faudra rajouter les fichiers:
 - main_projet.py
 - Joueur.py
-- 
+- RdR_jeu.py
 
 Les autres fichiers ne sont pas nécessaires, ils ont servi a faire des tests et tenter de trouver une bonne ia
 (au final nous n'avons pas pu les rendre, il y a une limite de 10 fichiers sur le dépôt, voici le repo github si vous voulez aller voir https://github.com/aurelienverbeke/projetprepa2a)
