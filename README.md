@@ -12,6 +12,6 @@ Pour faire fonctionner l'ia, les fichiers minimum nécessaires sont
 - Evaluation.py
 
 Les autres fichiers ne sont pas nécessaires, ils ont servi a faire des tests et tenter de trouver une bonne ia
-(Au final on n'a pas pu les rendre, il y a une limite de 10 fichiers sur le dépôt)
+(au final on n'a pas pu les rendre, il y a une limite de 10 fichiers sur le dépôt, voici le repo github si vous voulez aller voir https://github.com/aurelienverbeke/projetprepa2a)
 
 Si vous voulez jouer, il faut mettre la difficulte à -1
